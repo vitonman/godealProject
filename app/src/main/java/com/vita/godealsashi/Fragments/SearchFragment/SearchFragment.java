@@ -46,14 +46,11 @@ public class SearchFragment extends Fragment implements PostBtnDialog.OnInputSel
 
     private Spinner city_spinner;
 
-    private CircleImageView postImage;
+
 
     private static final String TAG = "MyCustomDialog";
 
     private Button searchWork;
-
-    private Context mContext;
-
 
     private RecyclerView post_list_view;
     private WorkPostRecycleAdapter wordPostRecycleAdapter;
@@ -95,11 +92,6 @@ public class SearchFragment extends Fragment implements PostBtnDialog.OnInputSel
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_search, container, false);
 
-        postImage = v.findViewById(R.id.user_imageView);
-
-        Glide.with(mContext)
-                .load(R.mipmap.ic_person)
-                .into(postImage);
 
 
         ParseUser current_user = ParseUser.getCurrentUser();

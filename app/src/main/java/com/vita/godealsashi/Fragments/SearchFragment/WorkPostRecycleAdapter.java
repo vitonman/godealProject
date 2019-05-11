@@ -27,6 +27,10 @@ public class WorkPostRecycleAdapter extends RecyclerView.Adapter<WorkPostRecycle
 
     public Context context;
 
+    private CircleImageView postImage;
+
+
+
 
 
     public WorkPostRecycleAdapter(List<WorkPost> postList) {
@@ -39,6 +43,11 @@ public class WorkPostRecycleAdapter extends RecyclerView.Adapter<WorkPostRecycle
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.postlist_list_item, viewGroup, false);
         context = viewGroup.getContext();
 
+        postImage = view.findViewById(R.id.user_post_image);
+
+        Glide.with(context)
+                .load(R.mipmap.ic_person)
+                .into(postImage);
 
 
         return new WorkPostRecycleAdapter.ViewHolder(view);
