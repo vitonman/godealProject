@@ -40,6 +40,8 @@ public class LoginActivity extends AppCompatActivity {
         log_btn = (Button) findViewById(R.id.log_btn);
         log_reg_btn = (Button) findViewById(R.id.log_reg_btn);
 
+
+
         loading_anim = (LottieAnimationView) findViewById(R.id.loading_anim);
 
         log_btn.setOnClickListener(new View.OnClickListener() {
