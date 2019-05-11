@@ -1,5 +1,6 @@
 package com.vita.godealsashi.Fragments.SearchFragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -31,6 +33,8 @@ import com.vita.godealsashi.registration.UserSetupActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -42,10 +46,13 @@ public class SearchFragment extends Fragment implements PostBtnDialog.OnInputSel
 
     private Spinner city_spinner;
 
+    private CircleImageView postImage;
+
     private static final String TAG = "MyCustomDialog";
 
     private Button searchWork;
 
+    private Context mContext;
 
 
     private RecyclerView post_list_view;
@@ -87,6 +94,13 @@ public class SearchFragment extends Fragment implements PostBtnDialog.OnInputSel
 
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_search, container, false);
+
+        postImage = v.findViewById(R.id.user_imageView);
+
+        Glide.with(mContext)
+                .load(R.mipmap.ic_person)
+                .into(postImage);
+
 
         ParseUser current_user = ParseUser.getCurrentUser();
 
