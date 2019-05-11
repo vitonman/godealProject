@@ -50,9 +50,9 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
 
         viewHolder.setIsRecyclable(false);
 
-        Number age = userList.get(i).getAge();
+        /*Number age = userList.get(i).getAge();
         viewHolder.setAge(age);
-
+*/
 
         String name = userList.get(i).getName();
         viewHolder.setUserName(name);
@@ -71,8 +71,8 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
             }
         });
 
-        String city = userList.get(i).getCity();
-        viewHolder.setUserCity(city);
+   /*     String city = userList.get(i).getCity();
+        viewHolder.setUserCity(city);*/
 
 
 

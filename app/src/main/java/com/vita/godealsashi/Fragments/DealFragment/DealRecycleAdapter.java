@@ -36,7 +36,7 @@ public class DealRecycleAdapter extends RecyclerView.Adapter<DealRecycleAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         //there i put it to xml file
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.userlist_list_item, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.user_profile_item, viewGroup, false);
         context = viewGroup.getContext();
 
 

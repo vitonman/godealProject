@@ -69,19 +69,11 @@ public class ProfileFragment extends Fragment {
         user_locationView = v.findViewById(R.id.user_locationView);
         user_statusView = v.findViewById(R.id.user_statusView);
         user_ageView = v.findViewById(R.id.age_textView);
-
+        user_edit_profile = v.findViewById(R.id.edit_profile);
 
         if(currentUser != null){
 
-            user_edit_profile = v.findViewById(R.id.edit_profile);
-
-            user_edit_profile.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), UserSetupActivity.class);
-                    startActivity(intent);
-                }
-            });
+            getUserData(currentUser);
 
         } else {
 
@@ -90,8 +82,15 @@ public class ProfileFragment extends Fragment {
 
 
 
+        user_edit_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), UserSetupActivity.class);
+                startActivity(intent);
+            }
+        });
 
-        getUserData(currentUser);
+
 
         return v;
 

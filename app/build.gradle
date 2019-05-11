@@ -60,7 +60,6 @@ dependencies {
     //textLoader
     implementation 'com.elyeproj.libraries:loaderviewlibrary:2.0.0'
 
-
     // Shimmer
     implementation 'com.facebook.shimmer:shimmer:0.4.0'
 }
