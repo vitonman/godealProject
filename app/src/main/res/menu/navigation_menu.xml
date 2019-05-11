@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:title="Colleagues"
+            android:id="@+id/collegues"
+            android:icon="@drawable/ic_group_black_48dp">
+        </item>
+
+        <item
+            android:title="Requests "
+            android:id="@+id/collegue_request"
+            android:icon="@drawable/ic_group_add_black_48dp">
+        </item>
+
+        <item
+            android:title="Settings"
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_settings_black_48dp">
+        </item>
+
+        <item
+            android:title="History"
+            android:id="@+id/history"
+            android:icon="@drawable/ic_history_black_48dp">
+        </item>
+
+    </group>
+
+    <item android:title="advance options">
+
+        <menu>
+
+            <item
+                android:title="Donate"
+                android:id="@+id/donate"
+                android:icon="@drawable/ic_donate_black_48dp">
+            </item>
+
+            <item
+                android:title="Updates"
+                android:id="@+id/updates"
+                android:icon="@drawable/ic_new_releases_black_24dp">
+            </item>
+
+            <item
+                android:title="Bug report"
+                android:id="@+id/bug_report"
+                android:icon="@drawable/ic_bug_report_black_48dp">
+            </item>
+
+            <item
+                android:title="About"
+                android:id="@+id/about"
+                android:icon="@drawable/ic_about_mail_black_24dp"
+                />
+
+        </menu>
+
+    </item>
+
+</menu>

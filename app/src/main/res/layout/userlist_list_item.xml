@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/shimmer_view_container">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="2dp"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/user_imageView"
+                android:layout_width="60dp"
+                android:layout_height="65dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:paddingTop="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@mipmap/ic_launcher_round"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/user_name_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="21dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:text="name+last"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@+id/user_imageView"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/user_city_text"
+                android:layout_width="wrap_content"
+                android:layout_height="14dp"
+
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="4dp"
+                android:text="City: "
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@+id/user_imageView"
+                app:layout_constraintTop_toBottomOf="@+id/user_name_edit" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="32dp"
+                android:layout_height="27dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@mipmap/ic_chat" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="33dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView"
+                app:srcCompat="@drawable/ic_group_add_black_48dp" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="13dp"
+                android:layout_marginStart="52dp"
+                android:layout_marginTop="4dp"
+                android:text="Abilities: null, null, null, null"
+                android:textSize="10sp"
+                app:layout_constraintStart_toEndOf="@+id/user_city_text"
+                app:layout_constraintTop_toBottomOf="@+id/user_name_edit" />
+
+            <TextView
+                android:id="@+id/user_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Age: "
+                android:textSize="10sp"
+                app:layout_constraintStart_toStartOf="@+id/user_city_text"
+                app:layout_constraintTop_toBottomOf="@+id/user_city_text" />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+
+
+
+</android.support.constraint.ConstraintLayout>

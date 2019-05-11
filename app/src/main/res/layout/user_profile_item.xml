@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/shimmer_view_container">
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_imageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:paddingTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_launcher_round"
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/user_name_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="name+last"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/user_imageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/user_city_text"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+
+        android:text="City: "
+        app:layout_constraintStart_toEndOf="@+id/user_imageView"
+        app:layout_constraintTop_toBottomOf="@+id/user_name_edit" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="28dp"
+        android:layout_height="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/user_age"
+        app:srcCompat="@mipmap/ic_chat"
+        tools:layout_editor_absoluteX="116dp"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="23dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/user_name_edit"
+        app:srcCompat="@drawable/ic_group_add_black_48dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="22dp"
+        android:layout_marginStart="20dp"
+        android:text="Abilities: "
+        app:layout_constraintStart_toEndOf="@+id/user_city_text"
+        app:layout_constraintTop_toBottomOf="@+id/user_name_edit" />
+
+    <TextView
+        android:id="@+id/user_age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Age: "
+        app:layout_constraintStart_toStartOf="@+id/user_city_text"
+        app:layout_constraintTop_toBottomOf="@+id/user_city_text" />
+
+
+</android.support.constraint.ConstraintLayout>

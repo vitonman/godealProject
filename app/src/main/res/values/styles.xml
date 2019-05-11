@@ -1,0 +1,48 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        Theme.AppCompat.Light.NoActionBar
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorBackgroundFloating">@color/colorAccent</item>
+        <item name="tooltipFrameBackground">@color/colorAccent</item>
+        <item name="popupTheme">@style/PopupTheme</item>
+        <item name="android:navigationBarColor">@color/colorPrimary</item>
+
+    </style>
+
+    <style name="Theme.MyApp" parent="Theme.MaterialComponents.Light.Bridge">
+    </style>
+
+    <style name="reg_butn">Registration Button
+        <item name="colorPrimary">@color/colorPrimary</item>
+    </style>
+
+    <style name="PopupTheme" parent="Theme.AppCompat.Light">
+        <item name="android:background">@color/colorBlack</item>
+        <item name="android:textColor">@color/colorWhite</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
+    </style>
+
+
+    <style name="RaisedButton" parrent="Widget.Appcompat.Button.Colored">
+
+        <item name="android:backgroundTint">@color/colorButton</item>
+        <item name="android:textColor">@color/colorBlack</item>
+
+    </style>
+
+
+
+</resources>

@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">godealsashi</string>
+    <string name="reg_button">Registration</string>
+    <string name="user_registration">User Registration</string>
+    <string name="name">Name</string>
+    <string name="password">password</string>
+    <string name="log_out">Log out</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="email">Email</string>
+    <string name="already_registred">Already registred?</string>
+    <string name="login">Login</string>
+    <string name="password_text">Password</string>
+    <string name="confirm_password_text">Confirm password</string>
+    <string name="registration_btn">Registration</string>
+    <string name="log_user_name">Username</string>
+    <string name="log_password">Password</string>
+    <string name="log_reg_btn">Have no account?</string>
+    <string name="log_in_btn">Login</string>
+    <string name="hint_text">hint</string>
+    <string name="vitali_maksimov">Vitali Maksimov</string>
+
+    <string name="open_drawer">Open Drawer</string>
+    <string name="close_drawer">Close Drawer</string>
+
+</resources>

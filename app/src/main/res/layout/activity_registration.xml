@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".registration.RegistrationActivity">
+
+
+  <android.support.design.widget.TextInputLayout
+      android:id="@+id/usernameEmailLayout"
+      android:layout_width="match_parent"
+      android:layout_height="56dp"
+      android:layout_marginTop="16dp"
+      app:boxCornerRadiusBottomEnd="20dp"
+      app:boxCornerRadiusBottomStart="20dp"
+      app:boxCornerRadiusTopEnd="20dp"
+      app:boxCornerRadiusTopStart="20dp"
+      app:layout_constraintTop_toBottomOf="@+id/usernameInputlayout"
+      tools:layout_editor_absoluteX="0dp">
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/usernameEmailText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:inputType="textEmailAddress" />
+
+  </android.support.design.widget.TextInputLayout>
+
+
+  <android.support.design.widget.TextInputLayout
+      android:id="@+id/usernamePasswordLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+
+      android:layout_marginTop="8dp"
+      app:boxCornerRadiusBottomEnd="20dp"
+      app:boxCornerRadiusBottomStart="20dp"
+      app:boxCornerRadiusTopEnd="20dp"
+      app:boxCornerRadiusTopStart="20dp"
+      app:layout_constraintTop_toBottomOf="@+id/usernameEmailLayout"
+      tools:layout_editor_absoluteX="0dp"
+      app:passwordToggleEnabled="true">
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/usernamePasswordText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword"/>
+
+  </android.support.design.widget.TextInputLayout>
+
+  <android.support.design.widget.TextInputLayout
+      android:id="@+id/usernameConfpassLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+
+      android:layout_marginTop="8dp"
+      app:boxCornerRadiusBottomEnd="20dp"
+      app:boxCornerRadiusBottomStart="20dp"
+      app:boxCornerRadiusTopEnd="20dp"
+      app:boxCornerRadiusTopStart="20dp"
+      app:layout_constraintTop_toBottomOf="@+id/usernamePasswordLayout"
+      tools:layout_editor_absoluteX="0dp"
+      app:passwordToggleEnabled="true">
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/usernameConfpassText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirm password"
+        android:inputType="textPassword"/>
+
+  </android.support.design.widget.TextInputLayout>
+
+
+  <android.support.v7.widget.AppCompatButton
+      android:id="@+id/reg_btn"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginBottom="8dp"
+      android:text="@string/registration_btn"
+      app:layout_constraintBottom_toTopOf="@+id/log_btn"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
+      app:layout_constraintStart_toStartOf="parent" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/log_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/already_registred"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+  <ProgressBar
+      android:id="@+id/reg_progress_bar"
+      style="?android:attr/progressBarStyle"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="236dp"
+      android:layout_marginEnd="8dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.498"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+</android.support.constraint.ConstraintLayout>
