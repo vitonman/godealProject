@@ -62,8 +62,8 @@ public class SearchFragment extends Fragment implements PostBtnDialog.OnInputSel
     public void sendInput(String postname, String city) {
         Log.d(TAG,"sendInput: found incoming input: " + postname.toString());
         Log.d(TAG,"sendInput: found incoming input: " + city.toString());
-        postName.setText(postname);
-        cityName.setText(city);
+       /* postName.setText(postname);
+        cityName.setText(city);*/
 
         WorkPost newPost = new WorkPost();
 

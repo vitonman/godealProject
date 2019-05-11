@@ -26,13 +26,15 @@ public class PostBtnDialog extends DialogFragment {
     private TextView mActionOk, mActionCancel;
     //private EditText descriptionText;
 
+    public OnInputSelected mOnInputSelected;
+
     public interface OnInputSelected{
 
-        void sendInput(String input, String city);
+        void sendInput(String postname, String city);
 
     }
 
-    public OnInputSelected mOnInputSelected;
+
 
 
 
