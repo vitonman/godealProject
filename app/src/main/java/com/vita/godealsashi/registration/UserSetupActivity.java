@@ -29,6 +29,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.vita.godealsashi.CustomClasses.CustomUser;
 import com.vita.godealsashi.R;
+import com.vita.godealsashi.User.UserProfileActivity;
 
 import java.io.File;
 
@@ -63,6 +64,9 @@ public class UserSetupActivity extends AppCompatActivity {
         lastname_text_edit = (EditText) findViewById(R.id.user_city_text);
 
         setupImage = (CircleImageView) findViewById(R.id.setup_image);
+        Glide.with(UserSetupActivity.this)
+                .load(R.mipmap.ic_person)
+                .into(setupImage);
 
 
 

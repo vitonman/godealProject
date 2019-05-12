@@ -105,8 +105,6 @@ public class ProfileFragment extends Fragment {
 
     private void getUserData(ParseUser currentUser){
 
-
-
         final ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
         queryExist.whereEqualTo("owner", currentUser);
         queryExist.getFirstInBackground(new GetCallback<CustomUser>() {

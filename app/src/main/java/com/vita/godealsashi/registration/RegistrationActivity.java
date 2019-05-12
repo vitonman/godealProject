@@ -20,6 +20,7 @@ import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 import com.vita.godealsashi.MainActivity;
 import com.vita.godealsashi.R;
+import com.vita.godealsashi.User.FriendRequest;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -193,6 +194,11 @@ public class RegistrationActivity extends AppCompatActivity {
                                     public void done(ParseUser user, ParseException e) {
 
                                         if (user != null){
+
+                                            FriendRequest add_user = new FriendRequest();
+                                            add_user.setOwner(user);
+                                            add_user.saveInBackground();
+
 
                                             sendToSetup();
 

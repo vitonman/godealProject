@@ -18,7 +18,8 @@
             android:background="@drawable/gradientbackground"
             android:orientation="vertical">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/user_profile_image"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center_horizontal"
@@ -113,6 +114,7 @@
                         android:textSize="20sp" />
 
                     <ImageView
+                        android:id="@+id/request_friend_image"
                         android:layout_width="36dp"
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
