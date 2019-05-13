@@ -19,12 +19,17 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.vita.godealsashi.CustomClasses.CustomUser;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatFragment;
 import com.vita.godealsashi.Fragments.DealFragment.DealFragment;
 import com.vita.godealsashi.Fragments.ProfileFragment.ProfileFragment;
 import com.vita.godealsashi.Fragments.SearchFragment.SearchFragment;
 import com.vita.godealsashi.Login.LoginActivity;
+import com.vita.godealsashi.registration.UserSetupActivity;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -53,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.navigation_drawer);
 
         ParseUser currentUser = ParseUser.getCurrentUser();
+
+        checkForSetup(currentUser);
 
         mainToolBar = (Toolbar) findViewById(R.id.mainToolbar);
         setSupportActionBar(mainToolBar);
@@ -255,6 +262,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
+    }
+
+    public void checkForSetup(ParseUser current_user){
+
+        final ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
+
+        queryExist.whereEqualTo("owner", current_user);
+
+        queryExist.getFirstInBackground(new GetCallback<CustomUser>() {
+            @Override
+            public void done(CustomUser object, ParseException e) {
+
+                if(e == null){
+
+                    Toast.makeText(MainActivity.this, "Your user is fine.", Toast.LENGTH_SHORT).show();
+
+                } else {
+
+                    Toast.makeText(MainActivity.this, "You must finish registration.", Toast.LENGTH_SHORT).show();
+                    Intent toSetupPage = new Intent(MainActivity.this, UserSetupActivity.class);
+                    startActivity(toSetupPage);
+                    finish();
+
+                }
+
+            }
+        });
 
     }
 }

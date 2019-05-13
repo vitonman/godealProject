@@ -23,11 +23,17 @@ public class FriendRequest extends ParseObject {
         super();
     }
 
-    public ParseUser getOwner() {
-        return getParseUser("owner");
+
+
+
+
+
+
+    public String getOwner() {
+        return getString("owner");
     }
 
-    public void setOwner(ParseUser value) {
+    public void setOwner(String value) {
         put("owner", value);
     }
 
@@ -72,7 +78,6 @@ public class FriendRequest extends ParseObject {
     //-----------------friendList------------------
 
     //RAITING SYSTEM INNED
-
 
 
 }

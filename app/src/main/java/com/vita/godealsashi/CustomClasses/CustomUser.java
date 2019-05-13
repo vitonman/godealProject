@@ -93,5 +93,8 @@ public class CustomUser extends ParseObject {
     //RAITING SYSTEM INNED
 
 
-
+    @Override
+    public String getObjectId() {
+        return super.getObjectId();
+    }
 }

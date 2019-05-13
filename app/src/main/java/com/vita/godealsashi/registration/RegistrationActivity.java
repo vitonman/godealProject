@@ -195,11 +195,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
                                         if (user != null){
 
-                                            FriendRequest add_user = new FriendRequest();
-                                            add_user.setOwner(user);
-                                            add_user.saveInBackground();
-
-
                                             sendToSetup();
 
                                         } else {

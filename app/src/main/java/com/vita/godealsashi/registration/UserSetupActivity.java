@@ -28,7 +28,9 @@ import com.parse.ParseUser;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.vita.godealsashi.CustomClasses.CustomUser;
+import com.vita.godealsashi.MainActivity;
 import com.vita.godealsashi.R;
+import com.vita.godealsashi.User.FriendRequest;
 import com.vita.godealsashi.User.UserProfileActivity;
 
 import java.io.File;
@@ -232,7 +234,12 @@ public class UserSetupActivity extends AppCompatActivity {
                     object.setCity(city);
                     object.setImage(image);
                     object.saveInBackground();
+
+
+
                     Toast.makeText(UserSetupActivity.this, "Changed!", Toast.LENGTH_SHORT).show();
+
+                    toMain();
 
                 } else {
 
@@ -244,7 +251,10 @@ public class UserSetupActivity extends AppCompatActivity {
                     user.setOwner(currentuser);
                     user.setCity(city);
                     user.saveInBackground();
-                    Toast.makeText(UserSetupActivity.this, "New data added!", Toast.LENGTH_SHORT).show();
+
+
+                    Toast.makeText(UserSetupActivity.this, "created", Toast.LENGTH_SHORT).show();
+                    toMain();
 
                 }
             }
@@ -278,6 +288,14 @@ public class UserSetupActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    public void toMain(){
+
+        Intent intent = new Intent(UserSetupActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+
     }
 
 
