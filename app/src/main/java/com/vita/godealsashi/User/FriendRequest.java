@@ -3,7 +3,9 @@ package com.vita.godealsashi.User;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
+import com.vita.godealsashi.CustomClasses.CustomUser;
 
 import org.json.JSONArray;
 
@@ -24,18 +26,6 @@ public class FriendRequest extends ParseObject {
     }
 
 
-
-
-
-
-
-    public String getOwner() {
-        return getString("owner");
-    }
-
-    public void setOwner(String value) {
-        put("owner", value);
-    }
 
     //-----------------sentREQUEST------------------
     public void setSent(JSONArray value){
@@ -79,5 +69,21 @@ public class FriendRequest extends ParseObject {
 
     //RAITING SYSTEM INNED
 
+    public String getObjectid() {
+        return getString("objectid");
+    }
+
+    public void setObjectid(String value) {
+        put("objectid", value);
+    }
+
+
+    public ParseUser getUser() {
+        return getParseUser("user");
+    }
+
+    public void setUser(ParseUser value) {
+        put("user", value);
+    }
 
 }

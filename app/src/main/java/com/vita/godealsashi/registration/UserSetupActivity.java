@@ -24,7 +24,9 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.vita.godealsashi.CustomClasses.CustomUser;
@@ -187,6 +189,8 @@ public class UserSetupActivity extends AppCompatActivity {
                     String lastname = object.getLastname();
                     String city = object.getCity();
 
+                    String objectId = object.getObjectId();
+
 
                     age_text_edit.setText(Integer.toString(age));
                     name_text_edit.setText(name);
@@ -235,28 +239,40 @@ public class UserSetupActivity extends AppCompatActivity {
                     object.setImage(image);
                     object.saveInBackground();
 
-
-
                     Toast.makeText(UserSetupActivity.this, "Changed!", Toast.LENGTH_SHORT).show();
 
-                    toMain();
+                } else if (object == null){
 
-                } else {
-
-                    CustomUser user = new CustomUser();
+                    final CustomUser user = new CustomUser();
                     user.setName(name);
                     user.setLastname(lastname);
                     user.setAge(Integer.parseInt(age));
                     user.setImage(image);
                     user.setOwner(currentuser);
                     user.setCity(city);
-                    user.saveInBackground();
+                    user.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+
+                            FriendRequest test = new FriendRequest();
+                            test.setObjectid(user.getObjectId());
+                            test.setUser(currentuser);
+                            test.saveInBackground();
+
+                        }
+                    });
 
 
-                    Toast.makeText(UserSetupActivity.this, "created", Toast.LENGTH_SHORT).show();
-                    toMain();
+
+                    Toast.makeText(UserSetupActivity.this, "New object!", Toast.LENGTH_SHORT).show();
+
+                } else {
+
+                    Toast.makeText(UserSetupActivity.this, "Wrong ! " + e.getMessage(), Toast.LENGTH_SHORT).show();
 
                 }
+
+
             }
         });
 

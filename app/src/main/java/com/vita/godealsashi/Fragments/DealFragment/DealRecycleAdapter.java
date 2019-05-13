@@ -45,7 +45,7 @@ public class DealRecycleAdapter extends RecyclerView.Adapter<DealRecycleAdapter.
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
         viewHolder.setIsRecyclable(false);
 
         Number age = userList.get(i).getAge();
@@ -64,8 +64,9 @@ public class DealRecycleAdapter extends RecyclerView.Adapter<DealRecycleAdapter.
             @Override
             public void onClick(View v) {
                 Intent commentIntent = new Intent(context, UserProfileActivity.class);
-                commentIntent.putExtra("objectId", objectId); // NEEED
+                commentIntent.putExtra("objectId", objectId);
                 context.startActivity(commentIntent);
+
             }
         });
 

@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         ParseUser currentUser = ParseUser.getCurrentUser();
 
-        checkForSetup(currentUser);
+
 
         mainToolBar = (Toolbar) findViewById(R.id.mainToolbar);
         setSupportActionBar(mainToolBar);
@@ -80,6 +80,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (currentUser != null) {
             // do stuff with the user
+            checkForSetup(currentUser);
+
             Toast.makeText(MainActivity.this, "Hello, " + currentUser.getUsername(), Toast.LENGTH_SHORT).show();
             loginSucess_anim = (LottieAnimationView) findViewById(R.id.loginsucess_anim);
 
@@ -283,7 +285,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Toast.makeText(MainActivity.this, "You must finish registration.", Toast.LENGTH_SHORT).show();
                     Intent toSetupPage = new Intent(MainActivity.this, UserSetupActivity.class);
                     startActivity(toSetupPage);
-                    finish();
 
                 }
 

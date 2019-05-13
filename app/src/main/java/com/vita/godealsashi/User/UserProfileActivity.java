@@ -3,6 +3,7 @@ package com.vita.godealsashi.User;
 import android.annotation.SuppressLint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.TransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.parse.GetCallback;
 import com.parse.Parse;
@@ -18,6 +20,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.vita.godealsashi.CustomClasses.CustomUser;
 import com.vita.godealsashi.R;
+import com.vita.godealsashi.registration.UserSetupActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,7 +40,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private ParseUser objectParseUser;
 
-
+    private String current_user_object_id;
 
 
     @Override
@@ -47,16 +50,14 @@ public class UserProfileActivity extends AppCompatActivity {
 
         final String ownerUser = getIntent().getStringExtra("objectId");
 
-        //final String clickedUserParse = getIntent().getStringExtra("owner");
 
 
         ParseUser current_user = ParseUser.getCurrentUser();
 
+        getCurrentUserObjectId(current_user);
+        String userId = current_user_object_id;
+        Toast.makeText(UserProfileActivity.this, userId, Toast.LENGTH_SHORT).show();
 
-        // now returned in current_user_customuser_objId objectId value of current user.
-        Toast.makeText(UserProfileActivity.this, current_user.toString(), Toast.LENGTH_SHORT).show();
-
-        //String current_user = ParseUser.getCurrentUser().toString();
 
         request_friend_image = findViewById(R.id.request_friend_image);
         user_fullnameView = findViewById(R.id.user_full_name);
@@ -73,10 +74,12 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+
+
                 if(mCurrent_state == 0){
 
                     mCurrent_state = 1;
-
+                    sendInvite(ownerUser);
 
 
                 } else if(mCurrent_state == 1){
@@ -94,21 +97,21 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
 
-    private void sendInvite(ParseUser current_user, final ParseUser objectParseUser){
+    private void sendInvite(final String object_user_id){
         final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
 
-        queryExist.whereEqualTo("owner", current_user);
+        queryExist.whereEqualTo("custom", object_user_id);
         queryExist.getFirstInBackground(new GetCallback<FriendRequest>() {
             @Override
             public void done(FriendRequest object, ParseException e) {
 
                 if(e == null){
 
-
+                    Toast.makeText(UserProfileActivity.this, "Sucess", Toast.LENGTH_SHORT).show();
 
                 } else {
 
-
+                    Toast.makeText(UserProfileActivity.this, "False", Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -135,6 +138,8 @@ public class UserProfileActivity extends AppCompatActivity {
                     String lastname = object.getLastname();
                     //String city = object.getCity();
                     ParseUser parseUser = object.getOwner();
+
+                    String Objectid = object.getObjectId();
 
                     user_fullnameView.setText(name + " " + lastname);
                     objectParseUser = parseUser;
@@ -166,6 +171,94 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
+    public void ifHaveRequestObject(final ParseUser current_user, final String object_user){
+
+        final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
+
+        queryExist.whereEqualTo("owner", current_user);
+        queryExist.getFirstInBackground(new GetCallback<FriendRequest>() {
+            @Override
+            public void done(FriendRequest object, ParseException e) {
+
+                if (e == null){
+
+                    //IF FRIENDREQUEST OBJECT EXIST, WATCH FOR object_user
+
+                    JSONArray sentArray = object.getSent();
+
+                    for (int i = 0; i < sentArray.length(); i++) {
+
+                        try {
+                            if(object_user.equals(sentArray.get(i))){
+
+                                //already exist
+                                request_friend_image.setVisibility(View.INVISIBLE);
+
+
+                            } else {
+
+                                sentArray.put(object_user);
+                                object.setSent(sentArray);
+                                object.saveInBackground();
+
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
+
+                    }
+
+
+
+                } else if (object == null){
+
+                    FriendRequest newuserfriendlist = new FriendRequest();
+                    //newuserfriendlist.setOwner(getCurrentUserObjectId(current_user));
+
+
+
+                } else {
+
+                    Log.d("Error: ", e.getMessage() );
+
+                }
+
+            }
+        });
+
+    }
+
+    private void getCurrentUserObjectId(final ParseUser current_user){
+
+
+
+        final ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
+        queryExist.whereEqualTo("owner", current_user);
+        queryExist.getFirstInBackground(new GetCallback<CustomUser>() {
+            @SuppressLint("CheckResult")
+            @Override
+            public void done(CustomUser object, ParseException e) {
+
+                if(e == null){
+
+                    //Toast.makeText(UserProfileActivity.this, object.getObjectId(), Toast.LENGTH_SHORT).show();
+
+                    current_user_object_id = object.getObjectId();
+
+                } else {
+
+                    //Toast.makeText(getActivity(), "No data", Toast.LENGTH_SHORT).show();
+                    Log.d("Message: ", "No data exist.");
+                    Log.d("Owner: ", current_user_object_id);
+
+                }
+
+
+            }
+        });
+
+
+    }
 
 
 

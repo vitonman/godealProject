@@ -1,8 +1,11 @@
 package com.vita.godealsashi.CustomClasses;
 
+import android.widget.RelativeLayout;
+
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
 import org.json.JSONArray;
@@ -90,11 +93,11 @@ public class CustomUser extends ParseObject {
     }
 
 
+
     //RAITING SYSTEM INNED
 
 
-    @Override
-    public String getObjectId() {
-        return super.getObjectId();
-    }
+
+
+
 }
