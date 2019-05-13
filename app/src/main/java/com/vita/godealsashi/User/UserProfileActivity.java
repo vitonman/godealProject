@@ -40,7 +40,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private ParseUser objectParseUser;
 
-    private String current_user_object_id;
 
 
     @Override
@@ -49,14 +48,8 @@ public class UserProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_profile);
 
         final String ownerUser = getIntent().getStringExtra("objectId");
+        final ParseUser current_user = ParseUser.getCurrentUser();
 
-
-
-        ParseUser current_user = ParseUser.getCurrentUser();
-
-        getCurrentUserObjectId(current_user);
-        String userId = current_user_object_id;
-        Toast.makeText(UserProfileActivity.this, userId, Toast.LENGTH_SHORT).show();
 
 
         request_friend_image = findViewById(R.id.request_friend_image);
@@ -74,18 +67,15 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
-
                 if(mCurrent_state == 0){
 
                     mCurrent_state = 1;
-                    sendInvite(ownerUser);
-
+                    //sendInvite(ownerUser,current_user);
+                    sentInviteAndRecive(current_user, ownerUser);
 
                 } else if(mCurrent_state == 1){
 
                     //delete request
-
 
                 }
 
@@ -97,15 +87,17 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
 
-    private void sendInvite(final String object_user_id){
+    private void sendInvite(final String object_user_id, final ParseUser current_user){
         final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
 
-        queryExist.whereEqualTo("custom", object_user_id);
+        queryExist.whereEqualTo("objectid", object_user_id);
         queryExist.getFirstInBackground(new GetCallback<FriendRequest>() {
             @Override
             public void done(FriendRequest object, ParseException e) {
 
                 if(e == null){
+
+
 
                     Toast.makeText(UserProfileActivity.this, "Sucess", Toast.LENGTH_SHORT).show();
 
@@ -119,6 +111,53 @@ public class UserProfileActivity extends AppCompatActivity {
         });
 
 
+    }
+
+
+    private void sentInviteAndRecive(ParseUser current_user, final String object_user_id){
+        final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
+
+        queryExist.whereEqualTo("user", current_user);
+        queryExist.getFirstInBackground(new GetCallback<FriendRequest>() {
+            @Override
+            public void done(FriendRequest object, ParseException e) {
+
+                if(e == null){
+
+                    if(object.getSent() == null){
+
+                        JSONArray sentArray = new JSONArray();
+                        sentArray.put(object_user_id);
+
+                        object.setSent(sentArray);
+                        object.saveInBackground();
+
+                    } else if(object.getSent() != null){
+
+                        JSONArray sentArray = object.getSent();
+
+                        for (int i = 0; i < sentArray.length(); i++) {
+
+                            try {
+                                if(!sentArray.get(i).equals(object_user_id)){
+
+                                    sentArray.put(object_user_id);
+                                    object.setSent(sentArray);
+                                    object.saveInBackground();
+
+                                }
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    } else {
+                        Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(UserProfileActivity.this, "False", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void getUserData(final String ownerUser){
@@ -171,94 +210,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
-    public void ifHaveRequestObject(final ParseUser current_user, final String object_user){
-
-        final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
-
-        queryExist.whereEqualTo("owner", current_user);
-        queryExist.getFirstInBackground(new GetCallback<FriendRequest>() {
-            @Override
-            public void done(FriendRequest object, ParseException e) {
-
-                if (e == null){
-
-                    //IF FRIENDREQUEST OBJECT EXIST, WATCH FOR object_user
-
-                    JSONArray sentArray = object.getSent();
-
-                    for (int i = 0; i < sentArray.length(); i++) {
-
-                        try {
-                            if(object_user.equals(sentArray.get(i))){
-
-                                //already exist
-                                request_friend_image.setVisibility(View.INVISIBLE);
-
-
-                            } else {
-
-                                sentArray.put(object_user);
-                                object.setSent(sentArray);
-                                object.saveInBackground();
-
-                            }
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
-                        }
-
-                    }
-
-
-
-                } else if (object == null){
-
-                    FriendRequest newuserfriendlist = new FriendRequest();
-                    //newuserfriendlist.setOwner(getCurrentUserObjectId(current_user));
-
-
-
-                } else {
-
-                    Log.d("Error: ", e.getMessage() );
-
-                }
-
-            }
-        });
-
-    }
-
-    private void getCurrentUserObjectId(final ParseUser current_user){
-
-
-
-        final ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
-        queryExist.whereEqualTo("owner", current_user);
-        queryExist.getFirstInBackground(new GetCallback<CustomUser>() {
-            @SuppressLint("CheckResult")
-            @Override
-            public void done(CustomUser object, ParseException e) {
-
-                if(e == null){
-
-                    //Toast.makeText(UserProfileActivity.this, object.getObjectId(), Toast.LENGTH_SHORT).show();
-
-                    current_user_object_id = object.getObjectId();
-
-                } else {
-
-                    //Toast.makeText(getActivity(), "No data", Toast.LENGTH_SHORT).show();
-                    Log.d("Message: ", "No data exist.");
-                    Log.d("Owner: ", current_user_object_id);
-
-                }
-
-
-            }
-        });
-
-
-    }
 
 
 
