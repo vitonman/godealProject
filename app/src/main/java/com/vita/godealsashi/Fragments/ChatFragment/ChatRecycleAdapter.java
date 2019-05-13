@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.parse.ParseUser;
 import com.vita.godealsashi.CustomClasses.CustomUser;
 
 import com.vita.godealsashi.R;
@@ -60,6 +61,8 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
         String image = userList.get(i).getImage().getUrl();
         viewHolder.setUserImage(image);
 
+        final ParseUser owner = userList.get(i).getOwner();
+
         final String objectId = userList.get(i).getObjectId();
 
         viewHolder.user_image.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +70,7 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
             public void onClick(View v) {
                 Intent commentIntent = new Intent(context, UserProfileActivity.class);
                 commentIntent.putExtra("objectId", objectId); // NEEED
+                commentIntent.putExtra("owner", owner);
                 context.startActivity(commentIntent);
             }
         });
