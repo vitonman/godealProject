@@ -1,11 +1,13 @@
 package com.vita.godealsashi.User;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,12 +75,15 @@ public class UserProfileActivity extends AppCompatActivity {
                     //sendInvite(ownerUser,current_user);
                     sentInviteAndRecive(current_user, ownerUser);
                     mCurrent_state = 1;
+                    request_friend_image.setImageResource(R.drawable.ic_request_red_24dp);
+
+
 
                 } else if(mCurrent_state == 1){
 
                     deleteInvites(ownerUser, current_user);
                     mCurrent_state = 0;
-
+                    request_friend_image.setImageResource(R.drawable.ic_action_deal);
                     //delete request
 
                 }
@@ -89,6 +94,8 @@ public class UserProfileActivity extends AppCompatActivity {
         getUserData(ownerUser);
 
     }
+
+
 
     private void deleteInvites(final String object_user_id, final ParseUser current_user){
 
