@@ -60,8 +60,9 @@ public class UserProfileActivity extends AppCompatActivity {
                 .into(user_CircleImage);
 
 
-        mCurrent_state = 0; //not friends
 
+
+        mCurrent_state = 0;
 
         request_friend_image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,12 +70,18 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 if(mCurrent_state == 0){
 
-                    mCurrent_state = 1;
+
                     //sendInvite(ownerUser,current_user);
                     sentInviteAndRecive(current_user, ownerUser);
+                    mCurrent_state = 1;
+                    Toast.makeText(UserProfileActivity.this, Integer.toString(mCurrent_state), Toast.LENGTH_SHORT).show();
 
                 } else if(mCurrent_state == 1){
 
+
+                    deleteInvites(ownerUser, current_user);
+                    mCurrent_state = 0;
+                    Toast.makeText(UserProfileActivity.this, Integer.toString(mCurrent_state), Toast.LENGTH_SHORT).show();
                     //delete request
 
                 }
@@ -86,8 +93,59 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
+    private void deleteInvites(final String object_user_id, final ParseUser current_user){
 
-    private void sendInvite(final String object_user_id, final ParseUser current_user){
+        final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
+
+        queryExist.whereEqualTo("user", current_user);
+        queryExist.getFirstInBackground(new GetCallback<FriendRequest>() {
+            @Override
+            public void done(FriendRequest object, ParseException e) {
+
+                if(e == null){
+
+                    if(object.getSent() == null){
+
+                        //THERE NO OBJECT
+
+                    } else if(object.getSent() != null){
+
+                        JSONArray recivedArray = object.getSent();
+
+                        for (int i = 0; i < recivedArray.length(); i++) {
+
+                            try {
+                                if(recivedArray.get(i).equals(object_user_id)){
+
+                                    recivedArray.remove(i);
+                                    object.setSent(recivedArray);
+                                    object.saveInBackground();
+
+                                } else if(recivedArray.length() == 0){
+
+
+
+                                }
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    } else {
+                        Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(UserProfileActivity.this, "False", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+
+    }
+
+
+    private void reciveInvite(final String object_user_id, final String current_user){
+
         final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
 
         queryExist.whereEqualTo("objectid", object_user_id);
@@ -97,14 +155,35 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 if(e == null){
 
+                    if(object.getRecived() == null){
 
+                        JSONArray recivedArray = new JSONArray();
+                        recivedArray.put(current_user);
 
-                    Toast.makeText(UserProfileActivity.this, "Sucess", Toast.LENGTH_SHORT).show();
+                        object.setRecived(recivedArray);
+                        object.saveInBackground();
 
+                    } else if(object.getRecived() == null){
+
+                        JSONArray recivedArray = object.getSent();
+
+                        for (int i = 0; i < recivedArray.length(); i++) {
+
+                            try {
+                                if(!recivedArray.get(i).equals(current_user)){
+
+                                    recivedArray.put(current_user);
+                                    object.setRecived(recivedArray);
+                                    object.saveInBackground();
+
+                                }
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    }
                 } else {
-
-                    Toast.makeText(UserProfileActivity.this, "False", Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -128,8 +207,10 @@ public class UserProfileActivity extends AppCompatActivity {
 
                         JSONArray sentArray = new JSONArray();
                         sentArray.put(object_user_id);
-
                         object.setSent(sentArray);
+
+                        String current_user_object = object.getObjectid();
+                        reciveInvite(object_user_id, current_user_object);
                         object.saveInBackground();
 
                     } else if(object.getSent() != null){
@@ -143,18 +224,30 @@ public class UserProfileActivity extends AppCompatActivity {
 
                                     sentArray.put(object_user_id);
                                     object.setSent(sentArray);
+
+                                    String current_user_object = object.getObjectid();
+                                    reciveInvite(object_user_id, current_user_object);
                                     object.saveInBackground();
 
+                                } else {
+
+                                    /*sentArray.put(object_user_id);
+                                    object.setRecived(sentArray);
+                                    object.saveInBackground();*/
+
                                 }
+
+
                             } catch (JSONException e1) {
                                 e1.printStackTrace();
                             }
                         }
                     } else {
-                        Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                        Toast.makeText(UserProfileActivity.this, "Error request" , Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(UserProfileActivity.this, "False", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
