@@ -110,20 +110,19 @@ public class UserProfileActivity extends AppCompatActivity {
 
                     } else if(object.getSent() != null){
 
-                        JSONArray recivedArray = object.getSent();
+                        JSONArray sentArray = object.getSent();
 
-                        for (int i = 0; i < recivedArray.length(); i++) {
+                        for (int i = 0; i < sentArray.length(); i++) {
 
                             try {
-                                if(recivedArray.get(i).equals(object_user_id)){
+                                if(sentArray.get(i).equals(object_user_id)){
 
-                                    recivedArray.remove(i);
-                                    object.setSent(recivedArray);
+                                    sentArray.remove(i);
+                                    object.setSent(sentArray);
                                     object.saveInBackground();
 
-                                } else if(recivedArray.length() == 0){
-
-
+                                    String current_user_object = object.getObjectid();
+                                    deleteRecives(object_user_id, current_user_object);
 
                                 }
                             } catch (JSONException e1) {
@@ -131,17 +130,64 @@ public class UserProfileActivity extends AppCompatActivity {
                             }
                         }
                     } else {
-                        Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UserProfileActivity.this, "There is no object", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(UserProfileActivity.this, "False", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
 
+    }
+
+    private void deleteRecives(final String object_user_id, final String current_user){
+
+        final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
+
+        queryExist.whereEqualTo("objectid", object_user_id);
+        queryExist.getFirstInBackground(new GetCallback<FriendRequest>() {
+            @Override
+            public void done(FriendRequest object, ParseException e) {
+
+                if(e == null){
+
+                    if(object.getRecived() == null){
+
+                        //THERE NO OBJECT
+
+                    } else if(object.getRecived() != null){
+
+                        JSONArray recivedArray = object.getRecived();
+
+                        for (int i = 0; i < recivedArray.length(); i++) {
+
+                            try {
+                                if(recivedArray.get(i).equals(current_user)){
+
+                                    recivedArray.remove(i);
+                                    object.setRecived(recivedArray);
+                                    object.saveInBackground();
+
+                                }
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                    } else {
+                        Toast.makeText(UserProfileActivity.this, "There is no object", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
 
     }
+
+
+
 
 
     private void reciveInvite(final String object_user_id, final String current_user){
@@ -155,7 +201,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 if(e == null){
 
-                    if(object.getRecived() == null){
+                    if(object.getRecived() == null || object.getRecived().length() <= 0){
 
                         JSONArray recivedArray = new JSONArray();
                         recivedArray.put(current_user);
@@ -163,7 +209,7 @@ public class UserProfileActivity extends AppCompatActivity {
                         object.setRecived(recivedArray);
                         object.saveInBackground();
 
-                    } else if(object.getRecived() == null){
+                    } else if(object.getRecived() != null){
 
                         JSONArray recivedArray = object.getSent();
 
@@ -203,7 +249,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 if(e == null){
 
-                    if(object.getSent() == null){
+                    if(object.getSent() == null || object.getSent().length() <= 0){
 
                         JSONArray sentArray = new JSONArray();
                         sentArray.put(object_user_id);
