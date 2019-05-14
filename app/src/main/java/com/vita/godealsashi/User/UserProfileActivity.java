@@ -70,18 +70,15 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 if(mCurrent_state == 0){
 
-
                     //sendInvite(ownerUser,current_user);
                     sentInviteAndRecive(current_user, ownerUser);
                     mCurrent_state = 1;
-                    Toast.makeText(UserProfileActivity.this, Integer.toString(mCurrent_state), Toast.LENGTH_SHORT).show();
 
                 } else if(mCurrent_state == 1){
 
-
                     deleteInvites(ownerUser, current_user);
                     mCurrent_state = 0;
-                    Toast.makeText(UserProfileActivity.this, Integer.toString(mCurrent_state), Toast.LENGTH_SHORT).show();
+
                     //delete request
 
                 }
@@ -169,6 +166,8 @@ public class UserProfileActivity extends AppCompatActivity {
                                     object.setRecived(recivedArray);
                                     object.saveInBackground();
 
+                                    Toast.makeText(UserProfileActivity.this, "Invite canceled",Toast.LENGTH_SHORT).show();
+
                                 }
                             } catch (JSONException e1) {
                                 e1.printStackTrace();
@@ -209,6 +208,8 @@ public class UserProfileActivity extends AppCompatActivity {
                         object.setRecived(recivedArray);
                         object.saveInBackground();
 
+                        Toast.makeText(UserProfileActivity.this, "Invited to collegues",Toast.LENGTH_SHORT).show();
+
                     } else if(object.getRecived() != null){
 
                         JSONArray recivedArray = object.getSent();
@@ -221,6 +222,8 @@ public class UserProfileActivity extends AppCompatActivity {
                                     recivedArray.put(current_user);
                                     object.setRecived(recivedArray);
                                     object.saveInBackground();
+
+                                    Toast.makeText(UserProfileActivity.this, "Invited to collegues",Toast.LENGTH_SHORT).show();
 
                                 }
                             } catch (JSONException e1) {
