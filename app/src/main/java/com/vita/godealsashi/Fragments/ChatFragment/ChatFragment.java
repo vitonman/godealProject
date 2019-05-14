@@ -86,7 +86,7 @@ public class ChatFragment extends Fragment {
             });
 
             ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
-
+            query.whereNotEqualTo("owner", currentUser);
             query.findInBackground(new FindCallback<CustomUser>() {
                 @Override
                 public void done(List<CustomUser> results, ParseException e) {

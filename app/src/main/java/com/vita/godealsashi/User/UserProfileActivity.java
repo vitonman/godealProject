@@ -314,6 +314,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
                                 } else if(sentArray.get(i).equals(object_user_id)) {
 
+                                    Toast.makeText(UserProfileActivity.this, "Already sent", Toast.LENGTH_SHORT).show();
+
                                     sentArray.remove(i);
                                     sentArray.put(object_user_id);
                                     object.setSent(sentArray);
