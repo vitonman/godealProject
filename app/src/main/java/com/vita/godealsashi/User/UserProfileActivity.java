@@ -73,6 +73,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 if(mCurrent_state == 0){
 
+                    //TODO: create some method or solution for save status requested or not
+
                     //sendInvite(ownerUser,current_user);
                     sentInviteAndRecive(current_user, ownerUser);
                     mCurrent_state = 1;
