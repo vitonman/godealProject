@@ -1,6 +1,7 @@
 package com.vita.godealsashi.User;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,7 +43,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private ParseUser objectParseUser;
 
-
+    private final int VALUE = mCurrent_state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +96,23 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
 
+     /*   private final int VALUE = mCurrent_state;*/
+
+       /* SharedPreferences sharedPrefs = getApplicationContext().getSharedPreferences("a", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putInt(Value, mCurrent_state);
+// Replace `putInt` with `putString` if your value is a String and not an Integer.
+        editor.commit();*/
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     private void deleteInvites(final String object_user_id, final ParseUser current_user){
 
@@ -217,9 +234,9 @@ public class UserProfileActivity extends AppCompatActivity {
 
                         Toast.makeText(UserProfileActivity.this, "Invited to collegues",Toast.LENGTH_SHORT).show();
 
-                    } else if(object.getRecived() != null){
+                    } else if(object.getRecived() != null || object.getRecived().length() <= 0){
 
-                        JSONArray recivedArray = object.getSent();
+                        JSONArray recivedArray = object.getRecived();
 
                         for (int i = 0; i < recivedArray.length(); i++) {
 
@@ -231,6 +248,14 @@ public class UserProfileActivity extends AppCompatActivity {
                                     object.saveInBackground();
 
                                     Toast.makeText(UserProfileActivity.this, "Invited to collegues",Toast.LENGTH_SHORT).show();
+
+                                } else if(recivedArray.get(i).equals(current_user)){
+
+                                   recivedArray.remove(i);
+                                    recivedArray.put(current_user);
+                                    object.setRecived(recivedArray);
+                                    object.saveInBackground();
+
 
                                 }
                             } catch (JSONException e1) {
@@ -259,7 +284,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 if(e == null){
 
-                    if(object.getSent() == null || object.getSent().length() <= 0){
+                    if(object.getSent() == null  || object.getSent().length() <= 0){
 
                         JSONArray sentArray = new JSONArray();
                         sentArray.put(object_user_id);
@@ -285,11 +310,19 @@ public class UserProfileActivity extends AppCompatActivity {
                                     reciveInvite(object_user_id, current_user_object);
                                     object.saveInBackground();
 
+                                } else if(sentArray.get(i).equals(object_user_id)) {
+
+                                    sentArray.remove(i);
+                                    sentArray.put(object_user_id);
+                                    object.setSent(sentArray);
+
+                                    String current_user_object = object.getObjectid();
+                                    reciveInvite(object_user_id, current_user_object);
+                                    object.saveInBackground();
+
                                 } else {
 
-                                    /*sentArray.put(object_user_id);
-                                    object.setRecived(sentArray);
-                                    object.saveInBackground();*/
+                                    //ERROR
 
                                 }
 
