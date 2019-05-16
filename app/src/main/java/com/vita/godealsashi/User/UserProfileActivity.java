@@ -140,6 +140,7 @@ public class UserProfileActivity extends AppCompatActivity {
                             try {
                                 if(sentArray.get(i).equals(object_user_id)){
 
+
                                     sentArray.remove(i);
                                     object.setSent(sentArray);
                                     object.saveInBackground();
@@ -319,10 +320,11 @@ public class UserProfileActivity extends AppCompatActivity {
                                     sentArray.remove(i);
                                     sentArray.put(object_user_id);
                                     object.setSent(sentArray);
+                                    object.saveInBackground();
 
                                     String current_user_object = object.getObjectid();
                                     reciveInvite(object_user_id, current_user_object);
-                                    object.saveInBackground();
+
 
                                 } else {
 
