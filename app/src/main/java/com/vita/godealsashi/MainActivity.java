@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private LottieAnimationView loginSucess_anim;
 
-    private Toolbar mToolbar;
+
 
     ChatFragment chatFragment;
     DealFragment dealFragment;

@@ -68,7 +68,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
 
-        mCurrent_state = 0;
+
+
 
         request_friend_image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +99,7 @@ public class UserProfileActivity extends AppCompatActivity {
         });
 
         getUserData(ownerUser);
+        getIsinvited(ownerUser, current_user);
 
     }
 
@@ -391,6 +393,57 @@ public class UserProfileActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void getIsinvited(final String object_user, final ParseUser current_user){
+
+
+        final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
+        queryExist.whereEqualTo("user", current_user);
+
+        queryExist.getFirstInBackground(new GetCallback<FriendRequest>() {
+            @Override
+            public void done(FriendRequest object, ParseException e) {
+
+                if(e == null){
+
+                    try{
+
+                        for (int i = 0; i < object.getSent().length(); i++) {
+
+                            if(object.getSent().get(i).equals(object_user)){
+
+                                mCurrent_state = 1;
+
+                                request_friend_image.setImageResource(R.drawable.ic_request_red_24dp);
+
+                                Toast.makeText(UserProfileActivity.this, "SAY SOMETHING PLEASE", Toast.LENGTH_SHORT).show();
+
+                            }
+
+                        }
+
+
+                    }catch (Exception e1){
+
+                        Log.d("GetstatusSended: ", e1.toString());
+
+                    }
+
+                } else {
+
+                    mCurrent_state = 0;
+
+                    Toast.makeText(UserProfileActivity.this, "NONONO", Toast.LENGTH_SHORT).show();
+
+
+
+                }
+
+            }
+        });
+
 
     }
 
