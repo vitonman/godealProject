@@ -21,12 +21,15 @@ import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.vita.godealsashi.CustomClasses.CustomUser;
 import com.vita.godealsashi.R;
 import com.vita.godealsashi.registration.UserSetupActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -76,7 +79,7 @@ public class UserProfileActivity extends AppCompatActivity {
                     //TODO: create some method or solution for save status requested or not
 
                     //sendInvite(ownerUser,current_user);
-                    sentInviteAndRecive(current_user, ownerUser);
+                    sendInvite(current_user, ownerUser);
                     mCurrent_state = 1;
                     request_friend_image.setImageResource(R.drawable.ic_request_red_24dp);
 
@@ -84,7 +87,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 } else if(mCurrent_state == 1){
 
-                    deleteInvites(ownerUser, current_user);
+                    deleteSentInvite(ownerUser, current_user);
                     mCurrent_state = 0;
                     request_friend_image.setImageResource(R.drawable.ic_action_deal);
                     //delete request
@@ -116,7 +119,7 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    private void deleteInvites(final String object_user_id, final ParseUser current_user){
+    private void deleteSentInvite(final String object_user_id, final ParseUser current_user){
 
         final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
 
@@ -133,22 +136,25 @@ public class UserProfileActivity extends AppCompatActivity {
 
                     } else if(object.getSent() != null){
 
+
                         JSONArray sentArray = object.getSent();
+
 
                         for (int i = 0; i < sentArray.length(); i++) {
 
                             try {
-                                if(sentArray.get(i).equals(object_user_id)){
-
+                                while(sentArray.get(i).equals(object_user_id)){
 
                                     sentArray.remove(i);
+
+                                    String current_user_object = object.getObjectid();
+                                    deleteRecivesInvite(object_user_id, current_user_object);
                                     object.setSent(sentArray);
                                     object.saveInBackground();
 
-                                    String current_user_object = object.getObjectid();
-                                    deleteRecives(object_user_id, current_user_object);
-
                                 }
+
+
                             } catch (JSONException e1) {
                                 e1.printStackTrace();
                             }
@@ -165,7 +171,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
-    private void deleteRecives(final String object_user_id, final String current_user){
+    private void deleteRecivesInvite(final String object_user_id, final String current_user){
 
         final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
 
@@ -183,22 +189,23 @@ public class UserProfileActivity extends AppCompatActivity {
                     } else if(object.getRecived() != null){
 
                         JSONArray recivedArray = object.getRecived();
+                        try {
+                            for (int i = 0; i < recivedArray.length(); i++) {
 
-                        for (int i = 0; i < recivedArray.length(); i++) {
+                                    while(recivedArray.get(i).equals(current_user)){
 
-                            try {
-                                if(recivedArray.get(i).equals(current_user)){
+                                        recivedArray.remove(i);
+                                        object.setRecived(recivedArray);
+                                        object.saveInBackground();
+                                        Toast.makeText(UserProfileActivity.this, "Invite canceled",Toast.LENGTH_SHORT).show();
 
-                                    recivedArray.remove(i);
-                                    object.setRecived(recivedArray);
-                                    object.saveInBackground();
+                                    }
 
-                                    Toast.makeText(UserProfileActivity.this, "Invite canceled",Toast.LENGTH_SHORT).show();
 
-                                }
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
+
                             }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
                         }
                     } else {
                         Toast.makeText(UserProfileActivity.this, "There is no object", Toast.LENGTH_SHORT).show();
@@ -216,7 +223,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
 
-    private void reciveInvite(final String object_user_id, final String current_user){
+    private boolean reciveInvite(final String object_user_id, final String current_user){
 
         final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
 
@@ -237,47 +244,45 @@ public class UserProfileActivity extends AppCompatActivity {
 
                         Toast.makeText(UserProfileActivity.this, "Invited to collegues",Toast.LENGTH_SHORT).show();
 
-                    } else if(object.getRecived() != null || object.getRecived().length() <= 0){
+                    } else if(object.getRecived() != null){
 
                         JSONArray recivedArray = object.getRecived();
 
-                        for (int i = 0; i < recivedArray.length(); i++) {
+                        try{
+                            for (int i = 0; i < recivedArray.length(); i++) {
 
-                            try {
-                                if(!recivedArray.get(i).equals(current_user)){
+                                while(recivedArray.get(i).equals(current_user)){
 
-                                    recivedArray.put(current_user);
+                                    recivedArray.remove(i);
                                     object.setRecived(recivedArray);
                                     object.saveInBackground();
-
-                                    Toast.makeText(UserProfileActivity.this, "Invited to collegues",Toast.LENGTH_SHORT).show();
-
-                                } else if(recivedArray.get(i).equals(current_user)){
-
-                                   recivedArray.remove(i);
-                                    recivedArray.put(current_user);
-                                    object.setRecived(recivedArray);
-                                    object.saveInBackground();
-
 
                                 }
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
-                            }
-                        }
-                    }
-                } else {
-                    Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
 
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
+
+                        recivedArray.put(current_user);
+                        object.setRecived(recivedArray);
+                        object.saveInBackground();
+
+                    }
+
+                    } else {
+
+                    Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                }
             }
         });
 
-
+        return false;
     }
 
 
-    private void sentInviteAndRecive(ParseUser current_user, final String object_user_id){
+    private void sendInvite(ParseUser current_user, final String object_user_id){
         final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
 
         queryExist.whereEqualTo("user", current_user);
@@ -287,6 +292,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
                 if(e == null){
 
+
                     if(object.getSent() == null  || object.getSent().length() <= 0){
 
                         JSONArray sentArray = new JSONArray();
@@ -294,59 +300,120 @@ public class UserProfileActivity extends AppCompatActivity {
                         object.setSent(sentArray);
 
                         String current_user_object = object.getObjectid();
+
                         reciveInvite(object_user_id, current_user_object);
+
                         object.saveInBackground();
 
                     } else if(object.getSent() != null){
 
                         JSONArray sentArray = object.getSent();
 
-                        for (int i = 0; i < sentArray.length(); i++) {
+                        try{
+                            for (int i = 0; i < sentArray.length(); i++) {
 
-                            try {
-                                if(!sentArray.get(i).equals(object_user_id)){
-
-                                    sentArray.put(object_user_id);
-                                    object.setSent(sentArray);
-
-                                    String current_user_object = object.getObjectid();
-                                    reciveInvite(object_user_id, current_user_object);
-                                    object.saveInBackground();
-
-                                } else if(sentArray.get(i).equals(object_user_id)) {
-
-                                    Toast.makeText(UserProfileActivity.this, "Already sent", Toast.LENGTH_SHORT).show();
+                                while(sentArray.get(i).equals(object_user_id)){
 
                                     sentArray.remove(i);
-                                    sentArray.put(object_user_id);
                                     object.setSent(sentArray);
                                     object.saveInBackground();
-
-                                    String current_user_object = object.getObjectid();
-                                    reciveInvite(object_user_id, current_user_object);
-
-
-                                } else {
-
-                                    //ERROR
 
                                 }
 
-
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
                             }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
                         }
-                    } else {
 
-                        Toast.makeText(UserProfileActivity.this, "Error request" , Toast.LENGTH_SHORT).show();
-                    }
+                        sentArray.put(object_user_id);
+                        object.setSent(sentArray);
+                        String current_user_object = object.getObjectid();
+                        reciveInvite(object_user_id, current_user_object);
+
+                        object.saveInBackground();
+
+                        }
+
                 } else {
                     Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
+
+    private void testSendInvite(ParseUser current_user, final String object_user_id){
+        final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
+
+        queryExist.whereEqualTo("user", current_user);
+        queryExist.getFirstInBackground(new GetCallback<FriendRequest>() {
+            @Override
+            public void done(FriendRequest object, ParseException e) {
+
+                if(e == null){
+
+                    ArrayList<String> idList = new ArrayList<String>();
+
+                    JSONArray array = object.getSent();
+
+                    if (array != null ){
+
+                        for (int i = 0; i < array.length(); i++) {
+
+
+
+
+                            try {
+                                idList.add(object.getSent().get(i).toString());
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            }
+
+                        }
+
+                        for (String id: idList){
+
+                            if(!id.equals(object_user_id)){
+                                idList.add(object_user_id);
+                            }
+
+                        }
+
+                        JSONArray sendStringArray = object.getSent();
+
+
+
+
+                        //object.setSent(newArray);
+                        object.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+
+                                Toast.makeText(UserProfileActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+
+                    } else {
+
+                        JSONArray newArray = new JSONArray();
+                        newArray.put(object_user_id);
+
+                        object.setSent(newArray);
+
+                        object.saveInBackground();
+
+                    }
+
+
+
+
+                } else {
+                    Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
 
     private void getUserData(final String ownerUser){
 
