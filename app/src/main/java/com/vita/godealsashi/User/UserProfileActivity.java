@@ -341,78 +341,6 @@ public class UserProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void testSendInvite(ParseUser current_user, final String object_user_id){
-        final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
-
-        queryExist.whereEqualTo("user", current_user);
-        queryExist.getFirstInBackground(new GetCallback<FriendRequest>() {
-            @Override
-            public void done(FriendRequest object, ParseException e) {
-
-                if(e == null){
-
-                    ArrayList<String> idList = new ArrayList<String>();
-
-                    JSONArray array = object.getSent();
-
-                    if (array != null ){
-
-                        for (int i = 0; i < array.length(); i++) {
-
-
-
-
-                            try {
-                                idList.add(object.getSent().get(i).toString());
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
-                            }
-
-                        }
-
-                        for (String id: idList){
-
-                            if(!id.equals(object_user_id)){
-                                idList.add(object_user_id);
-                            }
-
-                        }
-
-                        JSONArray sendStringArray = object.getSent();
-
-
-
-
-                        //object.setSent(newArray);
-                        object.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-
-                                Toast.makeText(UserProfileActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
-
-                            }
-                        });
-
-                    } else {
-
-                        JSONArray newArray = new JSONArray();
-                        newArray.put(object_user_id);
-
-                        object.setSent(newArray);
-
-                        object.saveInBackground();
-
-                    }
-
-
-
-
-                } else {
-                    Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
 
 
     private void getUserData(final String ownerUser){
@@ -427,6 +355,7 @@ public class UserProfileActivity extends AppCompatActivity {
             public void done(CustomUser object, ParseException e) {
 
                 if(e == null){
+
                     String name = object.getName();
                     int age = object.getAge();
                     String lastname = object.getLastname();
@@ -464,6 +393,8 @@ public class UserProfileActivity extends AppCompatActivity {
         });
 
     }
+
+    // TODO private void checkForRequestStatus()
 
 
 
