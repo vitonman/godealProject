@@ -223,7 +223,7 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
 
-    private boolean reciveInvite(final String object_user_id, final String current_user){
+    private void reciveInvite(final String object_user_id, final String current_user){
 
         final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
 
@@ -278,7 +278,7 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
-        return false;
+
     }
 
 
