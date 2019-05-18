@@ -29,6 +29,7 @@ import com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragmen
 import com.vita.godealsashi.Fragments.DealFragment.DealFragment;
 import com.vita.godealsashi.Fragments.ProfileFragment.ProfileFragment;
 import com.vita.godealsashi.Fragments.SearchFragment.SearchFragment;
+import com.vita.godealsashi.Fragments.navigationDrawerFragments.RequestsFragment.RequestFragment;
 import com.vita.godealsashi.Login.LoginActivity;
 import com.vita.godealsashi.registration.UserSetupActivity;
 
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //navigationdrawer fragments
     ColleguesFragment collegueFragment;
+    RequestFragment requestFragment;
 
 
     NavigationView navigationView;
@@ -102,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             //navigation fragments
             collegueFragment = new ColleguesFragment();
+            requestFragment = new RequestFragment();
 
 
 
@@ -236,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.collegue_request:
                 Toast.makeText(this, "collegue_request", Toast.LENGTH_SHORT).show();
-                //replaceFragment(requestFragment);
+                replaceFragment(requestFragment);
                 break;
             case R.id.settings:
                 Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
