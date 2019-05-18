@@ -14,12 +14,16 @@ import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.livequery.ParseLiveQueryClient;
+import com.parse.livequery.SubscriptionHandling;
 import com.vita.godealsashi.CustomClasses.CustomUser;
 
 
 import com.vita.godealsashi.R;
+import com.vita.godealsashi.User.FriendRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,36 +89,23 @@ public class ChatFragment extends Fragment {
                 }
             });
 
-            ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
-            query.whereNotEqualTo("owner", currentUser);
-            query.findInBackground(new FindCallback<CustomUser>() {
+
+            getData();
+
+
+            ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
+
+            ParseQuery<CustomUser> parseQuery = ParseQuery.getQuery(CustomUser.class);
+            SubscriptionHandling<CustomUser> subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
+
+            subscriptionHandling.handleEvents(new SubscriptionHandling.HandleEventsCallback<CustomUser>() {
                 @Override
-                public void done(List<CustomUser> results, ParseException e) {
-                    if(e == null){
-                        progressBar.setVisibility(View.INVISIBLE);
-
-
-                        for (CustomUser r: results){
-
-                            // Do whatever you want with the data...
-
-                            user_list.add(r);
-
-                            //Toast.makeText(getActivity(), age, Toast.LENGTH_LONG).show();
-
-                        }
-                        userChatRecycleAdapter.notifyDataSetChanged();
-
-
-
-                    } else {
-
-                        Toast.makeText(getActivity(), "Something wrong", Toast.LENGTH_LONG).show();
-                        progressBar.setVisibility(View.INVISIBLE);
-
-                    }
+                public void onEvents(ParseQuery<CustomUser> query, SubscriptionHandling.Event event, CustomUser object) {
+                    // HANDLING all events
+                    getData();
                 }
             });
+
 
 
 
@@ -126,9 +117,50 @@ public class ChatFragment extends Fragment {
 
 
 
+
+
+
+
+
         // Inflate the layout for this fragment
         return v;
     }
 
+    private void getData(){
+
+        ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
+        //query.whereNotEqualTo("owner", currentUser);
+        query.findInBackground(new FindCallback<CustomUser>() {
+            @Override
+            public void done(List<CustomUser> results, ParseException e) {
+                if(e == null){
+                    user_list.clear();
+
+                    progressBar.setVisibility(View.INVISIBLE);
+
+
+                    for (CustomUser r: results){
+
+                        // Do whatever you want with the data...
+
+                        user_list.add(r);
+
+                        //Toast.makeText(getActivity(), age, Toast.LENGTH_LONG).show();
+
+                    }
+                    userChatRecycleAdapter.notifyDataSetChanged();
+
+
+
+                } else {
+
+                    Toast.makeText(getActivity(), "Something wrong", Toast.LENGTH_LONG).show();
+                    progressBar.setVisibility(View.INVISIBLE);
+
+                }
+            }
+        });
+
+    }
 
 }

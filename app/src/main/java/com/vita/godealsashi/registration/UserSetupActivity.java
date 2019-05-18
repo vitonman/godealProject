@@ -26,6 +26,8 @@ import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.parse.livequery.ParseLiveQueryClient;
+import com.parse.livequery.SubscriptionHandling;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.vita.godealsashi.CustomClasses.CustomUser;
@@ -251,6 +253,8 @@ public class UserSetupActivity extends AppCompatActivity {
                     user.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
+
+
 
                             FriendRequest test = new FriendRequest();
                             test.setObjectid(user.getObjectId());

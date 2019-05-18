@@ -19,9 +19,12 @@ import com.bumptech.glide.request.RequestOptions;
 import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.parse.livequery.ParseLiveQueryClient;
+import com.parse.livequery.SubscriptionHandling;
 import com.vita.godealsashi.CustomClasses.CustomUser;
 import com.vita.godealsashi.R;
 import com.vita.godealsashi.registration.UserSetupActivity;
@@ -52,6 +55,10 @@ public class UserProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+
+
+
+
 
         final String ownerUser = getIntent().getStringExtra("objectId");
         final ParseUser current_user = ParseUser.getCurrentUser();
@@ -119,6 +126,21 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onResume();
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private void deleteSentInvite(final String object_user_id, final ParseUser current_user){
 
         final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
@@ -170,6 +192,7 @@ public class UserProfileActivity extends AppCompatActivity {
         });
 
     }
+
 
     private void deleteRecivesInvite(final String object_user_id, final String current_user){
 
