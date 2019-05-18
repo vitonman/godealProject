@@ -44,9 +44,9 @@
         android:id="@+id/imageView"
         android:layout_width="28dp"
         android:layout_height="20dp"
+        app:layout_constraintStart_toStartOf="@+id/user_city_text"
         app:layout_constraintTop_toBottomOf="@+id/user_age"
         app:srcCompat="@mipmap/ic_chat"
-        tools:layout_editor_absoluteX="116dp"
         tools:ignore="MissingConstraints" />
 
     <ImageView

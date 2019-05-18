@@ -25,6 +25,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.vita.godealsashi.CustomClasses.CustomUser;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatFragment;
+import com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragment.ColleguesFragment;
 import com.vita.godealsashi.Fragments.DealFragment.DealFragment;
 import com.vita.godealsashi.Fragments.ProfileFragment.ProfileFragment;
 import com.vita.godealsashi.Fragments.SearchFragment.SearchFragment;
@@ -46,6 +47,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DealFragment dealFragment;
     ProfileFragment profileFragment;
     SearchFragment searchFragment;
+
+    //navigationdrawer fragments
+    ColleguesFragment collegueFragment;
+
 
     NavigationView navigationView;
     DrawerLayout drawerLayout;
@@ -94,6 +99,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             chatFragment = new ChatFragment();
             profileFragment = new ProfileFragment();
             searchFragment = new SearchFragment();
+
+            //navigation fragments
+            collegueFragment = new ColleguesFragment();
+
 
 
             mainBottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -222,9 +231,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.collegues:
                 Toast.makeText(this, "Collegues", Toast.LENGTH_SHORT).show();
+                replaceFragment(collegueFragment);
+
                 break;
             case R.id.collegue_request:
                 Toast.makeText(this, "collegue_request", Toast.LENGTH_SHORT).show();
+                //replaceFragment(requestFragment);
                 break;
             case R.id.settings:
                 Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
