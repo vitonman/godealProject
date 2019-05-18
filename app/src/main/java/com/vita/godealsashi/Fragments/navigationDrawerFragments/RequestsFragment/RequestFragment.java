@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -22,6 +25,9 @@ import com.vita.godealsashi.CustomClasses.CustomUser;
 import com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragment.ColleguesFragment;
 import com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragment.ColleguesRecycleAdapter;
 import com.vita.godealsashi.R;
+import com.vita.godealsashi.User.FriendRequest;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +40,7 @@ public class RequestFragment extends Fragment {
     private RequestRecycleAdapter requestRecycleAdapter;
 
     private List<CustomUser> user_list;
+    private List<String> recived_list;
 
     private TextView user_name_textview;
 
@@ -58,6 +65,8 @@ public class RequestFragment extends Fragment {
      /*   progressBar = v.findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.INVISIBLE);*/
 
+        recived_list = new ArrayList<>();
+
         user_list = new ArrayList<>();
         user_list_view = v.findViewById(R.id.request_user_list);
 
@@ -74,7 +83,10 @@ public class RequestFragment extends Fragment {
         if (currentUser != null) {
             //Toast.makeText(getActivity(), "Success fragment", Toast.LENGTH_SHORT).show();
 
+            recived_list.clear();
             user_list.clear();
+
+            checkForRecivedInvites(currentUser);
 
             user_list_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -91,39 +103,13 @@ public class RequestFragment extends Fragment {
 
                 }
             });
-            ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
-            query.findInBackground(new FindCallback<CustomUser>() {
-                @Override
-                public void done(List<CustomUser> results, ParseException e) {
 
-                    if(e == null){
+            //TODO: CHECK IF PERSON HAVE SENDED TO YOU INVITE checkForInvites();
 
 
-                        for (CustomUser r: results){
-                            // Do whatever you want with the data...
-                            if(r != null){
 
-                                user_list.add(r);
+            //need to sort users where objectId =
 
-                            } else {
-
-                                // something went wrong
-
-                            }
-
-                        }
-
-                        requestRecycleAdapter.notifyDataSetChanged();
-
-                    } else {
-
-                        Toast.makeText(getActivity(), "Something wrong", Toast.LENGTH_LONG).show();
-
-                    }
-
-
-                }
-            });
 
         }
 
@@ -131,4 +117,76 @@ public class RequestFragment extends Fragment {
         // Inflate the layout for this fragment
         return v;
     }
+
+    private void getRecivedUser(String sender_id){
+
+        ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
+
+        query.whereEqualTo("objectId", sender_id);
+
+        query.getFirstInBackground(new GetCallback<CustomUser>() {
+            @Override
+            public void done(CustomUser object, ParseException e) {
+
+                if(e == null){
+
+                    user_list.add(object);
+
+                    requestRecycleAdapter.notifyDataSetChanged();
+
+                } else {
+
+                    Toast.makeText(getActivity(), "Something wrong", Toast.LENGTH_LONG).show();
+
+                }
+
+            }
+        });
+    }
+
+    private void checkForRecivedInvites(ParseUser current_user){
+
+        ParseQuery<FriendRequest> query = ParseQuery.getQuery(FriendRequest.class);
+
+        query.whereEqualTo("user", current_user);
+        query.getFirstInBackground(new GetCallback<FriendRequest>() {
+            @Override
+            public void done(FriendRequest object, ParseException e) {
+
+                if(e == null) {
+
+                    if(object.getRecived() == null){
+
+                        // nothing there.
+                        Toast.makeText(getActivity(), "You have not any invite", Toast.LENGTH_SHORT).show();
+
+                    }else if(object.getRecived().length() >= 1){
+
+                        try {
+                            for (int i = 0; i < object.getRecived().length(); i++) {
+
+                                String recive_id = object.getRecived().get(i).toString();
+                                getRecivedUser(recive_id);
+
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
+
+                    } else {
+
+
+                    }
+
+                } else {
+
+                    Log.d("Error: ", e.getMessage());
+
+                }
+
+            }
+        });
+
+    }
+
 }

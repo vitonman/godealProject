@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.vita.godealsashi.CustomClasses.CustomUser;
 import com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragment.ColleguesRecycleAdapter;
 import com.vita.godealsashi.R;
+import com.vita.godealsashi.User.FriendRequest;
 
 import java.util.List;
 
@@ -19,6 +20,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAdapter.ViewHolder> {
 
     public List<CustomUser> userList;
+
+    public List<FriendRequest> requestsList;
 
     public Context context;
 
