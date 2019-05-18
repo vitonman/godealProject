@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +18,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.vita.godealsashi.CustomClasses.CustomUser;
 import com.vita.godealsashi.Fragments.DealFragment.DealRecycleAdapter;
 import com.vita.godealsashi.R;
+import com.vita.godealsashi.User.FriendRequest;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +62,8 @@ public class ColleguesFragment extends Fragment {
      /*   progressBar = v.findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.INVISIBLE);*/
 
+
+
         user_list = new ArrayList<>();
         user_list_view = v.findViewById(R.id.collegues_user_list);
 
@@ -90,48 +97,85 @@ public class ColleguesFragment extends Fragment {
 
                     }
                 });
-                ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
-                query.findInBackground(new FindCallback<CustomUser>() {
-                    @Override
-                    public void done(List<CustomUser> results, ParseException e) {
 
-                        if(e == null){
-
-
-                            for (CustomUser r: results){
-                                // Do whatever you want with the data...
-                                if(r != null){
-
-                                    user_list.add(r);
-
-                                } else {
-
-                                    // something went wrong
-
-
-                                }
-
-
-
-                            }
-
-                            colleguesRecycleAdapter.notifyDataSetChanged();
-
-                        } else {
-
-                            Toast.makeText(getActivity(), "Something wrong", Toast.LENGTH_LONG).show();
-
-                        }
-
-
-                    }
-                });
+                checkForRecivedInvites(currentUser);
 
             }
 
 
         // Inflate the layout for this fragment
         return v;
+    }
+
+    private void getFriendList(String friend){
+
+        ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
+
+        query.whereEqualTo("objectId", friend);
+
+        query.getFirstInBackground(new GetCallback<CustomUser>() {
+            @Override
+            public void done(CustomUser object, ParseException e) {
+
+                if(e == null){
+
+                    user_list.add(object);
+
+                    colleguesRecycleAdapter.notifyDataSetChanged();
+
+                } else {
+
+                    Toast.makeText(getActivity(), "Something wrong", Toast.LENGTH_LONG).show();
+
+                }
+
+            }
+        });
+    }
+
+    private void checkForRecivedInvites(ParseUser current_user){
+
+        ParseQuery<FriendRequest> query = ParseQuery.getQuery(FriendRequest.class);
+
+        query.whereEqualTo("user", current_user);
+        query.getFirstInBackground(new GetCallback<FriendRequest>() {
+            @Override
+            public void done(FriendRequest object, ParseException e) {
+
+                if(e == null) {
+
+                    if(object.getFriendlist() == null){
+
+                        // nothing there.
+                        Toast.makeText(getActivity(), "You have not any friends", Toast.LENGTH_SHORT).show();
+
+                    }else if(object.getFriendlist().length() >= 1){
+
+                        try {
+                            for (int i = 0; i < object.getFriendlist().length(); i++) {
+
+                                String recive_id = (String) object.getFriendlist().get(i);
+                                getFriendList((String) object.getFriendlist().get(i));
+
+                            }
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
+
+                    } else {
+
+
+                    }
+
+                } else {
+
+                    Log.d("Error: ", e.getMessage());
+
+                }
+
+            }
+        });
+
     }
 
 

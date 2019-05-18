@@ -69,8 +69,6 @@ public class UserProfileActivity extends AppCompatActivity {
 
 
 
-
-
         request_friend_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

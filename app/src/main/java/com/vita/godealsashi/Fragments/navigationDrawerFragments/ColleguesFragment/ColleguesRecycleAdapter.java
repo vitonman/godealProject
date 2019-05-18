@@ -1,6 +1,5 @@
 package com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragment;
 
-import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -110,7 +109,7 @@ public class ColleguesRecycleAdapter extends RecyclerView.Adapter<ColleguesRecyc
 
         public void setUserName(String name){
 
-            user_name_text = mView.findViewById(R.id.user_name_edit);
+            user_name_text = mView.findViewById(R.id.user_name);
             user_name_text.setText(name);
 
 

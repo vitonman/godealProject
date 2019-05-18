@@ -117,7 +117,7 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
 
         public void setUserName(String name){
 
-            user_name_text = mView.findViewById(R.id.user_name_edit);
+            user_name_text = mView.findViewById(R.id.user_name);
             user_name_text.setText(name);
 
 
