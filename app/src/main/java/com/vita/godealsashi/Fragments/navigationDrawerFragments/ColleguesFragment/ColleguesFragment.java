@@ -14,11 +14,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.vita.godealsashi.ParseClasses.CustomUser;
+import com.vita.godealsashi.ParseClasses.Invite;
 import com.vita.godealsashi.R;
 
 import org.json.JSONException;
@@ -92,7 +94,7 @@ public class ColleguesFragment extends Fragment {
                     }
                 });
 
-           /*     checkForRecivedInvites(currentUser);*/
+                checkForRecivedInvites(currentUser);
 
             }
 
@@ -101,11 +103,11 @@ public class ColleguesFragment extends Fragment {
         return v;
     }
 
-    private void getFriendList(String friend){
+    private void getFriendList(ParseUser friend){
 
         ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
 
-        query.whereEqualTo("objectId", friend);
+        query.whereEqualTo("owner", friend);
 
         query.getFirstInBackground(new GetCallback<CustomUser>() {
             @Override
@@ -127,50 +129,26 @@ public class ColleguesFragment extends Fragment {
         });
     }
 
-  /*  private void checkForRecivedInvites(ParseUser current_user){
+    private void checkForRecivedInvites(ParseUser current_user){
 
-        ParseQuery<FriendRequest> query = ParseQuery.getQuery(FriendRequest.class);
+        ParseQuery<Invite> query = ParseQuery.getQuery(Invite.class);
 
-        query.whereEqualTo("user", current_user);
-        query.getFirstInBackground(new GetCallback<FriendRequest>() {
+        query.whereEqualTo("target", current_user);
+        query.findInBackground(new FindCallback<Invite>() {
             @Override
-            public void done(FriendRequest object, ParseException e) {
+            public void done(List<Invite> objects, ParseException e) {
 
-                if(e == null) {
+                for (Invite object: objects){
 
-                    if(object.getFriendlist() == null){
-
-                        // nothing there.
-                        Toast.makeText(getActivity(), "You have not any friends", Toast.LENGTH_SHORT).show();
-
-                    }else if(object.getFriendlist().length() >= 1){
-
-                        try {
-                            for (int i = 0; i < object.getFriendlist().length(); i++) {
-
-                                String recive_id = (String) object.getFriendlist().get(i);
-                                getFriendList((String) object.getFriendlist().get(i));
-
-                            }
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
-                        }
-
-                    } else {
-
-
-                    }
-
-                } else {
-
-                    Log.d("Error: ", e.getMessage());
+                    getFriendList(object.getOwner());
 
                 }
 
             }
         });
 
-    }*/
+
+    }
 
 
 

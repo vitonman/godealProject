@@ -2,6 +2,8 @@ package com.vita.godealsashi.Fragments.navigationDrawerFragments.RequestsFragmen
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,11 +16,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.livequery.ParseLiveQueryClient;
+import com.parse.livequery.SubscriptionHandling;
+import com.vita.godealsashi.MainActivity;
 import com.vita.godealsashi.ParseClasses.CustomUser;
+import com.vita.godealsashi.ParseClasses.Invite;
 import com.vita.godealsashi.R;
 
 import org.json.JSONException;
@@ -77,10 +84,40 @@ public class RequestFragment extends Fragment {
         if (currentUser != null) {
             //Toast.makeText(getActivity(), "Success fragment", Toast.LENGTH_SHORT).show();
 
+            ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
+            ParseQuery<Invite> parseQuery = ParseQuery.getQuery(Invite.class);
+            parseQuery.whereEqualTo("target", currentUser);
+            SubscriptionHandling<Invite> subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
+
+
+            subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<Invite>() {
+                @Override
+                public void onEvent(ParseQuery<Invite> query, Invite object) {
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        public void run() {
+
+                            recived_list.clear();
+                            user_list.clear();
+
+                            checkForRecivedInvites(currentUser);
+
+                            Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
+
+                        }
+
+                    });
+                }
+            });
+
+
+
+
+
             recived_list.clear();
             user_list.clear();
-/*
-            checkForRecivedInvites(currentUser);*/
+
+            checkForRecivedInvites(currentUser);
 
             user_list_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -112,11 +149,11 @@ public class RequestFragment extends Fragment {
         return v;
     }
 
-    private void getRecivedUser(String sender_id){
+    private void getRecivedUser(ParseUser sender_user){
 
         ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
 
-        query.whereEqualTo("objectId", sender_id);
+        query.whereEqualTo("owner", sender_user);
 
         query.getFirstInBackground(new GetCallback<CustomUser>() {
             @Override
@@ -130,7 +167,7 @@ public class RequestFragment extends Fragment {
 
                 } else {
 
-                    Toast.makeText(getActivity(), "Something wrong", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
 
                 }
 
@@ -138,49 +175,23 @@ public class RequestFragment extends Fragment {
         });
     }
 
-  /*  private void checkForRecivedInvites(ParseUser current_user){
+    private void checkForRecivedInvites(ParseUser current_user){
 
-        ParseQuery<FriendRequest> query = ParseQuery.getQuery(FriendRequest.class);
+        ParseQuery<Invite> query = ParseQuery.getQuery(Invite.class);
 
-        query.whereEqualTo("user", current_user);
-        query.getFirstInBackground(new GetCallback<FriendRequest>() {
+        query.whereEqualTo("target", current_user);
+        query.findInBackground(new FindCallback<Invite>() {
             @Override
-            public void done(FriendRequest object, ParseException e) {
+            public void done(List<Invite> objects, ParseException e) {
 
-                if(e == null) {
+                for(Invite object: objects){
 
-                    if(object.getRecived() == null){
-
-                        // nothing there.
-                        Toast.makeText(getActivity(), "You have not any invite", Toast.LENGTH_SHORT).show();
-
-                    }else if(object.getRecived().length() >= 1){
-
-                        try {
-                            for (int i = 0; i < object.getRecived().length(); i++) {
-
-                                String recive_id = object.getRecived().get(i).toString();
-                                getRecivedUser(recive_id);
-
-                            }
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
-                        }
-
-                    } else {
-
-
-                    }
-
-                } else {
-
-                    Log.d("Error: ", e.getMessage());
+                    getRecivedUser(object.getOwner());
 
                 }
 
             }
         });
-
-    }*/
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.vita.godealsashi.ParseClasses;
 
+import com.parse.Parse;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -48,6 +49,18 @@ public class Invite extends ParseObject {
     public void setAccept(boolean value){
 
         put("accept", value);
+
+    }
+
+    public void setOwneruserdata(ParseObject value){
+
+        put("owneruserdata", value);
+
+    }
+
+    public ParseObject getOwneruserdata(){
+
+        return getParseObject("owneruserdata");
 
     }
 }

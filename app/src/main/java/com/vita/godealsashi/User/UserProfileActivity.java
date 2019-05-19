@@ -48,7 +48,6 @@ public class UserProfileActivity extends AppCompatActivity{
         Intent intent = getIntent();
 
         final ParseUser target_user = intent.getParcelableExtra("PARSE_OBJECT_EXTRA");
-
         final String ownerUser = intent.getStringExtra("objectId");
         final ParseUser current_user = ParseUser.getCurrentUser();
 
@@ -135,12 +134,14 @@ public class UserProfileActivity extends AppCompatActivity{
                     Invite newInvite = new Invite();
                     newInvite.setOwner(current_user);
                     newInvite.setTarget(target_user);
+                    newInvite.setOwneruserdata(current_user);
                     newInvite.setAccept(false);
                     newInvite.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
                             Toast.makeText(UserProfileActivity.this, "Sended", Toast.LENGTH_SHORT).show();
                         }
+
                     });
 
                 }

@@ -30,6 +30,7 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.MainActivity;
+import com.vita.godealsashi.ParseClasses.Invite;
 import com.vita.godealsashi.R;
 
 import java.io.File;
@@ -226,7 +227,7 @@ public class UserSetupActivity extends AppCompatActivity {
         queryExist.whereEqualTo("owner", currentuser);
         queryExist.getFirstInBackground(new GetCallback<CustomUser>() {
             @Override
-            public void done(CustomUser object, ParseException e) {
+            public void done(final CustomUser object, ParseException e) {
                 if(e == null){
 
                     object.setName(name);
@@ -235,6 +236,7 @@ public class UserSetupActivity extends AppCompatActivity {
                     object.setCity(city);
                     object.setImage(image);
                     object.saveInBackground();
+
 
                     Toast.makeText(UserSetupActivity.this, "Changed!", Toast.LENGTH_SHORT).show();
 
@@ -251,12 +253,20 @@ public class UserSetupActivity extends AppCompatActivity {
                         @Override
                         public void done(ParseException e) {
 
+                            if(e == null){
+
+
+                            } else {
+
+                                Toast.makeText(UserSetupActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                            }
+
+
+
                         }
                     });
 
-
-
-                    Toast.makeText(UserSetupActivity.this, "New object!", Toast.LENGTH_SHORT).show();
 
                 } else {
 

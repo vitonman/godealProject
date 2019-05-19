@@ -16,6 +16,7 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.vita.godealsashi.ParseClasses.CustomUser;
+import com.vita.godealsashi.ParseClasses.Invite;
 import com.vita.godealsashi.R;
 
 import org.json.JSONArray;
@@ -29,11 +30,11 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
 
     public List<CustomUser> userList;
 
-
-
     public Context context;
 
     private Button user_button;
+
+    int button_set;
 
     public RequestRecycleAdapter(List<CustomUser> userList) {
         this.userList = userList;
@@ -44,6 +45,8 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
     public RequestRecycleAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.userlist_accept_friend_item, viewGroup, false);
         context = viewGroup.getContext();
+
+        button_set = 0;
 
         user_button = view.findViewById(R.id.add_friend_btn);
 
@@ -59,13 +62,53 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
         String name = userList.get(i).getName();
         viewHolder.setUserName(name);
 
-
         //add to friends
 
-        final String objectId = userList.get(i).getObjectId();
+        //---------------------------------------------------
+        final ParseUser whoSendYo = userList.get(i).getOwner();
+
+        ParseUser current_user = ParseUser.getCurrentUser();
+
+        //----------------------------------------------------
+
+        final ParseQuery<Invite> query = ParseQuery.getQuery(Invite.class);
+        query.whereEqualTo("target", current_user);
+        query.whereEqualTo("owner", whoSendYo);
+
+
+
         user_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(button_set == 0){
+
+                    query.getFirstInBackground(new GetCallback<Invite>() {
+                        @Override
+                        public void done(Invite object, ParseException e) {
+
+                            object.setAccept(true);
+                            object.saveInBackground();
+
+                        }
+                    });
+
+                    button_set = 1;
+                } else {
+
+                    query.getFirstInBackground(new GetCallback<Invite>() {
+                        @Override
+                        public void done(Invite object, ParseException e) {
+
+                            object.setAccept(false);
+                            object.saveInBackground();
+
+                        }
+                    });
+
+                    button_set = 0;
+
+                }
 
 
 
