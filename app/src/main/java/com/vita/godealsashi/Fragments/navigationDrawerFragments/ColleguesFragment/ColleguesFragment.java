@@ -20,7 +20,6 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.R;
-import com.vita.godealsashi.ParseClasses.FriendRequest;
 
 import org.json.JSONException;
 
@@ -93,7 +92,7 @@ public class ColleguesFragment extends Fragment {
                     }
                 });
 
-                checkForRecivedInvites(currentUser);
+           /*     checkForRecivedInvites(currentUser);*/
 
             }
 
@@ -128,7 +127,7 @@ public class ColleguesFragment extends Fragment {
         });
     }
 
-    private void checkForRecivedInvites(ParseUser current_user){
+  /*  private void checkForRecivedInvites(ParseUser current_user){
 
         ParseQuery<FriendRequest> query = ParseQuery.getQuery(FriendRequest.class);
 
@@ -171,7 +170,7 @@ public class ColleguesFragment extends Fragment {
             }
         });
 
-    }
+    }*/
 
 
 

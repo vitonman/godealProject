@@ -15,21 +15,14 @@ import com.bumptech.glide.request.RequestOptions;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.parse.livequery.LiveQueryException;
 import com.parse.livequery.ParseLiveQueryClient;
 import com.parse.livequery.SubscriptionHandling;
-import com.vita.godealsashi.Fragments.SearchFragment.WorkPost;
 import com.vita.godealsashi.ParseClasses.CustomUser;
-import com.vita.godealsashi.ParseClasses.FriendRequest;
 import com.vita.godealsashi.ParseClasses.Invite;
 import com.vita.godealsashi.R;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.List;
 
@@ -51,7 +44,7 @@ public class UserProfileActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-
+        ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
         Intent intent = getIntent();
 
         final ParseUser target_user = intent.getParcelableExtra("PARSE_OBJECT_EXTRA");
@@ -117,6 +110,7 @@ public class UserProfileActivity extends AppCompatActivity{
     }
 
     private void createInvite(final ParseUser current_user, final ParseUser target_user){
+
 
         ParseQuery<Invite> queryExist = ParseQuery.getQuery(Invite.class);
 

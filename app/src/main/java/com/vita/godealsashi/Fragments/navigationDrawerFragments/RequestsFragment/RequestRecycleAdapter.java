@@ -17,7 +17,6 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.R;
-import com.vita.godealsashi.ParseClasses.FriendRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,7 +29,7 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
 
     public List<CustomUser> userList;
 
-    public List<FriendRequest> requestsList;
+
 
     public Context context;
 
@@ -68,8 +67,6 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
             @Override
             public void onClick(View v) {
 
-                setCurrentUserFriendList(objectId, ParseUser.getCurrentUser());
-                deleteSentInvite(objectId, ParseUser.getCurrentUser());
 
 
             }
@@ -116,234 +113,8 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
 
     }
 
-    private void deleteSentInvite(final String object_user_id, final ParseUser current_user){
 
-        final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
 
-        queryExist.whereEqualTo("user", current_user);
-        queryExist.getFirstInBackground(new GetCallback<FriendRequest>() {
-            @Override
-            public void done(FriendRequest object, ParseException e) {
 
-                if(e == null){
 
-                    if(object.getRecived() == null){
-
-                        //THERE NO OBJECT
-
-                        Toast.makeText(context, "Error null", Toast.LENGTH_SHORT).show();
-
-                    } else if(object.getRecived() != null){
-
-
-                        JSONArray recivedArray = object.getRecived();
-
-
-                        for (int i = 0; i < recivedArray.length(); i++) {
-
-                            try {
-                                while(recivedArray.get(i).equals(object_user_id)){
-
-                                    recivedArray.remove(i);
-
-                                    String current_user_object = object.getObjectid();
-                                    deleteRecivesInvite(object_user_id, current_user_object);
-                                    object.setRecived(recivedArray);
-                                    object.saveInBackground();
-
-                                }
-
-
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
-                            }
-                        }
-                    } else {
-
-                        //something wrong
-
-
-                    }
-                } else {
-
-                    Log.d("Error: ", e.getMessage());
-
-                }
-
-            }
-        });
-
-    }
-
-    private void deleteRecivesInvite(final String object_user_id, final String current_user){
-
-        final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
-
-        queryExist.whereEqualTo("objectid", object_user_id);
-        queryExist.getFirstInBackground(new GetCallback<FriendRequest>() {
-            @Override
-            public void done(FriendRequest object, ParseException e) {
-
-                if(e == null){
-
-                    if(object.getSent() == null){
-
-                        //THERE NO OBJECT
-
-                    } else if(object.getSent() != null){
-
-                        JSONArray sentArray = object.getSent();
-                        try {
-                            for (int i = 0; i < sentArray.length(); i++) {
-
-                                while(sentArray.get(i).equals(current_user)){
-
-                                    sentArray.remove(i);
-                                    object.setSent(sentArray);
-                                    object.saveInBackground();
-
-
-                                }
-
-                            }
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
-                        }
-                    } else {
-
-                        //LOG something wrong with get data
-
-                    }
-                } else {
-
-                    Log.d("Error: ", e.getMessage());
-
-                }
-
-            }
-        });
-    }
-
-    private void setCurrentUserFriendList(final String ownerId, ParseUser current_user){
-
-        final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
-        queryExist.whereEqualTo("user", current_user);
-
-        queryExist.getFirstInBackground(new GetCallback<FriendRequest>() {
-            @Override
-            public void done(FriendRequest object, ParseException e) {
-
-
-                if(e == null){
-
-                    if(object.getFriendlist() == null || object.getFriendlist().length() <= 0){
-
-                        JSONArray friendArray = new JSONArray();
-                        friendArray.put(ownerId);
-
-                        object.setFriendlist(friendArray);
-                        setOwnerFriendList(ownerId, object.getObjectid());
-                        object.saveInBackground();
-
-                        Log.d("Message: ", "Clear, added new array");
-
-                    } else if(object.getFriendlist() != null){
-
-                        JSONArray friendArray = object.getFriendlist();
-
-                        try{
-                            for (int i = 0; i < friendArray.length(); i++) {
-
-                                while(friendArray.get(i).equals(ownerId)){
-
-                                    friendArray.remove(i);
-                                    object.setFriendlist(friendArray);
-                                    object.saveInBackground();
-
-                                }
-
-                            }
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
-                        }
-
-                        friendArray.put(ownerId);
-                        object.setFriendlist(friendArray);
-
-                        setOwnerFriendList(ownerId, object.getObjectid());
-                        object.saveInBackground();
-
-                    }
-
-                } else {
-
-                    Log.d("Error: ", e.getMessage());
-
-                }
-            }
-        });
-
-
-
-    }
-
-    private void setOwnerFriendList(final String ownerId, final String current_user_id){
-
-        final ParseQuery<FriendRequest> queryExist = ParseQuery.getQuery(FriendRequest.class);
-        queryExist.whereEqualTo("objectid", ownerId);
-
-        queryExist.getFirstInBackground(new GetCallback<FriendRequest>() {
-            @Override
-            public void done(FriendRequest object, ParseException e) {
-
-
-                if(e == null){
-
-                    if(object.getFriendlist() == null || object.getFriendlist().length() <= 0){
-
-                        JSONArray friendArray = new JSONArray();
-                        friendArray.put(current_user_id);
-
-                        object.setFriendlist(friendArray);
-                        object.saveInBackground();
-
-                        Log.d("Message: ", "Clear, added new array");
-
-                    } else if(object.getFriendlist() != null){
-
-                        JSONArray friendArray = object.getFriendlist();
-
-                        try{
-                            for (int i = 0; i < friendArray.length(); i++) {
-
-                                while(friendArray.get(i).equals(current_user_id)){
-
-                                    friendArray.remove(i);
-                                    object.setFriendlist(friendArray);
-                                    object.saveInBackground();
-
-                                }
-
-                            }
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
-                        }
-
-                        friendArray.put(current_user_id);
-                        object.setFriendlist(friendArray);
-                        object.saveInBackground();
-
-                    }
-
-                } else {
-
-                    Log.d("Error: ", e.getMessage());
-
-                }
-            }
-        });
-
-
-
-    }
 }

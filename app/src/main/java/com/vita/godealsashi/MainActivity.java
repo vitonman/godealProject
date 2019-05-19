@@ -2,6 +2,8 @@ package com.vita.godealsashi;
 
 import android.animation.Animator;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -21,8 +23,12 @@ import android.widget.Toast;
 import com.airbnb.lottie.LottieAnimationView;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.livequery.LiveQueryException;
+import com.parse.livequery.ParseLiveQueryClient;
+import com.parse.livequery.SubscriptionHandling;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatFragment;
 import com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragment.ColleguesFragment;
@@ -31,7 +37,11 @@ import com.vita.godealsashi.Fragments.ProfileFragment.ProfileFragment;
 import com.vita.godealsashi.Fragments.SearchFragment.SearchFragment;
 import com.vita.godealsashi.Fragments.navigationDrawerFragments.RequestsFragment.RequestFragment;
 import com.vita.godealsashi.Login.LoginActivity;
+import com.vita.godealsashi.ParseClasses.Invite;
 import com.vita.godealsashi.registration.UserSetupActivity;
+
+
+import org.reactivestreams.Subscription;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -66,6 +76,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         ParseUser currentUser = ParseUser.getCurrentUser();
 
+
+        ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
+        ParseQuery<Invite> parseQuery = ParseQuery.getQuery(Invite.class);
+        parseQuery.whereEqualTo("target", currentUser);
+        SubscriptionHandling<Invite> subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
+
+
+        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<Invite>() {
+            @Override
+            public void onEvent(ParseQuery<Invite> query, Invite object) {
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                });
+            }
+        });
 
 
         mainToolBar = (Toolbar) findViewById(R.id.mainToolbar);

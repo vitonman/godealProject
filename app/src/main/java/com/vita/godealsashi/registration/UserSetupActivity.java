@@ -31,7 +31,6 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.MainActivity;
 import com.vita.godealsashi.R;
-import com.vita.godealsashi.ParseClasses.FriendRequest;
 
 import java.io.File;
 
@@ -251,13 +250,6 @@ public class UserSetupActivity extends AppCompatActivity {
                     user.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
-
-
-
-                            FriendRequest test = new FriendRequest();
-                            test.setObjectid(user.getObjectId());
-                            test.setUser(currentuser);
-                            test.saveInBackground();
 
                         }
                     });
