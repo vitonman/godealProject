@@ -14,16 +14,14 @@ import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.livequery.ParseLiveQueryClient;
 import com.parse.livequery.SubscriptionHandling;
-import com.vita.godealsashi.CustomClasses.CustomUser;
+import com.vita.godealsashi.ParseClasses.CustomUser;
 
 
 import com.vita.godealsashi.R;
-import com.vita.godealsashi.User.FriendRequest;
 
 import java.util.ArrayList;
 import java.util.List;

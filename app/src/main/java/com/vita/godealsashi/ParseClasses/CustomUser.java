@@ -1,4 +1,4 @@
-package com.vita.godealsashi.CustomClasses;
+package com.vita.godealsashi.ParseClasses;
 
 import android.widget.RelativeLayout;
 

@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -18,9 +17,7 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-import com.vita.godealsashi.MainActivity;
 import com.vita.godealsashi.R;
-import com.vita.godealsashi.User.FriendRequest;
 
 public class RegistrationActivity extends AppCompatActivity {
 

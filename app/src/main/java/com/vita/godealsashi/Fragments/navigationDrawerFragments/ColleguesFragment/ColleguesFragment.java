@@ -1,31 +1,26 @@
 package com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragment;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.vita.godealsashi.CustomClasses.CustomUser;
-import com.vita.godealsashi.Fragments.DealFragment.DealRecycleAdapter;
+import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.R;
-import com.vita.godealsashi.User.FriendRequest;
+import com.vita.godealsashi.ParseClasses.FriendRequest;
 
 import org.json.JSONException;
 

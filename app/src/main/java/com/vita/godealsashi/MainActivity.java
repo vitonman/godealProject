@@ -23,7 +23,7 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.vita.godealsashi.CustomClasses.CustomUser;
+import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatFragment;
 import com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragment.ColleguesFragment;
 import com.vita.godealsashi.Fragments.DealFragment.DealFragment;

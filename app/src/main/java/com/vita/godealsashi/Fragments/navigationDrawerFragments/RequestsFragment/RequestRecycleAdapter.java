@@ -11,18 +11,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.TransitionOptions;
-import com.bumptech.glide.request.RequestOptions;
 import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.vita.godealsashi.CustomClasses.CustomUser;
+import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.R;
-import com.vita.godealsashi.User.FriendRequest;
-import com.vita.godealsashi.User.UserProfileActivity;
+import com.vita.godealsashi.ParseClasses.FriendRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;

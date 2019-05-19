@@ -21,15 +21,9 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.vita.godealsashi.CustomClasses.CustomUser;
-import com.vita.godealsashi.Fragments.ChatFragment.ChatRecycleAdapter;
+import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.R;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.Writer;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 

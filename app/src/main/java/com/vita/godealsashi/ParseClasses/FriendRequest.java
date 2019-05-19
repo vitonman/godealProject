@@ -1,16 +1,10 @@
-package com.vita.godealsashi.User;
+package com.vita.godealsashi.ParseClasses;
 
 import com.parse.ParseClassName;
-import com.parse.ParseFile;
 import com.parse.ParseObject;
-import com.parse.ParseRelation;
 import com.parse.ParseUser;
-import com.vita.godealsashi.CustomClasses.CustomUser;
 
 import org.json.JSONArray;
-
-import java.io.File;
-import java.util.ArrayList;
 
 
 @ParseClassName("FriendRequest")

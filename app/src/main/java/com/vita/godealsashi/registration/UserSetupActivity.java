@@ -26,14 +26,12 @@ import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.parse.livequery.ParseLiveQueryClient;
-import com.parse.livequery.SubscriptionHandling;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
-import com.vita.godealsashi.CustomClasses.CustomUser;
+import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.MainActivity;
 import com.vita.godealsashi.R;
-import com.vita.godealsashi.User.FriendRequest;
+import com.vita.godealsashi.ParseClasses.FriendRequest;
 
 import java.io.File;
 

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
-import com.vita.godealsashi.CustomClasses.CustomUser;
+import com.vita.godealsashi.ParseClasses.CustomUser;
 
 import com.vita.godealsashi.R;
 import com.vita.godealsashi.User.UserProfileActivity;

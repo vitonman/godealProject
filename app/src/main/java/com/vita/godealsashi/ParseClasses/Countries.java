@@ -1,4 +1,4 @@
-package com.vita.godealsashi.Classes;
+package com.vita.godealsashi.ParseClasses;
 
 import java.util.ArrayList;
 import java.util.Collections;
