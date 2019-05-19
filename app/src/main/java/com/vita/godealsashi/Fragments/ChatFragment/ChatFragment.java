@@ -109,6 +109,8 @@ public class ChatFragment extends Fragment {
 
 
 
+
+
         } else {
             // show the signup or login screen
             Toast.makeText(this.getActivity(), "Logging out", Toast.LENGTH_SHORT).show();

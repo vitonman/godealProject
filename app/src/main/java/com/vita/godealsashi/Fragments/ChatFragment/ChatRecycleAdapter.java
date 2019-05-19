@@ -2,6 +2,7 @@ package com.vita.godealsashi.Fragments.ChatFragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.vita.godealsashi.CustomClasses.CustomUser;
 import com.vita.godealsashi.R;
 import com.vita.godealsashi.User.UserProfileActivity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -65,12 +67,16 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
 
         final String objectId = userList.get(i).getObjectId();
 
+
+
         viewHolder.user_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent commentIntent = new Intent(context, UserProfileActivity.class);
+
+                commentIntent.putExtra("PARSE_OBJECT_EXTRA", owner);
+
                 commentIntent.putExtra("objectId", objectId); // NEEED
-                commentIntent.putExtra("owner", owner);
                 context.startActivity(commentIntent);
             }
         });

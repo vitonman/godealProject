@@ -11,11 +11,12 @@ import com.parse.ParseUser;
 import org.json.JSONArray;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
 @ParseClassName("CustomUser")
-public class CustomUser extends ParseObject {
+public class CustomUser extends ParseObject implements Serializable {
 
 
     public CustomUser(){
