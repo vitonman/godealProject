@@ -7,14 +7,14 @@ import com.parse.ParseUser;
 
 import org.json.JSONArray;
 
-@ParseClassName("Invite")
-public class Invite extends ParseObject {
+@ParseClassName("FriendList")
+public class FriendList extends ParseObject {
 
-    public Invite(){
+    public FriendList(){
         super();
     }
 
-    public Invite(String body) {
+    public FriendList(String body) {
         super();
     }
 
@@ -40,16 +40,15 @@ public class Invite extends ParseObject {
         put("owner", value);
     }
 
-    public boolean getAccept(){
+    public void setFriendlist(JSONArray value){
 
-        return getBoolean("accept");
+        put("friendlist", value);
 
     }
 
-    public void setAccept(boolean value){
+    public JSONArray getFriendlist(){
 
-        put("accept", value);
-
+        return getJSONArray("friendlist");
     }
 
 }

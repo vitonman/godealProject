@@ -41,7 +41,6 @@ public class RequestFragment extends Fragment {
     private RequestRecycleAdapter requestRecycleAdapter;
 
     private List<CustomUser> user_list;
-    private List<String> recived_list;
 
     private TextView user_name_textview;
 
@@ -63,11 +62,6 @@ public class RequestFragment extends Fragment {
 
         View v =  inflater.inflate(R.layout.fragment_request, container, false);
 
-     /*   progressBar = v.findViewById(R.id.progressBar2);
-        progressBar.setVisibility(View.INVISIBLE);*/
-
-        recived_list = new ArrayList<>();
-
         user_list = new ArrayList<>();
         user_list_view = v.findViewById(R.id.request_user_list);
 
@@ -82,13 +76,11 @@ public class RequestFragment extends Fragment {
         final ParseUser currentUser = ParseUser.getCurrentUser();
 
         if (currentUser != null) {
-            //Toast.makeText(getActivity(), "Success fragment", Toast.LENGTH_SHORT).show();
 
             ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
             ParseQuery<Invite> parseQuery = ParseQuery.getQuery(Invite.class);
             parseQuery.whereEqualTo("target", currentUser);
             SubscriptionHandling<Invite> subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
-
 
             subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<Invite>() {
                 @Override
@@ -97,10 +89,9 @@ public class RequestFragment extends Fragment {
                     handler.post(new Runnable() {
                         public void run() {
 
-                            recived_list.clear();
-                            user_list.clear();
+                           /* user_list.clear();
 
-                            checkForRecivedInvites(currentUser);
+                            checkForRecivedInvites(currentUser);*/
 
                             Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
 
@@ -111,12 +102,7 @@ public class RequestFragment extends Fragment {
             });
 
 
-
-
-
-            recived_list.clear();
             user_list.clear();
-
             checkForRecivedInvites(currentUser);
 
             user_list_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -135,17 +121,9 @@ public class RequestFragment extends Fragment {
                 }
             });
 
-            //TODO: CHECK IF PERSON HAVE SENDED TO YOU INVITE checkForInvites();
-
-
-
-            //need to sort users where objectId =
-
 
         }
 
-
-        // Inflate the layout for this fragment
         return v;
     }
 
@@ -164,12 +142,12 @@ public class RequestFragment extends Fragment {
                     user_list.add(object);
 
                     requestRecycleAdapter.notifyDataSetChanged();
-
                 } else {
 
                     Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
 
                 }
+
 
             }
         });

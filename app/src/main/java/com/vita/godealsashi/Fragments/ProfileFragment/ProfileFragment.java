@@ -53,7 +53,7 @@ public class ProfileFragment extends Fragment {
 
         ParseUser currentUser = ParseUser.getCurrentUser();
 
-        profileImage = v.findViewById(R.id.user_imageView);
+        profileImage = v.findViewById(R.id.user_image_request);
 
         Glide.with(mContext)
                 .load(R.mipmap.ic_person)

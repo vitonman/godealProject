@@ -1,9 +1,9 @@
 package com.vita.godealsashi.Fragments.navigationDrawerFragments.RequestsFragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,16 +11,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.parse.GetCallback;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.vita.godealsashi.ParseClasses.CustomUser;
+import com.vita.godealsashi.ParseClasses.FriendList;
 import com.vita.godealsashi.ParseClasses.Invite;
 import com.vita.godealsashi.R;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.List;
 
@@ -62,18 +65,22 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
         String name = userList.get(i).getName();
         viewHolder.setUserName(name);
 
+        String image = userList.get(i).getImage().getUrl();
+
+        viewHolder.setUserImage(image);
+
         //add to friends
 
         //---------------------------------------------------
         final ParseUser whoSendYo = userList.get(i).getOwner();
+        final String whoSendYouId = userList.get(i).getObjectId();
 
-        ParseUser current_user = ParseUser.getCurrentUser();
+
+        final ParseUser current_user = ParseUser.getCurrentUser();
 
         //----------------------------------------------------
 
-        final ParseQuery<Invite> query = ParseQuery.getQuery(Invite.class);
-        query.whereEqualTo("target", current_user);
-        query.whereEqualTo("owner", whoSendYo);
+
 
 
 
@@ -81,34 +88,53 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
             @Override
             public void onClick(View v) {
 
-                if(button_set == 0){
+                final ParseQuery<FriendList> query = ParseQuery.getQuery(FriendList.class);
+                query.whereEqualTo("target", current_user);
+                query.whereEqualTo("owner", current_user);
 
-                    query.getFirstInBackground(new GetCallback<Invite>() {
-                        @Override
-                        public void done(Invite object, ParseException e) {
 
-                            object.setAccept(true);
-                            object.saveInBackground();
+                query.findInBackground(new FindCallback<FriendList>() {
+                    @Override
+                    public void done(List<FriendList> objects, ParseException e) {
+
+                        if (e == null){
+
+                            if(objects.size()<1){
+
+                                Toast.makeText(context, "No data there", Toast.LENGTH_SHORT).show();
+
+                                FriendList add_friend = new FriendList();
+
+                                JSONArray friendList = new JSONArray();
+                                friendList.put(whoSendYouId);
+
+                                add_friend.setOwner(current_user);
+                                add_friend.setFriendlist(friendList);
+                                add_friend.saveInBackground();
+
+
+                            } else {
+
+                                Toast.makeText(context, "There is data!", Toast.LENGTH_SHORT).show();
+
+                                // addNewIdForFriendList(ParseUser current_user);
+
+                            }
+
+                        } else {
+
+                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
 
                         }
-                    });
 
-                    button_set = 1;
-                } else {
 
-                    query.getFirstInBackground(new GetCallback<Invite>() {
-                        @Override
-                        public void done(Invite object, ParseException e) {
+                    }
 
-                            object.setAccept(false);
-                            object.saveInBackground();
+                });
 
-                        }
-                    });
 
-                    button_set = 0;
 
-                }
+
 
 
 
@@ -140,10 +166,7 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
             super(itemView);
             mView = itemView;
 
-
-
         }
-
 
 
         public void setUserName(String name){
@@ -152,6 +175,16 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
             user_name_text.setText(name);
 
 
+        }
+
+        public void setUserImage(String img_url){
+
+            user_image = mView.findViewById(R.id.user_image_request);
+
+            RequestOptions placeholderOption = new RequestOptions();
+            placeholderOption.placeholder(R.mipmap.ic_person);
+
+            Glide.with(context).applyDefaultRequestOptions(placeholderOption).load(img_url).into(user_image);
         }
 
     }

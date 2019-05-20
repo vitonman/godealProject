@@ -2,6 +2,7 @@ package com.vita.godealsashi.User;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,6 +39,7 @@ public class UserProfileActivity extends AppCompatActivity{
     private TextView user_fullnameView;
     private CircleImageView user_CircleImage;
     private int mCurrent_state;
+    private long mLastClickTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,20 +69,30 @@ public class UserProfileActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
 
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 1000){
+
+                    return;
+
+                }
+
                 if(mCurrent_state == 0){
 
+
+                    mLastClickTime = SystemClock.elapsedRealtime();
                     createInvite(current_user, target_user);
 
-                    mCurrent_state = 1;
                     request_friend_image.setImageResource(R.drawable.ic_request_red_24dp);
+                    mCurrent_state = 1;
 
 
-
-                } else if(mCurrent_state == 1){
+                }
+                else if (mCurrent_state == 1){
 
                     deleteInvite(current_user, target_user);
+
                     mCurrent_state = 0;
                     request_friend_image.setImageResource(R.drawable.ic_action_deal);
+
                     //delete request
 
                 }
@@ -121,30 +133,29 @@ public class UserProfileActivity extends AppCompatActivity{
             public void done(List<Invite> objects, ParseException e) {
 
 
-                if(objects.size() > 0){
+                if( e == null ){
 
-                  for(Invite object: objects){
+                    for(Invite object: objects){
 
-                      object.deleteInBackground();
+                        object.deleteInBackground();
 
-                  }
-
-                } else {
+                    }
 
                     Invite newInvite = new Invite();
                     newInvite.setOwner(current_user);
                     newInvite.setTarget(target_user);
-                    newInvite.setOwneruserdata(current_user);
                     newInvite.setAccept(false);
-                    newInvite.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            Toast.makeText(UserProfileActivity.this, "Sended", Toast.LENGTH_SHORT).show();
-                        }
 
-                    });
+                    newInvite.saveInBackground();
+
+
+
+                } else {
+
+                    Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 
                 }
+
 
             }
         });
@@ -167,7 +178,9 @@ public class UserProfileActivity extends AppCompatActivity{
 
                     object.deleteInBackground();
 
+
                 }
+
 
             }
         });
@@ -186,8 +199,8 @@ public class UserProfileActivity extends AppCompatActivity{
 
                 if(e == null){
 
-                    request_friend_image.setImageResource(R.drawable.ic_request_red_24dp);
                     mCurrent_state = 1;
+                    request_friend_image.setImageResource(R.drawable.ic_request_red_24dp);
 
                 } else {
 
@@ -214,7 +227,6 @@ public class UserProfileActivity extends AppCompatActivity{
                     String name = object.getName();
                     int age = object.getAge();
                     String lastname = object.getLastname();
-                    ParseUser parseUser = object.getOwner();
                     String Objectid = object.getObjectId();
 
                     user_fullnameView.setText(name + " " + lastname);

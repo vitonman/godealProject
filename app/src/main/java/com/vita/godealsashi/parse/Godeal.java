@@ -7,6 +7,7 @@ import com.parse.ParseObject;
 
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.Fragments.SearchFragment.WorkPost;
+import com.vita.godealsashi.ParseClasses.FriendList;
 import com.vita.godealsashi.ParseClasses.Invite;
 
 import okhttp3.OkHttpClient;
@@ -36,6 +37,7 @@ public class Godeal extends Application {
         ParseObject.registerSubclass(CustomUser.class);
         ParseObject.registerSubclass(WorkPost.class);
         ParseObject.registerSubclass(Invite.class);
+        ParseObject.registerSubclass(FriendList.class);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("e9qhz1lugzfL1PySRkB5dpyOTUBrEBAQPKcKRMMQ")

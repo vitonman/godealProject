@@ -117,7 +117,7 @@ public class ColleguesRecycleAdapter extends RecyclerView.Adapter<ColleguesRecyc
 
         public void setUserImage(String img_url){
 
-            user_image = mView.findViewById(R.id.user_imageView);
+            user_image = mView.findViewById(R.id.user_image_request);
 
             RequestOptions placeholderOption = new RequestOptions();
             placeholderOption.placeholder(R.mipmap.ic_person);

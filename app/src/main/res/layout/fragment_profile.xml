@@ -46,7 +46,7 @@
 
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/user_imageView"
+                android:id="@+id/user_image_request"
                 android:layout_width="110dp"
                 android:layout_height="110dp"
                 android:layout_marginStart="16dp"
@@ -64,7 +64,7 @@
                 android:text="Vitali Maksimov"
                 android:textAlignment="viewStart"
                 android:textSize="24sp"
-                app:layout_constraintStart_toEndOf="@+id/user_imageView"
+                app:layout_constraintStart_toEndOf="@+id/user_image_request"
                 app:layout_constraintTop_toTopOf="parent"
                 android:autoSizeTextType="uniform"  />
 
@@ -75,7 +75,7 @@
                 android:layout_marginStart="28dp"
                 android:layout_marginTop="8dp"
                 android:text="Location"
-                app:layout_constraintStart_toEndOf="@+id/user_imageView"
+                app:layout_constraintStart_toEndOf="@+id/user_image_request"
                 app:layout_constraintTop_toBottomOf="@+id/user_nameView" />
 
             <TextView
@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="28dp"
                 android:text="Age: 22"
-                app:layout_constraintStart_toEndOf="@+id/user_imageView"
+                app:layout_constraintStart_toEndOf="@+id/user_image_request"
                 app:layout_constraintTop_toBottomOf="@+id/user_locationView" />
 
             <TextView
@@ -95,7 +95,7 @@
                 android:layout_marginTop="24dp"
                 android:shadowColor="@color/colorAccent"
                 android:text="I am a good working who understand all about building"
-                app:layout_constraintStart_toEndOf="@+id/user_imageView"
+                app:layout_constraintStart_toEndOf="@+id/user_image_request"
                 app:layout_constraintTop_toBottomOf="@+id/age_textView" />
 
             >
@@ -135,7 +135,7 @@
                 android:text="Free for 5 hours"
                 android:textAlignment="center"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/user_imageView" />
+                app:layout_constraintTop_toBottomOf="@+id/user_image_request" />
 
 
 
