@@ -40,15 +40,16 @@ public class FriendList extends ParseObject {
         put("owner", value);
     }
 
-    public void setFriendlist(JSONArray value){
+    public void setFriend(String value){
 
-        put("friendlist", value);
+        put("friendid", value);
 
     }
 
-    public JSONArray getFriendlist(){
+    public String getFriend(){
 
-        return getJSONArray("friendlist");
+        return getString("friendid");
+
     }
 
 }

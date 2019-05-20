@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -81,58 +82,34 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
         //----------------------------------------------------
 
 
-
-
-
         user_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 final ParseQuery<FriendList> query = ParseQuery.getQuery(FriendList.class);
-                query.whereEqualTo("target", current_user);
                 query.whereEqualTo("owner", current_user);
+                query.whereEqualTo("friendid", whoSendYouId);
 
-
-                query.findInBackground(new FindCallback<FriendList>() {
+                query.getFirstInBackground(new GetCallback<FriendList>() {
                     @Override
-                    public void done(List<FriendList> objects, ParseException e) {
+                    public void done(FriendList object, ParseException e) {
 
-                        if (e == null){
+                        if(e == null){
 
-                            if(objects.size()<1){
-
-                                Toast.makeText(context, "No data there", Toast.LENGTH_SHORT).show();
-
-                                FriendList add_friend = new FriendList();
-
-                                JSONArray friendList = new JSONArray();
-                                friendList.put(whoSendYouId);
-
-                                add_friend.setOwner(current_user);
-                                add_friend.setFriendlist(friendList);
-                                add_friend.saveInBackground();
-
-
-                            } else {
-
-                                Toast.makeText(context, "There is data!", Toast.LENGTH_SHORT).show();
-
-                                // addNewIdForFriendList(ParseUser current_user);
-
-                            }
+                            Toast.makeText(context, "Already", Toast.LENGTH_SHORT).show();
 
                         } else {
 
-                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Added to friendlist", Toast.LENGTH_SHORT).show();
+                            FriendList friend = new FriendList();
+                            friend.setOwner(current_user);
+                            friend.setFriend(whoSendYouId);
+                            friend.saveInBackground();
 
                         }
 
-
                     }
-
                 });
-
-
 
 
 

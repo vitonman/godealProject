@@ -89,6 +89,8 @@ public class RequestFragment extends Fragment {
                     handler.post(new Runnable() {
                         public void run() {
 
+                            //DO SOME UPDATE HERE
+
                            /* user_list.clear();
 
                             checkForRecivedInvites(currentUser);*/
