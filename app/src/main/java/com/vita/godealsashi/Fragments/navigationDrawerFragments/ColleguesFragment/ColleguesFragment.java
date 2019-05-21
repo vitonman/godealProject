@@ -35,7 +35,6 @@ public class ColleguesFragment extends Fragment {
     private ColleguesRecycleAdapter colleguesRecycleAdapter;
 
     private List<CustomUser> user_list;
-
     private TextView user_name_textview;
 
     public Context context;
@@ -137,6 +136,7 @@ public class ColleguesFragment extends Fragment {
         query.findInBackground(new FindCallback<FriendList>() {
             @Override
             public void done(List<FriendList> objects, ParseException e) {
+
 
                 for (FriendList object: objects){
 
