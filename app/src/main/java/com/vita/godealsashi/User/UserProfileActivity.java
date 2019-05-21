@@ -46,11 +46,11 @@ public class UserProfileActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-        ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
         Intent intent = getIntent();
 
-        final ParseUser target_user = intent.getParcelableExtra("PARSE_OBJECT_EXTRA");
+        final ParseUser target_user = intent.getParcelableExtra("ParseObjectOwner");
         final String ownerUser = intent.getStringExtra("objectId");
+        final Boolean isFriend = intent.getBooleanExtra("IsFriend", false);
         final ParseUser current_user = ParseUser.getCurrentUser();
 
 
@@ -62,43 +62,51 @@ public class UserProfileActivity extends AppCompatActivity{
                 .load(R.mipmap.ic_person)
                 .into(user_CircleImage);
 
+        if(isFriend){
 
-        mCurrent_state = 0;
+            request_friend_image.setVisibility(View.INVISIBLE);
 
-        request_friend_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        } else {
 
-                if (SystemClock.elapsedRealtime() - mLastClickTime < 1000){
+            mCurrent_state = 0;
 
-                    return;
+            request_friend_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                }
+                    if (SystemClock.elapsedRealtime() - mLastClickTime < 1000){
 
-                if(mCurrent_state == 0){
+                        return;
 
-
+                    }
                     mLastClickTime = SystemClock.elapsedRealtime();
-                    createInvite(current_user, target_user);
 
-                    request_friend_image.setImageResource(R.drawable.ic_request_red_24dp);
-                    mCurrent_state = 1;
+                    if(mCurrent_state == 0){
 
+                        createInvite(current_user, target_user);
+
+                        request_friend_image.setImageResource(R.drawable.ic_request_red_24dp);
+                        mCurrent_state = 1;
+
+
+                    }
+                    else if (mCurrent_state == 1){
+
+                        deleteInvite(current_user, target_user);
+
+                        mCurrent_state = 0;
+                        request_friend_image.setImageResource(R.drawable.ic_action_deal);
+
+                        //delete request
+
+                    }
 
                 }
-                else if (mCurrent_state == 1){
+            });
 
-                    deleteInvite(current_user, target_user);
+        }
 
-                    mCurrent_state = 0;
-                    request_friend_image.setImageResource(R.drawable.ic_action_deal);
 
-                    //delete request
-
-                }
-
-            }
-        });
 
         getUserData(ownerUser);
         getCheckInvite(current_user, target_user);
@@ -122,43 +130,36 @@ public class UserProfileActivity extends AppCompatActivity{
 
     private void createInvite(final ParseUser current_user, final ParseUser target_user){
 
-
         ParseQuery<Invite> queryExist = ParseQuery.getQuery(Invite.class);
 
-        queryExist.whereNotEqualTo("owner", current_user);
-        queryExist.whereNotEqualTo("target", target_user);
+        queryExist.whereEqualTo("owner", current_user);
+        queryExist.whereEqualTo("target", target_user);
 
-        queryExist.findInBackground(new FindCallback<Invite>() {
-            @Override
-            public void done(List<Invite> objects, ParseException e) {
+        queryExist.getFirstInBackground(new GetCallback<Invite>() {
+           @Override
+           public void done(Invite object, ParseException e) {
 
-
-                if( e == null ){
-
-                    for(Invite object: objects){
-
-                        object.deleteInBackground();
-
-                    }
-
-                    Invite newInvite = new Invite();
-                    newInvite.setOwner(current_user);
-                    newInvite.setTarget(target_user);
-                    newInvite.setAccept(false);
-
-                    newInvite.saveInBackground();
+               if(e == null){
 
 
+                   Toast.makeText(UserProfileActivity.this, "Already", Toast.LENGTH_SHORT).show();
 
-                } else {
-
-                    Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-
-                }
+               } else {
 
 
-            }
-        });
+                   Invite newInvite = new Invite();
+                   newInvite.setOwner(current_user);
+                   newInvite.setTarget(target_user);
+                   newInvite.setAccept(false);
+
+                   newInvite.saveInBackground();
+
+                   Toast.makeText(UserProfileActivity.this, "Added", Toast.LENGTH_SHORT).show();
+
+               }
+
+           }
+       });
 
 
 
@@ -170,21 +171,15 @@ public class UserProfileActivity extends AppCompatActivity{
 
         queryExist.whereEqualTo("owner", current_user);
         queryExist.whereEqualTo("target", target_user);
-        queryExist.findInBackground(new FindCallback<Invite>() {
+
+        queryExist.getFirstInBackground(new GetCallback<Invite>() {
             @Override
-            public void done(List<Invite> objects, ParseException e) {
+            public void done(Invite object, ParseException e) {
 
-                for(Invite object: objects){
-
-                    object.deleteInBackground();
-
-
-                }
-
+                object.deleteInBackground();
 
             }
         });
-
     }
 
     private void getCheckInvite(ParseUser current_user, ParseUser target_user){
@@ -212,6 +207,7 @@ public class UserProfileActivity extends AppCompatActivity{
         });
 
     }
+
 
 
     private void getUserData(final String ownerUser){

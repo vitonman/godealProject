@@ -72,8 +72,8 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
             public void onClick(View v) {
                 Intent commentIntent = new Intent(context, UserProfileActivity.class);
 
-                commentIntent.putExtra("PARSE_OBJECT_EXTRA", owner);
-
+                commentIntent.putExtra("ParseObjectOwner", owner);
+                commentIntent.putExtra("IsFriend", false);
                 commentIntent.putExtra("objectId", objectId); // NEEED
                 context.startActivity(commentIntent);
             }

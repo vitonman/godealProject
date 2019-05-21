@@ -11,7 +11,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.vita.godealsashi.ParseClasses.CustomUser;
+import com.vita.godealsashi.ParseClasses.FriendList;
 import com.vita.godealsashi.R;
 import com.vita.godealsashi.User.UserProfileActivity;
 
@@ -62,6 +67,7 @@ public class ColleguesRecycleAdapter extends RecyclerView.Adapter<ColleguesRecyc
             public void onClick(View v) {
                 Intent commentIntent = new Intent(context, UserProfileActivity.class);
                 commentIntent.putExtra("objectId", objectId);
+                commentIntent.putExtra("IsFriend", true);
                 context.startActivity(commentIntent);
 
             }
@@ -124,6 +130,16 @@ public class ColleguesRecycleAdapter extends RecyclerView.Adapter<ColleguesRecyc
 
             Glide.with(context).applyDefaultRequestOptions(placeholderOption).load(img_url).into(user_image);
         }
+
+    }
+
+    private void checkForFriends(ParseUser current_user){
+
+        ParseQuery<FriendList> query = ParseQuery.getQuery(FriendList.class);
+
+        query.whereEqualTo("target", current_user);
+
+
 
     }
 }

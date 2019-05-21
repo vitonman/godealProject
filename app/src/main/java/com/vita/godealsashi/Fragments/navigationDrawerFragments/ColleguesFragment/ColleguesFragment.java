@@ -20,6 +20,7 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.vita.godealsashi.ParseClasses.CustomUser;
+import com.vita.godealsashi.ParseClasses.FriendList;
 import com.vita.godealsashi.ParseClasses.Invite;
 import com.vita.godealsashi.R;
 
@@ -59,7 +60,6 @@ public class ColleguesFragment extends Fragment {
         progressBar.setVisibility(View.INVISIBLE);*/
 
 
-
         user_list = new ArrayList<>();
         user_list_view = v.findViewById(R.id.collegues_user_list);
 
@@ -94,7 +94,7 @@ public class ColleguesFragment extends Fragment {
                     }
                 });
 
-                checkForRecivedInvites(currentUser);
+            checkForFriends(currentUser);
 
             }
 
@@ -129,16 +129,16 @@ public class ColleguesFragment extends Fragment {
         });
     }
 
-    private void checkForRecivedInvites(ParseUser current_user){
+    private void checkForFriends(ParseUser current_user){
 
-        ParseQuery<Invite> query = ParseQuery.getQuery(Invite.class);
+        ParseQuery<FriendList> query = ParseQuery.getQuery(FriendList.class);
 
         query.whereEqualTo("target", current_user);
-        query.findInBackground(new FindCallback<Invite>() {
+        query.findInBackground(new FindCallback<FriendList>() {
             @Override
-            public void done(List<Invite> objects, ParseException e) {
+            public void done(List<FriendList> objects, ParseException e) {
 
-                for (Invite object: objects){
+                for (FriendList object: objects){
 
                     getFriendList(object.getOwner());
 

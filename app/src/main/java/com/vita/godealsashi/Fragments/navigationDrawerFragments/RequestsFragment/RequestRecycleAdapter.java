@@ -2,6 +2,7 @@ package com.vita.godealsashi.Fragments.navigationDrawerFragments.RequestsFragmen
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.ParseClasses.FriendList;
 import com.vita.godealsashi.ParseClasses.Invite;
 import com.vita.godealsashi.R;
+import com.vita.godealsashi.User.UserProfileActivity;
 
 import org.json.JSONArray;
 
@@ -70,12 +72,28 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
 
         viewHolder.setUserImage(image);
 
+        final ParseUser owner = userList.get(i).getOwner();
+
+        final String objectId = userList.get(i).getObjectId();
+
+        viewHolder.user_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent commentIntent = new Intent(context, UserProfileActivity.class);
+
+                commentIntent.putExtra("ParseObjectOwner", owner);
+                commentIntent.putExtra("objectId", objectId); // NEEED
+                commentIntent.putExtra("IsFriend",false);
+                context.startActivity(commentIntent);
+
+            }
+        });
+
         //add to friends
 
         //---------------------------------------------------
         final ParseUser whoSendYo = userList.get(i).getOwner();
-        final String whoSendYouId = userList.get(i).getObjectId();
-
 
         final ParseUser current_user = ParseUser.getCurrentUser();
 
@@ -86,11 +104,11 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
             @Override
             public void onClick(View v) {
 
-                final ParseQuery<FriendList> query = ParseQuery.getQuery(FriendList.class);
-                query.whereEqualTo("owner", current_user);
-                query.whereEqualTo("friendid", whoSendYouId);
+                final ParseQuery<FriendList> queryFriend = ParseQuery.getQuery(FriendList.class);
+                queryFriend.whereEqualTo("owner", current_user);
+                queryFriend.whereEqualTo("target", whoSendYo);
 
-                query.getFirstInBackground(new GetCallback<FriendList>() {
+                queryFriend.getFirstInBackground(new GetCallback<FriendList>() {
                     @Override
                     public void done(FriendList object, ParseException e) {
 
@@ -103,8 +121,25 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
                             Toast.makeText(context, "Added to friendlist", Toast.LENGTH_SHORT).show();
                             FriendList friend = new FriendList();
                             friend.setOwner(current_user);
-                            friend.setFriend(whoSendYouId);
+                            friend.setTarget(whoSendYo);
                             friend.saveInBackground();
+
+                            FriendList target_friend = new FriendList();
+                            target_friend.setOwner(whoSendYo);
+                            target_friend.setTarget(current_user);
+                            target_friend.saveInBackground();
+
+                            final ParseQuery<Invite> queryInvite = ParseQuery.getQuery(Invite.class);
+                            queryInvite.whereEqualTo("owner", whoSendYo);
+                            queryInvite.whereEqualTo("target", current_user);
+                            queryInvite.getFirstInBackground(new GetCallback<Invite>() {
+                                @Override
+                                public void done(Invite object, ParseException e) {
+
+                                    object.deleteInBackground();
+
+                                }
+                            });
 
                         }
 
