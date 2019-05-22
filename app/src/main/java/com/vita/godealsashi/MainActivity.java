@@ -196,6 +196,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             sendToLogIn();
         }
 
+
+        //TODO: Maybe i can do here a query for user for better bacgground and non call after self data?
     }
 
 
