@@ -60,7 +60,7 @@ public class UserProfileActivity extends AppCompatActivity{
 
         Gson gson = new Gson();
         String json = mPrefs.getString("TestObject", "");
-        CustomUser obj = gson.fromJson(json, MainActivity.class);
+        CustomUser obj = gson.fromJson(json, CustomUser .class);
 
         Toast.makeText(UserProfileActivity.this, obj.getName(), Toast.LENGTH_SHORT).show();
 

@@ -367,10 +367,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     String city = object.getCity();
                     String objectId = object.getObjectId();
 
+                    CustomUser ovjecto = new CustomUser();
+                    ovjecto = object;
+
 
                     SharedPreferences.Editor prefEditor = mPrefs.edit();
                     Gson gson = new Gson();
-                    String json = gson.toJson(object);
+                    String json = gson.toJson(ovjecto);
                     prefEditor.putString("TestObject", json);
                     prefEditor.commit();
 
