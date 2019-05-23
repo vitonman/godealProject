@@ -1,9 +1,14 @@
 package com.vita.godealsashi;
 
 import android.animation.Animator;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -15,18 +20,19 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.telephony.gsm.GsmCellLocation;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.gson.Gson;
 import com.parse.GetCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.livequery.LiveQueryException;
 import com.parse.livequery.ParseLiveQueryClient;
 import com.parse.livequery.SubscriptionHandling;
 import com.vita.godealsashi.ParseClasses.CustomUser;
@@ -38,10 +44,8 @@ import com.vita.godealsashi.Fragments.SearchFragment.SearchFragment;
 import com.vita.godealsashi.Fragments.navigationDrawerFragments.RequestsFragment.RequestFragment;
 import com.vita.godealsashi.Login.LoginActivity;
 import com.vita.godealsashi.ParseClasses.Invite;
+import com.vita.godealsashi.User.UserProfileActivity;
 import com.vita.godealsashi.registration.UserSetupActivity;
-
-
-import org.reactivestreams.Subscription;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -52,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private LottieAnimationView loginSucess_anim;
 
-
+    private CustomUser userData;
 
     ChatFragment chatFragment;
     DealFragment dealFragment;
@@ -63,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ColleguesFragment collegueFragment;
     RequestFragment requestFragment;
 
-
+    SharedPreferences  mPrefs;
     NavigationView navigationView;
     DrawerLayout drawerLayout;
 
@@ -74,7 +78,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //activity_main or navigation_drawer
         setContentView(R.layout.navigation_drawer);
 
+        mPrefs= getPreferences(MODE_PRIVATE);
+
         ParseUser currentUser = ParseUser.getCurrentUser();
+
+        getUserData(currentUser);
+
+
 
 
         ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
@@ -338,6 +348,61 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
+
+    }
+
+    private void getUserData(ParseUser currentUser){
+
+        final ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
+        queryExist.whereEqualTo("owner", currentUser);
+        queryExist.getFirstInBackground(new GetCallback<CustomUser>() {
+            @SuppressLint("CheckResult")
+            @Override
+            public void done(CustomUser object, ParseException e) {
+
+                if(e == null){
+                    String name = object.getName();
+                    int age = object.getAge();
+                    String lastname = object.getLastname();
+                    String city = object.getCity();
+                    String objectId = object.getObjectId();
+
+
+                    SharedPreferences.Editor prefEditor = mPrefs.edit();
+                    Gson gson = new Gson();
+                    String json = gson.toJson(object);
+                    prefEditor.putString("TestObject", json);
+                    prefEditor.commit();
+
+
+
+                  /*  SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                    SharedPreferences.Editor editor = prefs.edit();
+                    editor.("string_id", InputString); //InputString: from the EditText
+                    editor.commit();
+*/
+                /*    final ParseUser target_user = intent.getParcelableExtra("ParseObjectOwner");
+
+                    Intent commentIntent = new Intent(MainActivity.this, UserProfileActivity.class);
+                    commentIntent.putExtra("CurrentUserId", owner);
+                    commentIntent.putExtra("IsFriend", false);
+                    commentIntent.putExtra("objectId", objectId); // NEEED
+                    context.startActivity(commentIntent);*/
+
+                    //Toast.makeText(getActivity(), "Data exist", Toast.LENGTH_SHORT).show();
+                    Log.i("Message: ", "Data exist");
+
+                } else {
+
+                    //Toast.makeText(getActivity(), "No data", Toast.LENGTH_SHORT).show();
+                    Log.i("Message: ", "No data exist.");
+
+                }
+
+
+            }
+        });
+
 
     }
 }

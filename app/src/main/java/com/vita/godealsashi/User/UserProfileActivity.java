@@ -2,6 +2,7 @@ package com.vita.godealsashi.User;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -21,6 +23,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.livequery.ParseLiveQueryClient;
 import com.parse.livequery.SubscriptionHandling;
+import com.vita.godealsashi.MainActivity;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.ParseClasses.Invite;
 import com.vita.godealsashi.R;
@@ -35,6 +38,7 @@ public class UserProfileActivity extends AppCompatActivity{
 
 
     private ImageView request_friend_image;
+    SharedPreferences mPrefs;
 
     private TextView user_fullnameView;
     private CircleImageView user_CircleImage;
@@ -46,11 +50,20 @@ public class UserProfileActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
+        mPrefs = getPreferences(MODE_PRIVATE);
+
         Intent intent = getIntent();
 
         final ParseUser target_user = intent.getParcelableExtra("ParseObjectOwner");
         final String ownerUser = intent.getStringExtra("objectId");
         final Boolean isFriend = intent.getBooleanExtra("IsFriend", false);
+
+        Gson gson = new Gson();
+        String json = mPrefs.getString("TestObject", "");
+        CustomUser obj = gson.fromJson(json, MainActivity.class);
+
+        Toast.makeText(UserProfileActivity.this, obj.getName(), Toast.LENGTH_SHORT).show();
+
         final ParseUser current_user = ParseUser.getCurrentUser();
 
 
@@ -199,7 +212,7 @@ public class UserProfileActivity extends AppCompatActivity{
 
                 } else {
 
-                    Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 
                 }
 

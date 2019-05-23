@@ -64,4 +64,8 @@ dependencies {
 
     // Shimmer
     implementation 'com.facebook.shimmer:shimmer:0.4.0'
+
+    //for sharedpreference object send
+    implementation 'com.google.code.gson:gson:2.8.5'
+
 }
