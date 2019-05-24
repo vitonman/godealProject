@@ -67,9 +67,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ColleguesFragment collegueFragment;
     RequestFragment requestFragment;
 
-    SharedPreferences  mPrefs;
+
     NavigationView navigationView;
     DrawerLayout drawerLayout;
+
+    CustomUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,13 +80,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //activity_main or navigation_drawer
         setContentView(R.layout.navigation_drawer);
 
-        mPrefs= getPreferences(MODE_PRIVATE);
+
+
+
 
         ParseUser currentUser = ParseUser.getCurrentUser();
-
-        getUserData(currentUser);
-
-
 
 
         ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
@@ -129,6 +129,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (currentUser != null) {
             // do stuff with the user
             checkForSetup(currentUser);
+
+            user = new CustomUser();
+
+            ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
+            queryExist.whereEqualTo("owner", currentUser);
+            queryExist.getFirstInBackground(new GetCallback<CustomUser>() {
+                @SuppressLint("CheckResult")
+                @Override
+                public void done(CustomUser object, ParseException e) {
+
+                    if(e == null){
+
+                        Log.i("Message: ", "Data exist");
+
+                        user = object;
+
+                    } else {
+
+                        Log.i("Message: ", "No data exist.");
+
+                    }
+
+
+                }
+
+
+            });
 
             Toast.makeText(MainActivity.this, "Hello, " + currentUser.getUsername(), Toast.LENGTH_SHORT).show();
             loginSucess_anim = (LottieAnimationView) findViewById(R.id.loginsucess_anim);
@@ -351,61 +378,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void getUserData(ParseUser currentUser){
-
-        final ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
-        queryExist.whereEqualTo("owner", currentUser);
-        queryExist.getFirstInBackground(new GetCallback<CustomUser>() {
-            @SuppressLint("CheckResult")
-            @Override
-            public void done(CustomUser object, ParseException e) {
-
-                if(e == null){
-                    String name = object.getName();
-                    int age = object.getAge();
-                    String lastname = object.getLastname();
-                    String city = object.getCity();
-                    String objectId = object.getObjectId();
-
-                    CustomUser ovjecto = new CustomUser();
-                    ovjecto = object;
-
-
-                    SharedPreferences.Editor prefEditor = mPrefs.edit();
-                    Gson gson = new Gson();
-                    String json = gson.toJson(ovjecto);
-                    prefEditor.putString("TestObject", json);
-                    prefEditor.commit();
-
-
-
-                  /*  SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.("string_id", InputString); //InputString: from the EditText
-                    editor.commit();
-*/
-                /*    final ParseUser target_user = intent.getParcelableExtra("ParseObjectOwner");
-
-                    Intent commentIntent = new Intent(MainActivity.this, UserProfileActivity.class);
-                    commentIntent.putExtra("CurrentUserId", owner);
-                    commentIntent.putExtra("IsFriend", false);
-                    commentIntent.putExtra("objectId", objectId); // NEEED
-                    context.startActivity(commentIntent);*/
-
-                    //Toast.makeText(getActivity(), "Data exist", Toast.LENGTH_SHORT).show();
-                    Log.i("Message: ", "Data exist");
-
-                } else {
-
-                    //Toast.makeText(getActivity(), "No data", Toast.LENGTH_SHORT).show();
-                    Log.i("Message: ", "No data exist.");
-
-                }
-
-
-            }
-        });
-
-
-    }
 }

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.TransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.parse.FindCallback;
@@ -38,7 +39,7 @@ public class UserProfileActivity extends AppCompatActivity{
 
 
     private ImageView request_friend_image;
-    SharedPreferences mPrefs;
+
 
     private TextView user_fullnameView;
     private CircleImageView user_CircleImage;
@@ -50,7 +51,7 @@ public class UserProfileActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-        mPrefs = getPreferences(MODE_PRIVATE);
+        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
 
         Intent intent = getIntent();
 
@@ -58,11 +59,7 @@ public class UserProfileActivity extends AppCompatActivity{
         final String ownerUser = intent.getStringExtra("objectId");
         final Boolean isFriend = intent.getBooleanExtra("IsFriend", false);
 
-        Gson gson = new Gson();
-        String json = mPrefs.getString("TestObject", "");
-        CustomUser obj = gson.fromJson(json, CustomUser .class);
 
-        Toast.makeText(UserProfileActivity.this, obj.getName(), Toast.LENGTH_SHORT).show();
 
         final ParseUser current_user = ParseUser.getCurrentUser();
 
