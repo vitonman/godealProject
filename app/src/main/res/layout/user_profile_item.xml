@@ -22,7 +22,7 @@
         tools:src="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/user_name"
+        android:id="@+id/user_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -38,7 +38,7 @@
 
         android:text="City: "
         app:layout_constraintStart_toEndOf="@+id/user_image_request"
-        app:layout_constraintTop_toBottomOf="@+id/user_name" />
+        app:layout_constraintTop_toBottomOf="@+id/user_message" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -55,7 +55,7 @@
         android:layout_height="20dp"
         android:layout_marginTop="40dp"
         app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/user_name"
+        app:layout_constraintTop_toBottomOf="@+id/user_message"
         app:srcCompat="@drawable/ic_group_add_black_48dp" />
 
     <TextView
@@ -65,7 +65,7 @@
         android:layout_marginStart="20dp"
         android:text="Abilities: "
         app:layout_constraintStart_toEndOf="@+id/user_city_text"
-        app:layout_constraintTop_toBottomOf="@+id/user_name" />
+        app:layout_constraintTop_toBottomOf="@+id/user_message" />
 
     <TextView
         android:id="@+id/user_age"

@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.parse.FindCallback;
-import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.vita.godealsashi.ParseClasses.CustomUser;
@@ -115,7 +113,7 @@ public class ColleguesRecycleAdapter extends RecyclerView.Adapter<ColleguesRecyc
 
         public void setUserName(String name){
 
-            user_name_text = mView.findViewById(R.id.user_name);
+            user_name_text = mView.findViewById(R.id.user_message);
             user_name_text.setText(name);
 
 

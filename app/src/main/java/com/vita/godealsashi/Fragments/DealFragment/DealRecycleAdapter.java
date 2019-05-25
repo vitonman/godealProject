@@ -113,7 +113,7 @@ public class DealRecycleAdapter extends RecyclerView.Adapter<DealRecycleAdapter.
 
         public void setUserName(String name){
 
-            user_name_text = mView.findViewById(R.id.user_name);
+            user_name_text = mView.findViewById(R.id.user_message);
             user_name_text.setText(name);
 
 

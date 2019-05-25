@@ -30,7 +30,6 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.MainActivity;
-import com.vita.godealsashi.ParseClasses.Invite;
 import com.vita.godealsashi.R;
 
 import java.io.File;
@@ -62,7 +61,7 @@ public class UserSetupActivity extends AppCompatActivity {
         final ParseUser currentUser = ParseUser.getCurrentUser();
 
         age_text_edit = (EditText) findViewById(R.id.user_age_edit);
-        name_text_edit = (EditText) findViewById(R.id.user_name);
+        name_text_edit = (EditText) findViewById(R.id.user_message);
         lastname_text_edit = (EditText) findViewById(R.id.user_city_text);
 
         setupImage = (CircleImageView) findViewById(R.id.setup_image);

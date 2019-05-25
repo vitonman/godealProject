@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.parse.Parse;
 import com.parse.ParseUser;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatActivity.ChatActivity;
 import com.vita.godealsashi.ParseClasses.CustomUser;
@@ -64,6 +65,8 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
 
         final ParseUser owner = userList.get(i).getOwner();
 
+        final ParseUser current_user = ParseUser.getCurrentUser();
+
         final String objectId = userList.get(i).getObjectId();
 
         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
@@ -72,6 +75,7 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
 
                 Intent toMessages = new Intent(context, ChatActivity.class);
                 toMessages.putExtra("OwnerParseUser", owner);
+                toMessages.putExtra("ReciverUser", current_user);
                 context.startActivity(toMessages);
 
             }
@@ -132,7 +136,7 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
 
         public void setUserName(String name){
 
-            user_name_text = mView.findViewById(R.id.user_name);
+            user_name_text = mView.findViewById(R.id.user_message);
             user_name_text.setText(name);
 
 
