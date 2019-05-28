@@ -75,7 +75,6 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
 
                 Intent toMessages = new Intent(context, ChatActivity.class);
                 toMessages.putExtra("OwnerParseUser", owner);
-                toMessages.putExtra("ReciverUser", current_user);
                 context.startActivity(toMessages);
 
             }

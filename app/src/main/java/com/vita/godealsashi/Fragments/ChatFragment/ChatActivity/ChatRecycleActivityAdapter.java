@@ -20,6 +20,10 @@ public class ChatRecycleActivityAdapter extends RecyclerView.Adapter<ChatRecycle
     private Context context;
     private List<ChatClass> chatMessages;
 
+    public ChatRecycleActivityAdapter(List<ChatClass> chatMessages) {
+        this.chatMessages = chatMessages;
+    }
+
     @NonNull
     @Override
     public ChatRecycleActivityAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -49,7 +53,7 @@ public class ChatRecycleActivityAdapter extends RecyclerView.Adapter<ChatRecycle
 
     @Override
     public int getItemCount() {
-        return 0;
+        return chatMessages.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -7,38 +7,35 @@
     tools:context=".Fragments.ChatFragment.ChatActivity.ChatActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/chat_activity_list"
+        android:id="@+id/chat_recycle_view"
         android:layout_width="match_parent"
-        android:layout_height="531dp"
+        android:layout_height="0dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/text_edit_mesage"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editText"
-        android:layout_width="wrap_content"
-        android:layout_height="45dp"
+        android:id="@+id/text_edit_mesage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/send_text_btn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chat_activity_list"
         tools:text="pisat suda" />
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/send_text_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
-        app:layout_constraintStart_toEndOf="@+id/editText"
-        app:layout_constraintTop_toBottomOf="@+id/chat_activity_list"
         app:srcCompat="@drawable/ic_new_releases_black_24dp" />
 
 </android.support.constraint.ConstraintLayout>

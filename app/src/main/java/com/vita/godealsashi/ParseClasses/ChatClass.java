@@ -7,11 +7,20 @@ import com.parse.ParseUser;
 @ParseClassName("ChatClass")
 public class ChatClass extends ParseObject {
 
+    public ChatClass(){
+        super();
+    }
+
+    public ChatClass(String body) {
+        super();
+    }
+
+
     public ParseUser getReciver() {
         return getParseUser("reciver");
     }
 
-    public void sertReciver(ParseUser value) {
+    public void setReciver(ParseUser value) {
         put("reciver", value);
     }
 
@@ -30,7 +39,7 @@ public class ChatClass extends ParseObject {
     }
 
 
-    public void setString(String value){
+    public void setMessage(String value){
         put("message", value);
     }
 
