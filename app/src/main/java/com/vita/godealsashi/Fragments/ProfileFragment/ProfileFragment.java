@@ -3,7 +3,9 @@ package com.vita.godealsashi.Fragments.ProfileFragment;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -69,7 +71,15 @@ public class ProfileFragment extends Fragment {
 
         if(currentUser != null){
 
-            getUserData(currentUser);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            String name = preferences.getString("Name", "");
+            if(!name.equalsIgnoreCase(""))
+            {
+                name = name + "  Sethi";  /* Edit the value here*/
+                user_fullnameView.setText(name);
+            }
+
+            //getUserData(currentUser);
 
         } else {
 
@@ -113,6 +123,8 @@ public class ProfileFragment extends Fragment {
                     int age = object.getAge();
                     String lastname = object.getLastname();
                     String city = object.getCity();
+
+
 
                     user_ageView.setText("Age: " + Integer.toString(age));
                     user_fullnameView.setText(name + " " + lastname);

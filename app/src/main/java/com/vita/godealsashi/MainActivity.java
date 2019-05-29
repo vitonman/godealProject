@@ -80,8 +80,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //activity_main or navigation_drawer
         setContentView(R.layout.navigation_drawer);
 
-
-
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
 
 
         ParseUser currentUser = ParseUser.getCurrentUser();
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (currentUser != null) {
             // do stuff with the user
-            checkForSetup(currentUser);
+            checkForSetup(currentUser, editor);
 
             user = new CustomUser();
 
@@ -351,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void checkForSetup(ParseUser current_user){
+    public void checkForSetup(ParseUser current_user, final SharedPreferences.Editor editor){
 
         final ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
 
@@ -362,6 +362,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void done(CustomUser object, ParseException e) {
 
                 if(e == null){
+
+                    editor.putString("Name", object.getName());
+                    editor.putString("Image", object.getImage().getUrl());
+                    editor.apply();
 
                     Toast.makeText(MainActivity.this, "Your user is fine.", Toast.LENGTH_SHORT).show();
 

@@ -1,8 +1,10 @@
 package com.vita.godealsashi.Fragments.ChatFragment.ChatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -47,6 +49,15 @@ public class ChatActivity extends AppCompatActivity {
 
         send_message_btn = findViewById(R.id.send_text_btn);
         text_message_to_send = findViewById(R.id.text_edit_mesage);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String name = preferences.getString("Name", "");
+        if(!name.equalsIgnoreCase(""))
+        {
+            name = name + "  Sethi";  /* Edit the value here*/
+        }
+
+        Toast.makeText(ChatActivity.this, name, Toast.LENGTH_SHORT).show();
 
 
         message_list = new ArrayList<>();
@@ -122,7 +133,8 @@ public class ChatActivity extends AppCompatActivity {
     public void getData(ParseUser current_user, ParseUser object_user){
 
         ParseQuery<ChatClass> query = ParseQuery.getQuery(ChatClass.class);
-        //query.whereContains("ability", ability_spinner.getSelectedItem().toString());
+        query.whereEqualTo("sender", current_user);
+        query.whereEqualTo("reciver", object_user);
         query.findInBackground(new FindCallback<ChatClass>() {
             @Override
             public void done(List<ChatClass> results, ParseException e) {
