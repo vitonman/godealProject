@@ -2,6 +2,8 @@ package com.vita.godealsashi.Fragments.ChatFragment.ChatTestClass;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +18,8 @@ import com.vita.godealsashi.Fragments.ChatFragment.ChatActivity.ChatActivity;
 import com.vita.godealsashi.ParseClasses.Message;
 import com.vita.godealsashi.R;
 
+import java.util.ArrayList;
+
 public class ChatActivityTest extends AppCompatActivity {
 
     static final String USER_ID_KEY = "userId";
@@ -24,6 +28,12 @@ public class ChatActivityTest extends AppCompatActivity {
 
     EditText etMessage;
     Button btSend;
+
+    RecyclerView rvChat;
+    ArrayList<Message> mMessages;
+    ChatAdapter mAdapter;
+    // Keep track of initial load to scroll to the bottom of the ListView
+    boolean mFirstLoad;
 
 
     @Override
@@ -52,40 +62,43 @@ public class ChatActivityTest extends AppCompatActivity {
         // Find the text field and button
         etMessage = (EditText) findViewById(R.id.etMessage);
         btSend = (Button) findViewById(R.id.btSend);
+        rvChat = (RecyclerView) findViewById(R.id.rvChat);
+        mMessages = new ArrayList<>();
+        mFirstLoad = true;
+        final String userId = ParseUser.getCurrentUser().getObjectId();
+        mAdapter = new ChatAdapter(ChatActivityTest.this, userId, mMessages);
+        rvChat.setAdapter(mAdapter);
+
+        // associate the LayoutManager with the RecylcerView
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatActivityTest.this);
+        rvChat.setLayoutManager(linearLayoutManager);
+
+
+
         // When send button is clicked, create message object on Parse
         btSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String data = etMessage.getText().toString();
-
                 //ParseObject message = ParseObject.create("Message");
-                //message.put(Message.USER_ID_KEY, ParseUser.getCurrentUser().getObjectId());
+                //message.put(Message.USER_ID_KEY, userId);
                 //message.put(Message.BODY_KEY, data);
-
-                /*** START OF CHANGE **/
-
                 // Using new `Message` Parse-backed model now
                 Message message = new Message();
                 message.setBody(data);
                 message.setUserId(ParseUser.getCurrentUser().getObjectId());
-
-                /*** END OF CHANGE **/
-
                 message.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
-                        if(e == null) {
-                            Toast.makeText(ChatActivityTest.this, "Successfully created message on Parse",
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.e(TAG, "Failed to save message", e);
-                        }
+                        Toast.makeText(ChatActivityTest.this, "Successfully created message on Parse",
+                                Toast.LENGTH_SHORT).show();
+                        refreshMessages();
                     }
-
                 });
                 etMessage.setText(null);
             }
         });
+
     }
 
 
