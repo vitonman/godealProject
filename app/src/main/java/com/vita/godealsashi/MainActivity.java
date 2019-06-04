@@ -363,7 +363,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 if(e == null){
 
-                    editor.putString("Name", object.getName());
+                    editor.putString("current_name", object.getName());
+                    editor.putString("current_lastname", object.getLastname());
+                    editor.putString("current_city", object.getCity());
+                    editor.putString("current_age", Integer.toString(object.getAge()));
+                    editor.putString("current_ownerId", object.getObjectId());
                     editor.putString("Image", object.getImage().getUrl());
                     editor.apply();
 

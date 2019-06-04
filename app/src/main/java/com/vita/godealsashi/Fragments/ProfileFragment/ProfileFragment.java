@@ -72,11 +72,21 @@ public class ProfileFragment extends Fragment {
         if(currentUser != null){
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-            String name = preferences.getString("Name", "");
+            String name = preferences.getString("current_name", "");
+            String lastname = preferences.getString("current_lastname", "");
+            String city = preferences.getString("current_city", "");
+            String age = preferences.getString("current_age", "");
+            String objectId = preferences.getString("current_ownerId", "");
+            String image = preferences.getString("Image", "");
             if(!name.equalsIgnoreCase(""))
             {
-                name = name + "  Sethi";  /* Edit the value here*/
+                name = name + " " + lastname;  /* Edit the value here*/
                 user_fullnameView.setText(name);
+                user_locationView.setText(city);
+                user_ageView.setText(age);
+                Glide.with(mContext)
+                        .load(image)
+                        .into(profileImage);
             }
 
             //getUserData(currentUser);
@@ -109,52 +119,6 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    private void getUserData(ParseUser currentUser){
-
-        final ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
-        queryExist.whereEqualTo("owner", currentUser);
-        queryExist.getFirstInBackground(new GetCallback<CustomUser>() {
-            @SuppressLint("CheckResult")
-            @Override
-            public void done(CustomUser object, ParseException e) {
-
-                if(e == null){
-                    String name = object.getName();
-                    int age = object.getAge();
-                    String lastname = object.getLastname();
-                    String city = object.getCity();
-
-
-
-                    user_ageView.setText("Age: " + Integer.toString(age));
-                    user_fullnameView.setText(name + " " + lastname);
-                    user_locationView.setText("From: " + city);
-
-
-                    RequestOptions placeholderRequest = new RequestOptions();
-                    placeholderRequest.placeholder(R.mipmap.ic_person);
-
-                    Glide.with(mContext)
-                            .setDefaultRequestOptions(placeholderRequest)
-                            .load(object.getImage().getUrl())
-                            .into(profileImage);
-
-                    //Toast.makeText(getActivity(), "Data exist", Toast.LENGTH_SHORT).show();
-                    Log.i("Message: ", "Data exist");
-
-                } else {
-
-                    //Toast.makeText(getActivity(), "No data", Toast.LENGTH_SHORT).show();
-                    Log.i("Message: ", "No data exist.");
-
-                }
-
-
-            }
-        });
-
-
-    }
 
     @Override
     public void onAttach(Context context) {

@@ -11,6 +11,7 @@ import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.Fragments.SearchFragment.WorkPost;
 import com.vita.godealsashi.ParseClasses.FriendList;
 import com.vita.godealsashi.ParseClasses.Invite;
+import com.vita.godealsashi.ParseClasses.Message;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -41,6 +42,7 @@ public class Godeal extends Application {
         ParseObject.registerSubclass(Invite.class);
         ParseObject.registerSubclass(FriendList.class);
         ParseObject.registerSubclass(ChatClass.class);
+        ParseObject.registerSubclass(Message.class);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("e9qhz1lugzfL1PySRkB5dpyOTUBrEBAQPKcKRMMQ")
