@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.parse.Parse;
 import com.parse.ParseUser;
-import com.vita.godealsashi.Fragments.ChatFragment.ChatActivity.ChatActivity;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatTestClass.ChatActivityTest;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 

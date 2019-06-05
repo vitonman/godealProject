@@ -22,7 +22,6 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.vita.godealsashi.Fragments.ChatFragment.ChatActivity.ChatActivity;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatTestClass.ChatActivityTest;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.R;

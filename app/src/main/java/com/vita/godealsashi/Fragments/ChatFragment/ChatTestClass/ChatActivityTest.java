@@ -18,7 +18,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.vita.godealsashi.Fragments.ChatFragment.ChatActivity.ChatActivity;
 import com.vita.godealsashi.ParseClasses.Message;
 import com.vita.godealsashi.R;
 

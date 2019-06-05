@@ -5,8 +5,7 @@ import android.app.Application;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
-import com.vita.godealsashi.Fragments.ChatFragment.ChatActivity.ChatActivity;
-import com.vita.godealsashi.ParseClasses.ChatClass;
+
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.Fragments.SearchFragment.WorkPost;
 import com.vita.godealsashi.ParseClasses.FriendList;
@@ -41,7 +40,6 @@ public class Godeal extends Application {
         ParseObject.registerSubclass(WorkPost.class);
         ParseObject.registerSubclass(Invite.class);
         ParseObject.registerSubclass(FriendList.class);
-        ParseObject.registerSubclass(ChatClass.class);
         ParseObject.registerSubclass(Message.class);
 
         Parse.initialize(new Parse.Configuration.Builder(this)
