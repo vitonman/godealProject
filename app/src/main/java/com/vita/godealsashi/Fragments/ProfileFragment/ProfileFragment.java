@@ -22,6 +22,8 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.vita.godealsashi.Fragments.ChatFragment.ChatActivity.ChatActivity;
+import com.vita.godealsashi.Fragments.ChatFragment.ChatTestClass.ChatActivityTest;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.R;
 import com.vita.godealsashi.registration.UserSetupActivity;
@@ -33,7 +35,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class ProfileFragment extends Fragment {
 
-    private Button user_edit_profile;
+    private Button user_edit_profile, full_button;
 
     private CircleImageView profileImage;
 
@@ -48,7 +50,7 @@ public class ProfileFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
@@ -68,6 +70,7 @@ public class ProfileFragment extends Fragment {
         user_statusView = v.findViewById(R.id.user_statusView);
         user_ageView = v.findViewById(R.id.age_textView);
         user_edit_profile = v.findViewById(R.id.edit_profile);
+        full_button = v.findViewById(R.id.button_full);
 
         if(currentUser != null){
 
@@ -90,6 +93,14 @@ public class ProfileFragment extends Fragment {
             }
 
             //getUserData(currentUser);
+
+            full_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), ChatActivityTest.class);
+                    startActivity(intent);
+                }
+            });
 
         } else {
 

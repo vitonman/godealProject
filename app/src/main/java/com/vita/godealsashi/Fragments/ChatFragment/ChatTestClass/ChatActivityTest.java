@@ -1,5 +1,7 @@
 package com.vita.godealsashi.Fragments.ChatFragment.ChatTestClass;
 
+import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,8 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatActivity.ChatActivity;
@@ -19,12 +23,17 @@ import com.vita.godealsashi.ParseClasses.Message;
 import com.vita.godealsashi.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Queue;
 
 public class ChatActivityTest extends AppCompatActivity {
 
     static final String USER_ID_KEY = "userId";
     static final String BODY_KEY = "body";
     static final String TAG = "Error";
+    static final int MAX_CHAT_MESSAGES_TO_SHOW = 50;
+
 
     EditText etMessage;
     Button btSend;
@@ -35,6 +44,16 @@ public class ChatActivityTest extends AppCompatActivity {
     // Keep track of initial load to scroll to the bottom of the ListView
     boolean mFirstLoad;
 
+    // Create a handler which can run code periodically
+    static final int POLL_INTERVAL = 1000; // milliseconds
+    Handler myHandler = new Handler();  // android.os.Handler
+    Runnable mRefreshMessagesRunnable = new Runnable() {
+        @Override
+        public void run() {
+            refreshMessages();
+            myHandler.postDelayed(this, POLL_INTERVAL);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +61,17 @@ public class ChatActivityTest extends AppCompatActivity {
         setContentView(R.layout.activity_chat_test);
 
 
+
+
+
+
         if(ParseUser.getCurrentUser() != null){
 
             startWithCurrentUser();
 
         }
+        myHandler.postDelayed(mRefreshMessagesRunnable, POLL_INTERVAL);
+
 
     }
 
@@ -71,6 +96,7 @@ public class ChatActivityTest extends AppCompatActivity {
 
         // associate the LayoutManager with the RecylcerView
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatActivityTest.this);
+        linearLayoutManager.setReverseLayout(true);
         rvChat.setLayoutManager(linearLayoutManager);
 
 
@@ -84,9 +110,15 @@ public class ChatActivityTest extends AppCompatActivity {
                 //message.put(Message.USER_ID_KEY, userId);
                 //message.put(Message.BODY_KEY, data);
                 // Using new `Message` Parse-backed model now
+
+
+                Intent intent = getIntent();
+                final String ownerUserId = intent.getStringExtra("targetUserId");
+
                 Message message = new Message();
                 message.setBody(data);
                 message.setUserId(ParseUser.getCurrentUser().getObjectId());
+                message.setTarget(ownerUserId);
                 message.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
@@ -100,6 +132,53 @@ public class ChatActivityTest extends AppCompatActivity {
         });
 
     }
+
+    private void refreshMessages(){
+
+        Intent intent = getIntent();
+        final String ownerUserId = intent.getStringExtra("targetUserId");
+
+        // Construct query to execute
+        ParseQuery<Message> query = ParseQuery.getQuery(Message.class);
+        // Configure limit and sort order
+        query.setLimit(MAX_CHAT_MESSAGES_TO_SHOW);
+
+        // get the latest 50 messages, order will show up newest to oldest of this group
+        query.orderByDescending("createdAt");
+        // Execute query to fetch all messages from Parse asynchronously
+        // This is equivalent to a SELECT query with SQL
+
+
+        //query.whereEqualTo("targetUserId", ParseUser.getCurrentUser().getObjectId());
+
+        String[] users = {ownerUserId, ParseUser.getCurrentUser().getObjectId()};
+        query.whereContainedIn("userId", Arrays.asList(users));
+
+        query.whereContainedIn("targetUserId", Arrays.asList(users));
+
+
+        query.findInBackground(new FindCallback<Message>() {
+            public void done(List<Message> messages, ParseException e) {
+                if (e == null) {
+                    mMessages.clear();
+                    mMessages.addAll(messages);
+                    mAdapter.notifyDataSetChanged(); // update adapter
+                    // Scroll to the bottom of the list on initial load
+                    if (mFirstLoad) {
+                        rvChat.scrollToPosition(0);
+                        mFirstLoad = false;
+                    }
+                } else {
+                    Log.e("message", "Error Loading Messages" + e);
+                }
+            }
+        });
+
+
+    }
+
+
+
 
 
 

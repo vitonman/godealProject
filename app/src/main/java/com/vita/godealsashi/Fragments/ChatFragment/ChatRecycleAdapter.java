@@ -14,6 +14,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.parse.Parse;
 import com.parse.ParseUser;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatActivity.ChatActivity;
+import com.vita.godealsashi.Fragments.ChatFragment.ChatTestClass.ChatActivityTest;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 
 import com.vita.godealsashi.R;
@@ -69,12 +70,16 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
 
         final String objectId = userList.get(i).getObjectId();
 
+        final ParseUser ownerUser = userList.get(i).getOwner();
+
+
+
         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent toMessages = new Intent(context, ChatActivity.class);
-                toMessages.putExtra("OwnerParseUser", owner);
+                Intent toMessages = new Intent(context, ChatActivityTest.class);
+                toMessages.putExtra("targetUserId", ownerUser.getObjectId());
                 context.startActivity(toMessages);
 
             }
