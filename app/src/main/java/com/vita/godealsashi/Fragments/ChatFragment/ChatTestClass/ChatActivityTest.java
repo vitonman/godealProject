@@ -32,7 +32,7 @@ public class ChatActivityTest extends AppCompatActivity {
     static final String USER_ID_KEY = "userId";
     static final String BODY_KEY = "body";
     static final String TAG = "Error";
-    static final int MAX_CHAT_MESSAGES_TO_SHOW = 50;
+    static final int MAX_CHAT_MESSAGES_TO_SHOW = 200;
 
 
     EditText etMessage;
@@ -153,7 +153,6 @@ public class ChatActivityTest extends AppCompatActivity {
 
         String[] users = {ownerUserId, ParseUser.getCurrentUser().getObjectId()};
         query.whereContainedIn("userId", Arrays.asList(users));
-
         query.whereContainedIn("targetUserId", Arrays.asList(users));
 
 
