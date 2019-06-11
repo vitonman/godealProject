@@ -158,7 +158,7 @@ public class UserSetupActivity extends AppCompatActivity {
             });
 
 
-            getUserData(currentUser);
+            getUserData(currentUser.getObjectId());
 
 
         } else {
@@ -172,7 +172,7 @@ public class UserSetupActivity extends AppCompatActivity {
 
 
 
-    private void getUserData(ParseUser currentUser){
+    private void getUserData(String currentUser){
 
         final ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
         queryExist.whereEqualTo("owner", currentUser);

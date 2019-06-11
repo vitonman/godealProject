@@ -86,7 +86,7 @@ public class ProfileFragment extends Fragment {
             String city = preferences.getString("current_city", "");
             String age = preferences.getString("current_age", "");
             String image = preferences.getString("current_image", "");
-            String objectId = preferences.getString("current_ownerId", "");
+
 
             if(!name.equalsIgnoreCase(""))
             {

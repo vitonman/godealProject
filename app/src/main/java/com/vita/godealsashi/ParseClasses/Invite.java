@@ -23,13 +23,6 @@ public class Invite extends ParseObject {
 
     //RAITING SYSTEM INNED
 
-    public ParseUser getTarget() {
-        return getParseUser("target");
-    }
-
-    public void setTarget(ParseUser value) {
-        put("target", value);
-    }
 
     public String getTargetId() {
         return getString("targetId");

@@ -2,6 +2,8 @@ package com.vita.godealsashi.Fragments.navigationDrawerFragments.RequestsFragmen
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,16 +33,15 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
 
     public List<CustomUser> userList;
 
-
-
     public Context context;
 
-    private Button user_button;
+    private Button add_friend_btn;
 
     int button_set;
 
     public RequestRecycleAdapter(List<CustomUser> userList) {
         this.userList = userList;
+
     }
 
     @NonNull
@@ -51,7 +52,7 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
 
         button_set = 0;
 
-        user_button = view.findViewById(R.id.add_friend_btn);
+        add_friend_btn = view.findViewById(R.id.add_friend_btn);
 
 
         return new RequestRecycleAdapter.ViewHolder(view);
@@ -90,19 +91,23 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
         //add to friends
 
         //---------------------------------------------------
-        final String whoSendYo = userList.get(i).getOwner();
+        final String whoSendYo = userList.get(i).getObjectId();
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        final String custom_user_current_id = preferences.getString("current_ownerId", "");
         final ParseUser current_user = ParseUser.getCurrentUser();
 
         //----------------------------------------------------
 
 
-        user_button.setOnClickListener(new View.OnClickListener() {
+        add_friend_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                userList.remove(viewHolder.getLayoutPosition());
+
                 final ParseQuery<FriendList> queryFriend = ParseQuery.getQuery(FriendList.class);
-                queryFriend.whereEqualTo("owner", current_user);
+                queryFriend.whereEqualTo("owner", custom_user_current_id);
                 queryFriend.whereEqualTo("target", whoSendYo);
 
                 queryFriend.getFirstInBackground(new GetCallback<FriendList>() {
@@ -117,23 +122,25 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
 
                             Toast.makeText(context, "Added to friendlist", Toast.LENGTH_SHORT).show();
                             FriendList friend = new FriendList();
-                            friend.setOwner(current_user.getObjectId());
+                            friend.setOwner(custom_user_current_id);
                             friend.setTargetId(whoSendYo);
                             friend.saveInBackground();
 
                             FriendList target_friend = new FriendList();
                             target_friend.setOwner(whoSendYo);
-                            target_friend.setTarget(current_user);
+                            target_friend.setTargetId(custom_user_current_id);
                             target_friend.saveInBackground();
 
                             final ParseQuery<Invite> queryInvite = ParseQuery.getQuery(Invite.class);
                             queryInvite.whereEqualTo("owner", whoSendYo);
-                            queryInvite.whereEqualTo("target", current_user);
+                            queryInvite.whereEqualTo("targetId", custom_user_current_id);
                             queryInvite.getFirstInBackground(new GetCallback<Invite>() {
                                 @Override
                                 public void done(Invite object, ParseException e) {
 
                                     object.deleteInBackground();
+
+
 
                                 }
                             });
@@ -144,7 +151,7 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
                 });
 
 
-
+                RequestRecycleAdapter.this.notifyDataSetChanged();
 
 
             }
@@ -155,7 +162,9 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
 
     @Override
     public int getItemCount() {
+
         return userList.size();
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

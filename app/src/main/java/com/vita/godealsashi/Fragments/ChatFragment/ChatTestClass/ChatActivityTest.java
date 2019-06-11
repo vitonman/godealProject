@@ -60,10 +60,6 @@ public class ChatActivityTest extends AppCompatActivity {
         setContentView(R.layout.activity_chat_test);
 
 
-
-
-
-
         if(ParseUser.getCurrentUser() != null){
 
             startWithCurrentUser();

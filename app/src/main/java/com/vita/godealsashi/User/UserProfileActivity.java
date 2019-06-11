@@ -1,9 +1,11 @@
 package com.vita.godealsashi.User;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,16 +48,17 @@ public class UserProfileActivity extends AppCompatActivity{
     private int mCurrent_state;
     private long mLastClickTime = 0;
 
+    private Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
-
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Intent intent = getIntent();
 
-        final ParseUser target_user = intent.getParcelableExtra("ParseObjectOwner");
+        final String custom_user_current_id = preferences.getString("current_ownerId", "");
         final String ownerUser = intent.getStringExtra("objectId");
         final Boolean isFriend = intent.getBooleanExtra("IsFriend", false);
 
@@ -93,7 +96,7 @@ public class UserProfileActivity extends AppCompatActivity{
 
                     if(mCurrent_state == 0){
 
-                        createInvite(current_user.getObjectId(), ownerUser);
+                        createInvite(custom_user_current_id, ownerUser);
 
                         request_friend_image.setImageResource(R.drawable.ic_request_red_24dp);
                         mCurrent_state = 1;
@@ -102,7 +105,7 @@ public class UserProfileActivity extends AppCompatActivity{
                     }
                     else if (mCurrent_state == 1){
 
-                        //deleteInvite(current_user, target_user);
+                        deleteInvite(custom_user_current_id, ownerUser);
 
                         mCurrent_state = 0;
                         request_friend_image.setImageResource(R.drawable.ic_action_deal);
@@ -119,7 +122,7 @@ public class UserProfileActivity extends AppCompatActivity{
 
 
         getUserData(ownerUser);
-        //getCheckInvite(current_user, target_user);
+        getCheckInvite(current_user.getObjectId(), ownerUser);
 
     }
 
@@ -140,6 +143,10 @@ public class UserProfileActivity extends AppCompatActivity{
 
     private void createInvite(final String current_user, final String targetId){
 
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final String objectId = preferences.getString("current_ownerId", "");
+
         ParseQuery<Invite> queryExist = ParseQuery.getQuery(Invite.class);
 
         queryExist.whereEqualTo("owner", current_user);
@@ -157,7 +164,7 @@ public class UserProfileActivity extends AppCompatActivity{
 
 
                    Invite newInvite = new Invite();
-                   newInvite.setOwner(current_user);
+                   newInvite.setOwner(objectId);
                    newInvite.setTargetId(targetId);
                    newInvite.setAccept(false);
 
@@ -174,7 +181,7 @@ public class UserProfileActivity extends AppCompatActivity{
 
     }
 
-    private void deleteInvite(ParseUser current_user, String targetId){
+    private void deleteInvite(String current_user, String targetId){
 
         ParseQuery<Invite> queryExist = ParseQuery.getQuery(Invite.class);
 
@@ -191,7 +198,7 @@ public class UserProfileActivity extends AppCompatActivity{
         });
     }
 
-    private void getCheckInvite(ParseUser current_user, String targetId){
+    private void getCheckInvite(String current_user, String targetId){
 
         ParseQuery<Invite> queryExist = ParseQuery.getQuery(Invite.class);
         queryExist.whereEqualTo("owner", current_user);

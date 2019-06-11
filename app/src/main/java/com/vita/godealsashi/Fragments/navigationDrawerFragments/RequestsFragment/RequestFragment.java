@@ -1,9 +1,11 @@
 package com.vita.godealsashi.Fragments.navigationDrawerFragments.RequestsFragment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -34,6 +36,8 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.parse.Parse.getApplicationContext;
+
 
 public class RequestFragment extends Fragment {
 
@@ -63,6 +67,9 @@ public class RequestFragment extends Fragment {
 
         View v =  inflater.inflate(R.layout.fragment_request, container, false);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final String custom_user_current_id = preferences.getString("current_ownerId", "");
+
         user_list = new ArrayList<>();
         user_list_view = v.findViewById(R.id.request_user_list);
 
@@ -80,7 +87,7 @@ public class RequestFragment extends Fragment {
 
             ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
             ParseQuery<Invite> parseQuery = ParseQuery.getQuery(Invite.class);
-            parseQuery.whereEqualTo("targetId", currentUser.getObjectId());
+            parseQuery.whereEqualTo("targetId", custom_user_current_id);
             SubscriptionHandling<Invite> subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
 
             subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<Invite>() {
@@ -129,18 +136,18 @@ public class RequestFragment extends Fragment {
 
         }
 
-        getInviteUsersList();
+        getInviteUsersList(custom_user_current_id);
 
         return v;
     }
 
 
-    private void getInviteUsersList(){
+    private void getInviteUsersList(String custom_user_current_id){
 
 
         ParseQuery<Invite> query = ParseQuery.getQuery(Invite.class);
 
-        query.whereEqualTo("targetId", ParseUser.getCurrentUser().getObjectId());
+        query.whereEqualTo("targetId", custom_user_current_id);
 
         query.findInBackground(new FindCallback<Invite>() {
             @Override
@@ -165,13 +172,23 @@ public class RequestFragment extends Fragment {
     private void getUserList(List<String> objectsIds){
 
         ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
-        query.whereContainedIn("owner", objectsIds);
+        query.whereContainedIn("objectId", objectsIds);
 
         query.findInBackground(new FindCallback<CustomUser>() {
             @Override
             public void done(List<CustomUser> objects, ParseException e) {
 
-                user_list.addAll(objects);
+
+                if(e == null){
+
+                    user_list.addAll(objects);
+
+
+
+
+                }
+
+                requestRecycleAdapter.notifyDataSetChanged();
 
             }
         });

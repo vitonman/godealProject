@@ -65,7 +65,8 @@ public class ColleguesFragment extends Fragment {
 
      /*   progressBar = v.findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.INVISIBLE);*/
-
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final String custom_user_current_id = preferences.getString("current_ownerId", "");
 
         user_list = new ArrayList<>();
         user_list_view = v.findViewById(R.id.collegues_user_list);
@@ -101,7 +102,7 @@ public class ColleguesFragment extends Fragment {
                     }
                 });
 
-            checkForFriends(currentUser.getObjectId());
+            checkForFriends(custom_user_current_id);
 
 
 
@@ -115,50 +116,55 @@ public class ColleguesFragment extends Fragment {
     }
 
 
-    private void getFriendList(ParseUser friend){
 
-        ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
+    private void checkForFriends(String custom_user_current_id){
 
-        query.whereEqualTo("owner", friend);
-
-        query.getFirstInBackground(new GetCallback<CustomUser>() {
-            @Override
-            public void done(CustomUser object, ParseException e) {
-
-                if(e == null){
-
-                    user_list.add(object);
-
-                    colleguesRecycleAdapter.notifyDataSetChanged();
-
-                } else {
-
-                    Toast.makeText(getActivity(), "Something wrong", Toast.LENGTH_LONG).show();
-
-                }
-
-            }
-        });
-    }
-    private void checkForFriends(String current_user){
 
         ParseQuery<FriendList> query = ParseQuery.getQuery(FriendList.class);
 
-        query.whereEqualTo("targetId", current_user);
+        query.whereEqualTo("targetId", custom_user_current_id);
+
         query.findInBackground(new FindCallback<FriendList>() {
             @Override
             public void done(List<FriendList> objects, ParseException e) {
 
+                List<String> objectsIds = new ArrayList<>();
 
                 for (FriendList object: objects){
 
-                    //getFriendList(object.getOwner());
+                    objectsIds.add(object.getOwner());
 
                 }
+
+                getFriendList(objectsIds);
 
             }
         });
 
+
+    }
+
+    private void getFriendList(List<String> objectsIds){
+
+        ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
+        query.whereContainedIn("objectId", objectsIds);
+
+        query.findInBackground(new FindCallback<CustomUser>() {
+            @Override
+            public void done(List<CustomUser> objects, ParseException e) {
+
+
+                if(e == null){
+
+                    user_list.addAll(objects);
+
+
+                }
+
+                colleguesRecycleAdapter.notifyDataSetChanged();
+
+            }
+        });
 
     }
 

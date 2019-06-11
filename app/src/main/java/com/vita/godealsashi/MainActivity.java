@@ -259,7 +259,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.log_out:
 
-
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.clear();
 
                 ParseUser.logOut();
                 ParseUser currentUser = ParseUser.getCurrentUser();
@@ -363,13 +365,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 if(e == null){
 
-
                     editor.putString("current_name", object.getName());
                     editor.putString("current_lastname", object.getLastname());
                     editor.putString("current_city", object.getCity());
                     editor.putString("current_age", Integer.toString(object.getAge()));
                     editor.putString("current_ownerId", object.getObjectId());
-                    editor.putString("Image", object.getImage().getUrl());
+                    editor.putString("current_image", object.getImage().getUrl());
 
                     editor.commit();
 
@@ -387,7 +388,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
     }
-
 
     private void getInvites(String current_user){
 
