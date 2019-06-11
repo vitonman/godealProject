@@ -63,13 +63,13 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
         String image = userList.get(i).getImage().getUrl();
         viewHolder.setUserImage(image);
 
-        final ParseUser owner = userList.get(i).getOwner();
+        final String owner = userList.get(i).getOwner();
 
         final ParseUser current_user = ParseUser.getCurrentUser();
 
         final String objectId = userList.get(i).getObjectId();
 
-        final ParseUser ownerUser = userList.get(i).getOwner();
+        final String ownerUserId = userList.get(i).getOwner();
 
 
 
@@ -78,7 +78,7 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
             public void onClick(View v) {
 
                 Intent toMessages = new Intent(context, ChatActivityTest.class);
-                toMessages.putExtra("targetUserId", ownerUser.getObjectId());
+                toMessages.putExtra("targetUserId", ownerUserId);
                 context.startActivity(toMessages);
 
             }

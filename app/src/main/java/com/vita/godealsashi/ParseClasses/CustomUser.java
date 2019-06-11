@@ -45,11 +45,11 @@ public class CustomUser extends ParseObject implements Serializable {
         return getString("name");
     }
 
-    public ParseUser getOwner() {
-        return getParseUser("owner");
+    public String getOwner() {
+        return getString("owner");
     }
 
-    public void setOwner(ParseUser value) {
+    public void setOwner(String value) {
         put("owner", value);
     }
 

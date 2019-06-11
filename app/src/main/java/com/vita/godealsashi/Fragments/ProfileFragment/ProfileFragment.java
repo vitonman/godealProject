@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 
+import com.google.gson.Gson;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -26,6 +27,9 @@ import com.vita.godealsashi.Fragments.ChatFragment.ChatTestClass.ChatActivityTes
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.R;
 import com.vita.godealsashi.registration.UserSetupActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -73,23 +77,39 @@ public class ProfileFragment extends Fragment {
 
         if(currentUser != null){
 
+
+
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
             String name = preferences.getString("current_name", "");
             String lastname = preferences.getString("current_lastname", "");
             String city = preferences.getString("current_city", "");
             String age = preferences.getString("current_age", "");
+            String image = preferences.getString("current_image", "");
             String objectId = preferences.getString("current_ownerId", "");
-            String image = preferences.getString("Image", "");
+
             if(!name.equalsIgnoreCase(""))
             {
                 name = name + " " + lastname;  /* Edit the value here*/
                 user_fullnameView.setText(name);
                 user_locationView.setText(city);
                 user_ageView.setText(age);
+
                 Glide.with(mContext)
                         .load(image)
                         .into(profileImage);
+
+
             }
+
+
+        } else {
+
+
+
+        }
+
+
 
             //getUserData(currentUser);
 
@@ -100,11 +120,6 @@ public class ProfileFragment extends Fragment {
                     startActivity(intent);
                 }
             });
-
-        } else {
-
-            //move to login page
-        }
 
 
 
@@ -125,6 +140,11 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onStart() {
+
+
+
+
+
         super.onStart();
 
     }

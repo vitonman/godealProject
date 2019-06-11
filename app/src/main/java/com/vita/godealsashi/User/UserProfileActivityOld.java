@@ -1,3 +1,4 @@
+/*
 package com.vita.godealsashi.User;
 
 import android.annotation.SuppressLint;
@@ -93,7 +94,7 @@ public class UserProfileActivity extends AppCompatActivity{
 
                     if(mCurrent_state == 0){
 
-                        createInvite(current_user.getObjectId(), ownerUser);
+                        createInvite(current_user, target_user);
 
                         request_friend_image.setImageResource(R.drawable.ic_request_red_24dp);
                         mCurrent_state = 1;
@@ -102,7 +103,7 @@ public class UserProfileActivity extends AppCompatActivity{
                     }
                     else if (mCurrent_state == 1){
 
-                        //deleteInvite(current_user, target_user);
+                        deleteInvite(current_user, target_user);
 
                         mCurrent_state = 0;
                         request_friend_image.setImageResource(R.drawable.ic_action_deal);
@@ -119,7 +120,7 @@ public class UserProfileActivity extends AppCompatActivity{
 
 
         getUserData(ownerUser);
-        //getCheckInvite(current_user, target_user);
+        getCheckInvite(current_user, target_user);
 
     }
 
@@ -138,48 +139,49 @@ public class UserProfileActivity extends AppCompatActivity{
 
     }
 
-    private void createInvite(final String current_user, final String targetId){
+    private void createInvite(final ParseUser current_user, final ParseUser target_user){
 
         ParseQuery<Invite> queryExist = ParseQuery.getQuery(Invite.class);
 
         queryExist.whereEqualTo("owner", current_user);
-        queryExist.whereEqualTo("targetId", targetId);
+        queryExist.whereEqualTo("target", target_user);
 
         queryExist.getFirstInBackground(new GetCallback<Invite>() {
-           @Override
-           public void done(Invite object, ParseException e) {
+            @Override
+            public void done(Invite object, ParseException e) {
 
-               if(e == null){
-
-                   Toast.makeText(UserProfileActivity.this, "Already", Toast.LENGTH_SHORT).show();
-
-               } else {
+                if(e == null){
 
 
-                   Invite newInvite = new Invite();
-                   newInvite.setOwner(current_user);
-                   newInvite.setTargetId(targetId);
-                   newInvite.setAccept(false);
+                    Toast.makeText(UserProfileActivity.this, "Already", Toast.LENGTH_SHORT).show();
 
-                   newInvite.saveInBackground();
+                } else {
 
-                   Toast.makeText(UserProfileActivity.this, "Added", Toast.LENGTH_SHORT).show();
 
-               }
+                    Invite newInvite = new Invite();
+                    newInvite.setOwner(current_user);
+                    newInvite.setTarget(target_user);
+                    newInvite.setAccept(false);
 
-           }
-       });
+                    newInvite.saveInBackground();
+
+                    Toast.makeText(UserProfileActivity.this, "Added", Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        });
 
 
 
     }
 
-    private void deleteInvite(ParseUser current_user, String targetId){
+    private void deleteInvite(ParseUser current_user, ParseUser target_user){
 
         ParseQuery<Invite> queryExist = ParseQuery.getQuery(Invite.class);
 
         queryExist.whereEqualTo("owner", current_user);
-        queryExist.whereEqualTo("targetId", targetId);
+        queryExist.whereEqualTo("target", target_user);
 
         queryExist.getFirstInBackground(new GetCallback<Invite>() {
             @Override
@@ -191,11 +193,11 @@ public class UserProfileActivity extends AppCompatActivity{
         });
     }
 
-    private void getCheckInvite(ParseUser current_user, String targetId){
+    private void getCheckInvite(ParseUser current_user, ParseUser target_user){
 
         ParseQuery<Invite> queryExist = ParseQuery.getQuery(Invite.class);
         queryExist.whereEqualTo("owner", current_user);
-        queryExist.whereEqualTo("target", targetId);
+        queryExist.whereEqualTo("target", target_user);
 
         queryExist.getFirstInBackground(new GetCallback<Invite>() {
             @Override
@@ -203,8 +205,8 @@ public class UserProfileActivity extends AppCompatActivity{
 
                 if(e == null){
 
-                        mCurrent_state = 1;
-                        request_friend_image.setImageResource(R.drawable.ic_request_red_24dp);
+                    mCurrent_state = 1;
+                    request_friend_image.setImageResource(R.drawable.ic_request_red_24dp);
 
                 } else {
 
@@ -247,21 +249,21 @@ public class UserProfileActivity extends AppCompatActivity{
                     //Toast.makeText(getActivity(), "Data exist", Toast.LENGTH_SHORT).show();
                     //Log.d("Message: ", "Data exist");
                     Log.d("Owner: ", name + " " + lastname);
-                   // Toast.makeText(UserProfileActivity.this, name + " " + lastname, Toast.LENGTH_SHORT).show();
+                // Toast.makeText(UserProfileActivity.this, name + " " + lastname, Toast.LENGTH_SHORT).show();
 
-                } else {
+            } else {
 
-                    //Toast.makeText(getActivity(), "No data", Toast.LENGTH_SHORT).show();
-                    Log.d("Message: ", "No data exist.");
-                    Log.d("Owner: ", ownerUser);
-
-                }
-
+                //Toast.makeText(getActivity(), "No data", Toast.LENGTH_SHORT).show();
+                Log.d("Message: ", "No data exist.");
+                Log.d("Owner: ", ownerUser);
 
             }
+
+
+        }
         });
 
     }
 
 
-}
+}*/

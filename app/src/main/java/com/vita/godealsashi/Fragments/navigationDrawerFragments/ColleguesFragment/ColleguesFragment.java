@@ -1,7 +1,9 @@
 package com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragment;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,11 +16,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.vita.godealsashi.MainActivity;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.ParseClasses.FriendList;
 import com.vita.godealsashi.ParseClasses.Invite;
@@ -26,8 +31,11 @@ import com.vita.godealsashi.R;
 
 import org.json.JSONException;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
 
 public class ColleguesFragment extends Fragment {
 
@@ -93,14 +101,19 @@ public class ColleguesFragment extends Fragment {
                     }
                 });
 
-            checkForFriends(currentUser);
+            checkForFriends(currentUser.getObjectId());
+
+
 
             }
+
+
 
 
         // Inflate the layout for this fragment
         return v;
     }
+
 
     private void getFriendList(ParseUser friend){
 
@@ -127,12 +140,11 @@ public class ColleguesFragment extends Fragment {
             }
         });
     }
-
-    private void checkForFriends(ParseUser current_user){
+    private void checkForFriends(String current_user){
 
         ParseQuery<FriendList> query = ParseQuery.getQuery(FriendList.class);
 
-        query.whereEqualTo("target", current_user);
+        query.whereEqualTo("targetId", current_user);
         query.findInBackground(new FindCallback<FriendList>() {
             @Override
             public void done(List<FriendList> objects, ParseException e) {
@@ -140,7 +152,7 @@ public class ColleguesFragment extends Fragment {
 
                 for (FriendList object: objects){
 
-                    getFriendList(object.getOwner());
+                    //getFriendList(object.getOwner());
 
                 }
 

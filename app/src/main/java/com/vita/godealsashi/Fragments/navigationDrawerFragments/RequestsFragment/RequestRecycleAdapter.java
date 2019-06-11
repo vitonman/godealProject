@@ -31,6 +31,8 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
 
     public List<CustomUser> userList;
 
+
+
     public Context context;
 
     private Button user_button;
@@ -67,7 +69,7 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
 
         viewHolder.setUserImage(image);
 
-        final ParseUser owner = userList.get(i).getOwner();
+        final String owner = userList.get(i).getOwner();
 
         final String objectId = userList.get(i).getObjectId();
 
@@ -88,7 +90,7 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
         //add to friends
 
         //---------------------------------------------------
-        final ParseUser whoSendYo = userList.get(i).getOwner();
+        final String whoSendYo = userList.get(i).getOwner();
 
         final ParseUser current_user = ParseUser.getCurrentUser();
 
@@ -115,8 +117,8 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
 
                             Toast.makeText(context, "Added to friendlist", Toast.LENGTH_SHORT).show();
                             FriendList friend = new FriendList();
-                            friend.setOwner(current_user);
-                            friend.setTarget(whoSendYo);
+                            friend.setOwner(current_user.getObjectId());
+                            friend.setTargetId(whoSendYo);
                             friend.saveInBackground();
 
                             FriendList target_friend = new FriendList();

@@ -158,10 +158,7 @@ public class DealFragment extends Fragment {
 
                                         // something went wrong
 
-
                                     }
-
-
 
                                 }
 

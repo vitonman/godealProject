@@ -1,11 +1,13 @@
 package com.vita.godealsashi.parse;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.parse.Parse;
 import com.parse.ParseObject;
 
 
+import com.vita.godealsashi.MainActivity;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.Fragments.SearchFragment.WorkPost;
 import com.vita.godealsashi.ParseClasses.FriendList;
@@ -16,6 +18,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 public class Godeal extends Application {
+
+    Context context;
 
     @Override
     public void onCreate() {
@@ -42,11 +46,14 @@ public class Godeal extends Application {
         ParseObject.registerSubclass(FriendList.class);
         ParseObject.registerSubclass(Message.class);
 
+
+
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("e9qhz1lugzfL1PySRkB5dpyOTUBrEBAQPKcKRMMQ")
                 // if desired
                 .clientKey("MsbvxOY6Ul53FtoXVBLtZ5D5iQUKQFBMQkcMEMBK")
                 .server("https://pg-app-7v8inl3xrr16y2f9hebc2fbdere01c.scalabl.cloud/1/")
+                .enableLocalDataStore()
                 .build()
         );
 

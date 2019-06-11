@@ -3,6 +3,7 @@ package com.vita.godealsashi;
 import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -29,7 +30,9 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.gson.Gson;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -43,9 +46,17 @@ import com.vita.godealsashi.Fragments.ProfileFragment.ProfileFragment;
 import com.vita.godealsashi.Fragments.SearchFragment.SearchFragment;
 import com.vita.godealsashi.Fragments.navigationDrawerFragments.RequestsFragment.RequestFragment;
 import com.vita.godealsashi.Login.LoginActivity;
+import com.vita.godealsashi.ParseClasses.FriendList;
 import com.vita.godealsashi.ParseClasses.Invite;
 import com.vita.godealsashi.User.UserProfileActivity;
+import com.vita.godealsashi.parse.Godeal;
 import com.vita.godealsashi.registration.UserSetupActivity;
+
+import java.io.File;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -67,11 +78,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ColleguesFragment collegueFragment;
     RequestFragment requestFragment;
 
+    ArrayList<String> invites;
+
 
     NavigationView navigationView;
     DrawerLayout drawerLayout;
 
     CustomUser user;
+
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +94,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //activity_main or navigation_drawer
         setContentView(R.layout.navigation_drawer);
+
+
+
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
@@ -115,6 +133,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mainBottomNavigation = findViewById(R.id.bottomNavBar);
 
+        invites = new ArrayList<String>();
+        //getInvites(currentUser.getObjectId());
+        Toast.makeText(MainActivity.this, invites.toString(), Toast.LENGTH_LONG).show();
+
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
@@ -130,32 +152,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // do stuff with the user
             checkForSetup(currentUser, editor);
 
+
             user = new CustomUser();
-
-            ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
-            queryExist.whereEqualTo("owner", currentUser);
-            queryExist.getFirstInBackground(new GetCallback<CustomUser>() {
-                @SuppressLint("CheckResult")
-                @Override
-                public void done(CustomUser object, ParseException e) {
-
-                    if(e == null){
-
-                        Log.i("Message: ", "Data exist");
-
-                        user = object;
-
-                    } else {
-
-                        Log.i("Message: ", "No data exist.");
-
-                    }
-
-
-                }
-
-
-            });
 
             Toast.makeText(MainActivity.this, "Hello, " + currentUser.getUsername(), Toast.LENGTH_SHORT).show();
             loginSucess_anim = (LottieAnimationView) findViewById(R.id.loginsucess_anim);
@@ -261,6 +259,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.log_out:
 
+
+
                 ParseUser.logOut();
                 ParseUser currentUser = ParseUser.getCurrentUser();
                 if (currentUser != null) {
@@ -355,7 +355,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         final ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
 
-        queryExist.whereEqualTo("owner", current_user);
+        queryExist.whereEqualTo("owner", current_user.getObjectId());
 
         queryExist.getFirstInBackground(new GetCallback<CustomUser>() {
             @Override
@@ -363,13 +363,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 if(e == null){
 
+
                     editor.putString("current_name", object.getName());
                     editor.putString("current_lastname", object.getLastname());
                     editor.putString("current_city", object.getCity());
                     editor.putString("current_age", Integer.toString(object.getAge()));
                     editor.putString("current_ownerId", object.getObjectId());
                     editor.putString("Image", object.getImage().getUrl());
-                    editor.apply();
+
+                    editor.commit();
 
                     Toast.makeText(MainActivity.this, "Your user is fine.", Toast.LENGTH_SHORT).show();
 
@@ -380,6 +382,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     startActivity(toSetupPage);
 
                 }
+
+            }
+        });
+
+    }
+
+
+    private void getInvites(String current_user){
+
+        ParseQuery<Invite> queryExist = ParseQuery.getQuery(Invite.class);
+        queryExist.whereEqualTo("targetId", ParseUser.getCurrentUser().getObjectId());
+
+        queryExist.findInBackground(new FindCallback<Invite>() {
+            @Override
+            public void done(List<Invite> objects, ParseException e) {
+                invites.clear();
+
+                for(Invite invite: objects){
+
+                    invites.add(invite.getOwner());
+
+
+                }
+
 
             }
         });

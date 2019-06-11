@@ -25,6 +25,7 @@ import com.parse.livequery.ParseLiveQueryClient;
 import com.parse.livequery.SubscriptionHandling;
 import com.vita.godealsashi.MainActivity;
 import com.vita.godealsashi.ParseClasses.CustomUser;
+import com.vita.godealsashi.ParseClasses.FriendList;
 import com.vita.godealsashi.ParseClasses.Invite;
 import com.vita.godealsashi.R;
 
@@ -79,7 +80,7 @@ public class RequestFragment extends Fragment {
 
             ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
             ParseQuery<Invite> parseQuery = ParseQuery.getQuery(Invite.class);
-            parseQuery.whereEqualTo("target", currentUser);
+            parseQuery.whereEqualTo("targetId", currentUser.getObjectId());
             SubscriptionHandling<Invite> subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
 
             subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<Invite>() {
@@ -105,7 +106,9 @@ public class RequestFragment extends Fragment {
 
 
             user_list.clear();
-            checkForRecivedInvites(currentUser);
+
+
+
 
             user_list_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -126,52 +129,56 @@ public class RequestFragment extends Fragment {
 
         }
 
+        getInviteUsersList();
+
         return v;
     }
 
-    private void getRecivedUser(ParseUser sender_user){
 
-        ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
+    private void getInviteUsersList(){
 
-        query.whereEqualTo("owner", sender_user);
-
-        query.getFirstInBackground(new GetCallback<CustomUser>() {
-            @Override
-            public void done(CustomUser object, ParseException e) {
-
-                if(e == null){
-
-                    user_list.add(object);
-
-                    requestRecycleAdapter.notifyDataSetChanged();
-                } else {
-
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-
-                }
-
-
-            }
-        });
-    }
-
-    private void checkForRecivedInvites(ParseUser current_user){
 
         ParseQuery<Invite> query = ParseQuery.getQuery(Invite.class);
 
-        query.whereEqualTo("target", current_user);
+        query.whereEqualTo("targetId", ParseUser.getCurrentUser().getObjectId());
+
         query.findInBackground(new FindCallback<Invite>() {
             @Override
             public void done(List<Invite> objects, ParseException e) {
 
-                for(Invite object: objects){
+                List<String> objectsIds = new ArrayList<>();
 
-                    getRecivedUser(object.getOwner());
+                for (Invite object: objects){
+
+                    objectsIds.add(object.getOwner());
 
                 }
 
+                getUserList(objectsIds);
+
             }
         });
+
+
     }
+
+    private void getUserList(List<String> objectsIds){
+
+        ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
+        query.whereContainedIn("owner", objectsIds);
+
+        query.findInBackground(new FindCallback<CustomUser>() {
+            @Override
+            public void done(List<CustomUser> objects, ParseException e) {
+
+                user_list.addAll(objects);
+
+            }
+        });
+
+    }
+
+
+
 
 }

@@ -31,12 +31,21 @@ public class FriendList extends ParseObject {
         put("target", value);
     }
 
-
-    public ParseUser getOwner() {
-        return getParseUser("owner");
+    public String getTargetId() {
+        return getString("targetId");
     }
 
-    public void setOwner(ParseUser value) {
+    public void setTargetId(String value) {
+        put("targetId", value);
+    }
+
+
+
+    public String getOwner() {
+        return getString("owner");
+    }
+
+    public void setOwner(String value) {
         put("owner", value);
     }
 

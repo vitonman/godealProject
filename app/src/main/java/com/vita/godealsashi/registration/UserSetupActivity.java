@@ -112,7 +112,7 @@ public class UserSetupActivity extends AppCompatActivity {
                         File image = new File(mainImageURI.getPath());
                         ParseFile parseFile = new ParseFile(image);
 
-                        setUserData(currentUser, name, lastname, city, age, parseFile);
+                        setUserData(currentUser.getObjectId(), name, lastname, city, age, parseFile);
 
 
                     } else if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(age) && mainImageURI!= null && !TextUtils.isEmpty(lastname)
@@ -218,7 +218,7 @@ public class UserSetupActivity extends AppCompatActivity {
     }
 
 
-    private void setUserData(final ParseUser currentuser, final String name, final String lastname,
+    private void setUserData(final String currentuser, final String name, final String lastname,
                              final String city, final String age,  final ParseFile image){
 
 
