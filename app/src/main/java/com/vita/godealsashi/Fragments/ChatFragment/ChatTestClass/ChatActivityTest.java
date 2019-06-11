@@ -101,11 +101,6 @@ public class ChatActivityTest extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String data = etMessage.getText().toString();
-                //ParseObject message = ParseObject.create("Message");
-                //message.put(Message.USER_ID_KEY, userId);
-                //message.put(Message.BODY_KEY, data);
-                // Using new `Message` Parse-backed model now
-
 
                 Intent intent = getIntent();
                 final String ownerUserId = intent.getStringExtra("targetUserId");

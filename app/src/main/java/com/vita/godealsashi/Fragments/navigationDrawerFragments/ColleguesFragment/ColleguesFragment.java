@@ -35,6 +35,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 
 public class ColleguesFragment extends Fragment {
@@ -67,6 +68,9 @@ public class ColleguesFragment extends Fragment {
         progressBar.setVisibility(View.INVISIBLE);*/
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         final String custom_user_current_id = preferences.getString("current_ownerId", "");
+        Set<String> friend_list = preferences.getStringSet("friendlist", null);
+
+
 
         user_list = new ArrayList<>();
         user_list_view = v.findViewById(R.id.collegues_user_list);
@@ -102,7 +106,7 @@ public class ColleguesFragment extends Fragment {
                     }
                 });
 
-            checkForFriends(custom_user_current_id);
+            getFriendList(friend_list);
 
 
 
@@ -116,35 +120,7 @@ public class ColleguesFragment extends Fragment {
     }
 
 
-
-    private void checkForFriends(String custom_user_current_id){
-
-
-        ParseQuery<FriendList> query = ParseQuery.getQuery(FriendList.class);
-
-        query.whereEqualTo("targetId", custom_user_current_id);
-
-        query.findInBackground(new FindCallback<FriendList>() {
-            @Override
-            public void done(List<FriendList> objects, ParseException e) {
-
-                List<String> objectsIds = new ArrayList<>();
-
-                for (FriendList object: objects){
-
-                    objectsIds.add(object.getOwner());
-
-                }
-
-                getFriendList(objectsIds);
-
-            }
-        });
-
-
-    }
-
-    private void getFriendList(List<String> objectsIds){
+    private void getFriendList(Set<String> objectsIds){
 
         ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
         query.whereContainedIn("objectId", objectsIds);
@@ -158,6 +134,10 @@ public class ColleguesFragment extends Fragment {
 
                     user_list.addAll(objects);
 
+
+                } else {
+
+                    e.getMessage();
 
                 }
 

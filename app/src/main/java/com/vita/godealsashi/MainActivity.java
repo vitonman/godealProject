@@ -38,6 +38,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.livequery.ParseLiveQueryClient;
 import com.parse.livequery.SubscriptionHandling;
+import com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragment.ColleguesRecycleAdapter;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatFragment;
 import com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragment.ColleguesFragment;
@@ -56,10 +57,12 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
 
     private Toolbar mainToolBar;
@@ -79,10 +82,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     RequestFragment requestFragment;
 
     ArrayList<String> invites;
-
+    private List<CustomUser> user_list;
 
     NavigationView navigationView;
     DrawerLayout drawerLayout;
+
+    private ColleguesRecycleAdapter colleguesRecycleAdapter;
 
     CustomUser user;
 
@@ -99,7 +104,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        final String custom_user_current_id = preferences.getString("current_ownerId", "");
+
         SharedPreferences.Editor editor = preferences.edit();
+
 
 
         ParseUser currentUser = ParseUser.getCurrentUser();
@@ -151,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (currentUser != null) {
             // do stuff with the user
             checkForSetup(currentUser, editor);
-
+            checkForFriends(custom_user_current_id);
 
             user = new CustomUser();
 
@@ -411,5 +420,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
     }
+
+
+    private void checkForFriends(String custom_user_current_id){
+
+
+        ParseQuery<FriendList> query = ParseQuery.getQuery(FriendList.class);
+
+        query.whereEqualTo("targetId", custom_user_current_id);
+
+        query.findInBackground(new FindCallback<FriendList>() {
+            @Override
+            public void done(List<FriendList> objects, ParseException e) {
+
+                if (e == null){
+
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+                    SharedPreferences.Editor editor = preferences.edit();
+
+                    Set<String> objectsIds = new HashSet<>();
+
+                    for (FriendList object: objects){
+
+                        objectsIds.add(object.getOwner());
+
+                    }
+
+                    editor.putStringSet("friendlist", objectsIds);
+                    editor.apply();
+
+                }
+
+
+
+            }
+        });
+
+
+    }
+
 
 }

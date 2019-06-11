@@ -166,7 +166,6 @@ public class RequestFragment extends Fragment {
             }
         });
 
-
     }
 
     private void getUserList(List<String> objectsIds){
@@ -182,9 +181,6 @@ public class RequestFragment extends Fragment {
                 if(e == null){
 
                     user_list.addAll(objects);
-
-
-
 
                 }
 
