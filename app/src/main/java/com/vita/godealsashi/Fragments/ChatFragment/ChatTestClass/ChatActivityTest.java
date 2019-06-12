@@ -20,6 +20,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.ParseClasses.Message;
 import com.vita.godealsashi.R;
 
@@ -41,6 +42,7 @@ public class ChatActivityTest extends AppCompatActivity {
 
     RecyclerView rvChat;
     ArrayList<Message> mMessages;
+    ArrayList<CustomUser> usersList;
     ChatAdapter mAdapter;
     // Keep track of initial load to scroll to the bottom of the ListView
     boolean mFirstLoad;
@@ -78,7 +80,7 @@ public class ChatActivityTest extends AppCompatActivity {
     private void startWithCurrentUser(){
 
         setupMessagePosting();
-
+        readUserInfo();
     }
 
 
@@ -93,9 +95,10 @@ public class ChatActivityTest extends AppCompatActivity {
         btSend = (Button) findViewById(R.id.btSend);
         rvChat = (RecyclerView) findViewById(R.id.rvChat);
         mMessages = new ArrayList<>();
+        usersList = new ArrayList<>();
         mFirstLoad = true;
         final String userId = custom_user_current_id;
-        mAdapter = new ChatAdapter(ChatActivityTest.this, userId, mMessages);
+        mAdapter = new ChatAdapter(ChatActivityTest.this, userId, mMessages, usersList);
         rvChat.setAdapter(mAdapter);
 
         // associate the LayoutManager with the RecylcerView
@@ -127,6 +130,36 @@ public class ChatActivityTest extends AppCompatActivity {
                     }
                 });
                 etMessage.setText(null);
+            }
+        });
+
+    }
+
+    private void readUserInfo(){
+
+
+        Intent intent = getIntent();
+        final String ownerUserId = intent.getStringExtra("targetUserId");
+        // Construct query to execute
+        ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        final String custom_user_current_id = preferences.getString("current_ownerId", "");
+
+        //query.whereEqualTo("targetUserId", ParseUser.getCurrentUser().getObjectId());
+
+        String[] users = {ownerUserId, custom_user_current_id};
+        query.whereContainedIn("objectId", Arrays.asList(users));
+        query.findInBackground(new FindCallback<CustomUser>() {
+            public void done(List<CustomUser> customUsersList, ParseException e) {
+                if (e == null) {
+                    usersList.clear();
+                    usersList.addAll(customUsersList);
+                    mAdapter.notifyDataSetChanged(); // update adapter
+
+                } else {
+                    Log.e("message", "Error Loading Messages" + e);
+                }
             }
         });
 
