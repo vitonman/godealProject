@@ -91,11 +91,11 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
         //add to friends
 
         //---------------------------------------------------
-        final String whoSendYo = userList.get(i).getObjectId();
+        final String user_reciver = userList.get(i).getObjectId();
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        final String custom_user_current_id = preferences.getString("current_ownerId", "");
-        final ParseUser current_user = ParseUser.getCurrentUser();
+        final String user_accepter = preferences.getString("current_ownerId", "");
+
 
         //----------------------------------------------------
 
@@ -107,8 +107,8 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
                 userList.remove(viewHolder.getLayoutPosition());
 
                 final ParseQuery<FriendList> queryFriend = ParseQuery.getQuery(FriendList.class);
-                queryFriend.whereEqualTo("owner", custom_user_current_id);
-                queryFriend.whereEqualTo("target", whoSendYo);
+                queryFriend.whereEqualTo("owner", user_accepter);
+                queryFriend.whereEqualTo("target", user_reciver);
 
                 queryFriend.getFirstInBackground(new GetCallback<FriendList>() {
                     @Override
@@ -121,19 +121,19 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
                         } else {
 
                             Toast.makeText(context, "Added to friendlist", Toast.LENGTH_SHORT).show();
-                            FriendList friend = new FriendList();
-                            friend.setOwner(custom_user_current_id);
-                            friend.setTargetId(whoSendYo);
-                            friend.saveInBackground();
+                            FriendList accepter_friend = new FriendList();
+                            accepter_friend.setOwner(user_accepter);
+                            accepter_friend.setTargetId(user_reciver);
+                            accepter_friend.saveInBackground();
 
-                            FriendList target_friend = new FriendList();
-                            target_friend.setOwner(whoSendYo);
-                            target_friend.setTargetId(custom_user_current_id);
-                            target_friend.saveInBackground();
+                            FriendList reciver_friend = new FriendList();
+                            reciver_friend.setOwner(user_reciver);
+                            reciver_friend.setTargetId(user_accepter);
+                            reciver_friend.saveInBackground();
 
                             final ParseQuery<Invite> queryInvite = ParseQuery.getQuery(Invite.class);
-                            queryInvite.whereEqualTo("owner", whoSendYo);
-                            queryInvite.whereEqualTo("targetId", custom_user_current_id);
+                            queryInvite.whereEqualTo("owner", user_reciver);
+                            queryInvite.whereEqualTo("targetId", user_accepter);
                             queryInvite.getFirstInBackground(new GetCallback<Invite>() {
                                 @Override
                                 public void done(Invite object, ParseException e) {

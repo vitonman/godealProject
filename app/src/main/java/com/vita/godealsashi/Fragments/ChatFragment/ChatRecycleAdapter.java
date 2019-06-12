@@ -69,7 +69,7 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
 
         final String objectId = userList.get(i).getObjectId();
 
-        final String ownerUserId = userList.get(i).getOwner();
+        final String ownerUserId = userList.get(i).getObjectId();
 
 
 

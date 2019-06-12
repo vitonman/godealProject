@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     DrawerLayout drawerLayout;
 
-    private ColleguesRecycleAdapter colleguesRecycleAdapter;
 
     CustomUser user;
 
@@ -100,40 +99,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //activity_main or navigation_drawer
         setContentView(R.layout.navigation_drawer);
 
-
-
-
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         final String custom_user_current_id = preferences.getString("current_ownerId", "");
 
         SharedPreferences.Editor editor = preferences.edit();
 
-
-
         ParseUser currentUser = ParseUser.getCurrentUser();
-
-
-        ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
-        ParseQuery<Invite> parseQuery = ParseQuery.getQuery(Invite.class);
-        parseQuery.whereEqualTo("target", currentUser);
-        SubscriptionHandling<Invite> subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
-
-
-        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<Invite>() {
-            @Override
-            public void onEvent(ParseQuery<Invite> query, Invite object) {
-                Handler handler = new Handler(Looper.getMainLooper());
-                handler.post(new Runnable() {
-                    public void run() {
-
-                        Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
-
-                    }
-
-                });
-            }
-        });
 
 
         mainToolBar = (Toolbar) findViewById(R.id.mainToolbar);
@@ -240,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             sendToLogIn();
         }
 
-
+        liveQueryCheckFriend(custom_user_current_id);
         //TODO: Maybe i can do here a query for user for better bacgground and non call after self data?
     }
 
@@ -398,29 +370,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void getInvites(String current_user){
-
-        ParseQuery<Invite> queryExist = ParseQuery.getQuery(Invite.class);
-        queryExist.whereEqualTo("targetId", ParseUser.getCurrentUser().getObjectId());
-
-        queryExist.findInBackground(new FindCallback<Invite>() {
-            @Override
-            public void done(List<Invite> objects, ParseException e) {
-                invites.clear();
-
-                for(Invite invite: objects){
-
-                    invites.add(invite.getOwner());
-
-
-                }
-
-
-            }
-        });
-
-    }
-
 
     private void checkForFriends(String custom_user_current_id){
 
@@ -458,6 +407,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
 
+    }
+
+    private void liveQueryCheckFriend(final String custom_user_current_id){
+
+        ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
+        ParseQuery<FriendList> parseLiveQueryFriendlist = ParseQuery.getQuery(FriendList.class);
+        parseLiveQueryFriendlist.whereEqualTo("targetId", custom_user_current_id);
+        SubscriptionHandling<FriendList> friendListSubscriptionHandling = parseLiveQueryClient.subscribe(parseLiveQueryFriendlist);
+
+        friendListSubscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<FriendList>() {
+            @Override
+            public void onEvent(ParseQuery<FriendList> query, FriendList object) {
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    public void run() {
+                        checkForFriends(custom_user_current_id);
+                        //DO SOME UPDATE HERE
+
+                        Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                });
+            }
+        });
     }
 
 

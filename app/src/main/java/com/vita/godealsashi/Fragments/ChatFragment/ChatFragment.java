@@ -139,15 +139,9 @@ public class ChatFragment extends Fragment {
                     progressBar.setVisibility(View.INVISIBLE);
 
 
-                    for (CustomUser r: results){
-
-                        // Do whatever you want with the data...
-
-                        user_list.add(r);
-
-                        //Toast.makeText(getActivity(), age, Toast.LENGTH_LONG).show();
-
-                    }
+                    // Do whatever you want with the data...
+                    //Toast.makeText(getActivity(), age, Toast.LENGTH_LONG).show();
+                    user_list.addAll(results);
                     userChatRecycleAdapter.notifyDataSetChanged();
 
 

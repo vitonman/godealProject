@@ -52,7 +52,7 @@ public class RequestFragment extends Fragment {
     public Context context;
 
 
-    public RequestFragment(){
+    public RequestFragment() {
 
 
     }
@@ -65,7 +65,7 @@ public class RequestFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View v =  inflater.inflate(R.layout.fragment_request, container, false);
+        View v = inflater.inflate(R.layout.fragment_request, container, false);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         final String custom_user_current_id = preferences.getString("current_ownerId", "");
@@ -84,6 +84,7 @@ public class RequestFragment extends Fragment {
         final ParseUser currentUser = ParseUser.getCurrentUser();
 
         if (currentUser != null) {
+
 
             ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
             ParseQuery<Invite> parseQuery = ParseQuery.getQuery(Invite.class);
@@ -112,9 +113,10 @@ public class RequestFragment extends Fragment {
             });
 
 
+
+
+
             user_list.clear();
-
-
 
 
             user_list_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -124,7 +126,7 @@ public class RequestFragment extends Fragment {
 
                     Boolean reqchedBottom = !recyclerView.canScrollVertically(1);
 
-                    if(reqchedBottom){
+                    if (reqchedBottom) {
 
                         //loadMorePost();
 
@@ -142,7 +144,7 @@ public class RequestFragment extends Fragment {
     }
 
 
-    private void getInviteUsersList(String custom_user_current_id){
+    private void getInviteUsersList(String custom_user_current_id) {
 
 
         ParseQuery<Invite> query = ParseQuery.getQuery(Invite.class);
@@ -155,7 +157,7 @@ public class RequestFragment extends Fragment {
 
                 List<String> objectsIds = new ArrayList<>();
 
-                for (Invite object: objects){
+                for (Invite object : objects) {
 
                     objectsIds.add(object.getOwner());
 
@@ -168,7 +170,7 @@ public class RequestFragment extends Fragment {
 
     }
 
-    private void getUserList(List<String> objectsIds){
+    private void getUserList(List<String> objectsIds) {
 
         ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
         query.whereContainedIn("objectId", objectsIds);
@@ -178,7 +180,7 @@ public class RequestFragment extends Fragment {
             public void done(List<CustomUser> objects, ParseException e) {
 
 
-                if(e == null){
+                if (e == null) {
 
                     user_list.addAll(objects);
 
@@ -190,8 +192,4 @@ public class RequestFragment extends Fragment {
         });
 
     }
-
-
-
-
 }

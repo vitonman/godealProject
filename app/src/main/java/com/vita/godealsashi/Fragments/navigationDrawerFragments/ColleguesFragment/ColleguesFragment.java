@@ -3,6 +3,8 @@ package com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragme
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,6 +25,8 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.livequery.ParseLiveQueryClient;
+import com.parse.livequery.SubscriptionHandling;
 import com.vita.godealsashi.MainActivity;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.ParseClasses.FriendList;
@@ -86,6 +90,8 @@ public class ColleguesFragment extends Fragment {
         final ParseUser currentUser = ParseUser.getCurrentUser();
 
         if (currentUser != null) {
+
+
             //Toast.makeText(getActivity(), "Success fragment", Toast.LENGTH_SHORT).show();
 
                 user_list.clear();
