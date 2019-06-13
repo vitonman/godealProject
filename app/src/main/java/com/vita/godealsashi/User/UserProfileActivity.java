@@ -26,12 +26,14 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.livequery.ParseLiveQueryClient;
 import com.parse.livequery.SubscriptionHandling;
+import com.vita.godealsashi.Fragments.ChatFragment.ChatTestClass.ChatActivityTest;
 import com.vita.godealsashi.MainActivity;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.ParseClasses.Invite;
 import com.vita.godealsashi.R;
 
 import java.util.List;
+import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -41,6 +43,8 @@ public class UserProfileActivity extends AppCompatActivity{
 
 
     private ImageView request_friend_image;
+    private ImageView messaageBtn;
+    private TextView textRequest;
 
 
     private TextView user_fullnameView;
@@ -48,20 +52,37 @@ public class UserProfileActivity extends AppCompatActivity{
     private int mCurrent_state;
     private long mLastClickTime = 0;
 
+    private Boolean isFriend = false;
+
     private Context context;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        Intent intent = getIntent();
 
+        Intent intent = getIntent();
         final String custom_user_current_id = preferences.getString("current_ownerId", "");
         final String ownerUser = intent.getStringExtra("objectId");
-        final Boolean isFriend = intent.getBooleanExtra("IsFriend", false);
+        Set<String> friend_list = preferences.getStringSet("friendlist", null);
 
+
+        if(friend_list != null) {
+
+            for (String friend: friend_list){
+
+                if(friend.equals(ownerUser)){
+
+                    isFriend = true;
+
+                }
+
+            }
+
+        }
 
 
         final ParseUser current_user = ParseUser.getCurrentUser();
@@ -71,12 +92,16 @@ public class UserProfileActivity extends AppCompatActivity{
         request_friend_image = findViewById(R.id.request_friend_image);
         user_fullnameView = findViewById(R.id.user_full_name);
         user_CircleImage = findViewById(R.id.user_profile_image);
+        messaageBtn = findViewById(R.id.to_messages_btn);
+        textRequest = findViewById(R.id.text_request);
+
         Glide.with(UserProfileActivity.this)
                 .load(R.mipmap.ic_person)
                 .into(user_CircleImage);
 
         if(isFriend){
 
+            textRequest.setText("Friend");
             request_friend_image.setVisibility(View.INVISIBLE);
 
         } else {
@@ -102,8 +127,7 @@ public class UserProfileActivity extends AppCompatActivity{
                         mCurrent_state = 1;
 
 
-                    }
-                    else if (mCurrent_state == 1){
+                    } else if (mCurrent_state == 1){
 
                         deleteInvite(custom_user_current_id, ownerUser);
 
@@ -119,6 +143,14 @@ public class UserProfileActivity extends AppCompatActivity{
 
         }
 
+        messaageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent toMessages = new Intent(UserProfileActivity.this, ChatActivityTest.class);
+                toMessages.putExtra("targetUserId", ownerUser);
+                startActivity(toMessages);
+            }
+        });
 
 
         getUserData(ownerUser);

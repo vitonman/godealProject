@@ -65,7 +65,7 @@ public class ColleguesRecycleAdapter extends RecyclerView.Adapter<ColleguesRecyc
             public void onClick(View v) {
                 Intent commentIntent = new Intent(context, UserProfileActivity.class);
                 commentIntent.putExtra("objectId", objectId);
-                commentIntent.putExtra("IsFriend", true);
+                //commentIntent.putExtra("IsFriend", true);
                 context.startActivity(commentIntent);
 
             }

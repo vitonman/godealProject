@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +19,9 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.livequery.ParseLiveQueryClient;
 import com.parse.livequery.SubscriptionHandling;
+import com.squareup.picasso.Picasso;
+import com.stfalcon.chatkit.commons.ImageLoader;
+import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 
 
@@ -57,7 +61,6 @@ public class ChatFragment extends Fragment {
         user_list = new ArrayList<>();
         user_list_view = v.findViewById(R.id.user_list_view);
 
-
         userChatRecycleAdapter = new ChatRecycleAdapter(user_list);
 
         user_list_view.setLayoutManager(new LinearLayoutManager(container.getContext()));
@@ -88,6 +91,8 @@ public class ChatFragment extends Fragment {
             });
 
 
+
+
             getData();
 
 
@@ -103,7 +108,6 @@ public class ChatFragment extends Fragment {
                     getData();
                 }
             });
-
 
 
 

@@ -68,4 +68,10 @@ dependencies {
     //for sharedpreference object send
     implementation 'com.google.code.gson:gson:2.8.5'
 
+    //chat-kit
+    implementation 'com.github.stfalcon:chatkit:0.3.3'
+
+    //picasso
+
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }

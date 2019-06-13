@@ -15,8 +15,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -27,7 +27,6 @@ import com.vita.godealsashi.R;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Queue;
 
 public class ChatActivityTest extends AppCompatActivity {
 
@@ -42,7 +41,7 @@ public class ChatActivityTest extends AppCompatActivity {
 
     RecyclerView rvChat;
     ArrayList<Message> mMessages;
-    ArrayList<CustomUser> usersList;
+
     ChatAdapter mAdapter;
     // Keep track of initial load to scroll to the bottom of the ListView
     boolean mFirstLoad;
@@ -58,16 +57,23 @@ public class ChatActivityTest extends AppCompatActivity {
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_test);
 
 
-        if(ParseUser.getCurrentUser() != null){
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //readUserInfo();
 
-            final String custom_user_current_id = preferences.getString("current_ownerId", "");
+
+
+
+
+        if(ParseUser.getCurrentUser() != null){
+            /*SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+            final String custom_user_current_id = preferences.getString("current_ownerId", "");*/
 
             startWithCurrentUser();
 
@@ -79,8 +85,9 @@ public class ChatActivityTest extends AppCompatActivity {
 
     private void startWithCurrentUser(){
 
+
         setupMessagePosting();
-        readUserInfo();
+
     }
 
 
@@ -94,11 +101,21 @@ public class ChatActivityTest extends AppCompatActivity {
         etMessage = (EditText) findViewById(R.id.etMessage);
         btSend = (Button) findViewById(R.id.btSend);
         rvChat = (RecyclerView) findViewById(R.id.rvChat);
+
         mMessages = new ArrayList<>();
-        usersList = new ArrayList<>();
+
         mFirstLoad = true;
-        final String userId = custom_user_current_id;
-        mAdapter = new ChatAdapter(ChatActivityTest.this, userId, mMessages, usersList);
+
+
+        Intent intent = getIntent();
+        final String ownerUserId = intent.getStringExtra("targetUserId");
+
+        CustomUser targetUserObject = getObject(ownerUserId);
+
+
+        //Toast.makeText(ChatActivityTest.this, testUser.getName(), Toast.LENGTH_LONG).show();
+
+        mAdapter = new ChatAdapter(ChatActivityTest.this, custom_user_current_id, mMessages, targetUserObject);
         rvChat.setAdapter(mAdapter);
 
         // associate the LayoutManager with the RecylcerView
@@ -114,12 +131,11 @@ public class ChatActivityTest extends AppCompatActivity {
             public void onClick(View v) {
                 String data = etMessage.getText().toString();
 
-                Intent intent = getIntent();
-                final String ownerUserId = intent.getStringExtra("targetUserId");
+
 
                 Message message = new Message();
                 message.setBody(data);
-                message.setUserId(userId);
+                message.setUserId(custom_user_current_id);
                 message.setTarget(ownerUserId);
                 message.saveInBackground(new SaveCallback() {
                     @Override
@@ -135,35 +151,21 @@ public class ChatActivityTest extends AppCompatActivity {
 
     }
 
-    private void readUserInfo(){
 
-
-        Intent intent = getIntent();
-        final String ownerUserId = intent.getStringExtra("targetUserId");
-        // Construct query to execute
+    public CustomUser getObject(String id){
         ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        final String custom_user_current_id = preferences.getString("current_ownerId", "");
-
-        //query.whereEqualTo("targetUserId", ParseUser.getCurrentUser().getObjectId());
-
-        String[] users = {ownerUserId, custom_user_current_id};
-        query.whereContainedIn("objectId", Arrays.asList(users));
-        query.findInBackground(new FindCallback<CustomUser>() {
-            public void done(List<CustomUser> customUsersList, ParseException e) {
-                if (e == null) {
-                    usersList.clear();
-                    usersList.addAll(customUsersList);
-                    mAdapter.notifyDataSetChanged(); // update adapter
-
-                } else {
-                    Log.e("message", "Error Loading Messages" + e);
-                }
-            }
-        });
-
+        query.whereEqualTo("objectId", id);
+        try {
+            return query.getFirst();
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
+
+
+
 
     private void refreshMessages(){
 

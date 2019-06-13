@@ -30,14 +30,15 @@ public class ChatAdapter extends RecyclerView.Adapter{
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
 
     private List<Message> mMessages;
-    private List<CustomUser> usersList;
+    private CustomUser targetUserObject;
+
     private Context mContext;
     private String mUserId;
     private View contactView;
 
-    public ChatAdapter(Context context, String userId, List<Message> messages, List<CustomUser> users) {
+    public ChatAdapter(Context context, String userId, List<Message> messages, CustomUser userObject) {
         mMessages = messages;
-        usersList = users;
+        targetUserObject = userObject;
         this.mUserId = userId;
         mContext = context;
     }
@@ -89,7 +90,9 @@ public class ChatAdapter extends RecyclerView.Adapter{
                 ((SentMessageHolder) holder).bind(message);
                 break;
             case VIEW_TYPE_MESSAGE_RECEIVED:
+                //((ReceivedMessageHolder) holder).setName(targetUser);
                 ((ReceivedMessageHolder) holder).bind(message);
+
         }
     }
 
@@ -107,7 +110,7 @@ public class ChatAdapter extends RecyclerView.Adapter{
             messageText.setText(message.getBody());
 
             // Format the stored timestamp into a readable String using method.
-           //timeText.setText(Utils.formatDateTime(message.getCreatedAt()));
+           timeText.setText(message.getCreatedAt().toString());
         }
     }
 
@@ -122,19 +125,23 @@ public class ChatAdapter extends RecyclerView.Adapter{
             timeText = (TextView) itemView.findViewById(R.id.text_message_time);
             nameText = (TextView) itemView.findViewById(R.id.text_message_name);
             profileImage = (ImageView) itemView.findViewById(R.id.image_message_profile);
+
+
         }
 
         void bind(Message message) {
             messageText.setText(message.getBody());
 
             // Format the stored timestamp into a readable String using method.
-            //timeText.setText(Utils.formatDateTime(message.getCreatedAt()));
-
-            nameText.setText(message.getUserId());
-
+            timeText.setText(message.getCreatedAt().toString());
+            nameText.setText(targetUserObject.getName());
             // Insert the profile image from the URL into the ImageView.
             //Utils.displayRoundImageFromUrl(mContext, message.getSender().getProfileUrl(), profileImage);
+
         }
+
+
+
     }
 
 }
