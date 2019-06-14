@@ -1,6 +1,7 @@
 package com.vita.godealsashi.Fragments.ChatFragment.ChatTestClass;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.utils.Utils;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatRecycleAdapter;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.ParseClasses.Message;
@@ -24,6 +26,8 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.List;
 import java.util.Objects;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatAdapter extends RecyclerView.Adapter{
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
@@ -116,7 +120,7 @@ public class ChatAdapter extends RecyclerView.Adapter{
 
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText, nameText;
-        ImageView profileImage;
+        CircleImageView profileImage;
 
         ReceivedMessageHolder(View itemView) {
             super(itemView);
@@ -124,7 +128,7 @@ public class ChatAdapter extends RecyclerView.Adapter{
             messageText = (TextView) itemView.findViewById(R.id.text_message_body);
             timeText = (TextView) itemView.findViewById(R.id.text_message_time);
             nameText = (TextView) itemView.findViewById(R.id.text_message_name);
-            profileImage = (ImageView) itemView.findViewById(R.id.image_message_profile);
+            profileImage = (CircleImageView) itemView.findViewById(R.id.image_message_profile);
 
 
         }
@@ -134,7 +138,12 @@ public class ChatAdapter extends RecyclerView.Adapter{
 
             // Format the stored timestamp into a readable String using method.
             timeText.setText(message.getCreatedAt().toString());
-            nameText.setText(targetUserObject.getName());
+
+            nameText.setText(targetUserObject.getName().toUpperCase() + targetUserObject.getLastname());
+
+            RequestOptions placeholderOption = new RequestOptions();
+            placeholderOption.placeholder(R.mipmap.ic_person);
+            Glide.with(mContext).setDefaultRequestOptions(placeholderOption).load(targetUserObject.getImage().getUrl()).into(profileImage);
             // Insert the profile image from the URL into the ImageView.
             //Utils.displayRoundImageFromUrl(mContext, message.getSender().getProfileUrl(), profileImage);
 

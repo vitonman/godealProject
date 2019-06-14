@@ -165,8 +165,6 @@ public class ChatActivityTest extends AppCompatActivity {
     }
 
 
-
-
     private void refreshMessages(){
 
         Intent intent = getIntent();

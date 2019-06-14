@@ -78,6 +78,7 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
             public void onClick(View v) {
 
                 Intent toMessages = new Intent(context, ChatActivityTest.class);
+
                 toMessages.putExtra("targetUserId", ownerUserId);
                 context.startActivity(toMessages);
 
