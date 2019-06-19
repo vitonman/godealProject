@@ -28,12 +28,14 @@ public class AbilityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ability);
 
         final ParseUser currentUser = ParseUser.getCurrentUser();
+/*
 
         activity_driver = (ImageView) findViewById(R.id.user_driver_pick);
         activity_teacher = (ImageView) findViewById(R.id.user_teacher_pick);
         activity_worker = (ImageView) findViewById(R.id.user_worker_pick);
 
         saveBtn = (Button) findViewById(R.id.saveBtn);
+*/
 
         final JSONArray ability = new JSONArray();
 

@@ -7,13 +7,16 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +46,8 @@ public class UserSetupActivity extends AppCompatActivity {
 
     private File image;
 
+
+
     private TextView city_text_view;
 
     private CircleImageView setupImage;
@@ -57,6 +62,8 @@ public class UserSetupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_setup);
+
+
 
         final ParseUser currentUser = ParseUser.getCurrentUser();
 
@@ -314,6 +321,7 @@ public class UserSetupActivity extends AppCompatActivity {
         finish();
 
     }
+
 
 
 

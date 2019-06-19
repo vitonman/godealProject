@@ -15,9 +15,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-
         android:theme="@style/AppTheme">
-        <activity android:name=".Fragments.ChatFragment.ChatTestClass.ChatActivityTest"></activity>
+        <activity android:name=".registration.RegistrationComplete"></activity>
+        <activity android:name=".Fragments.ChatFragment.ChatTestClass.ChatActivityTest" />
         <activity android:name=".Fragments.ChatFragment.ChatActivity.ChatActivity" />
         <activity android:name=".User.UserProfileActivity" />
         <activity android:name=".registration.AbilityActivity" />

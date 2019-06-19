@@ -2,6 +2,7 @@ package com.vita.godealsashi.registration;
 
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
@@ -35,6 +36,9 @@ public class RegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+
+
+
 
         //------------------------------------------
         reg_btn = (Button) findViewById(R.id.reg_btn);
@@ -192,7 +196,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
                                         if (user != null){
 
-                                            sendToSetup();
+                                            sendToComplete();
 
                                         } else {
 
@@ -231,6 +235,14 @@ public class RegistrationActivity extends AppCompatActivity {
     public void sendToSetup(){
 
         Intent mainIntent = new Intent(RegistrationActivity.this, UserSetupActivity.class);
+        startActivity(mainIntent);
+        finish();
+
+    }
+
+    public void sendToComplete(){
+
+        Intent mainIntent = new Intent(RegistrationActivity.this, RegistrationComplete.class);
         startActivity(mainIntent);
         finish();
 
