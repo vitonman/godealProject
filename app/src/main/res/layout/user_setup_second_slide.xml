@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,17 +12,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/image_draw"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="49dp"
-        android:layout_marginEnd="161dp"
         android:fontFamily="sans-serif-smallcaps"
         android:text="Heading"
         android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_draw" />
+        tools:layout_editor_absoluteX="147dp"
+        tools:layout_editor_absoluteY="324dp" />
 
     <TextView
         android:id="@+id/some_text"
@@ -31,8 +26,8 @@
         android:layout_below="@+id/heading"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="41dp"
-        android:layout_marginEnd="192dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="8dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,11 +39,11 @@
         android:layout_height="184dp"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="68dp"
-        android:layout_marginEnd="112dp"
+        android:layout_marginTop="88dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/archive_one" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

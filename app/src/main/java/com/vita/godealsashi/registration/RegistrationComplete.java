@@ -26,17 +26,20 @@ public class RegistrationComplete extends AppCompatActivity {
 
         linear_setup_layout = (LinearLayout) findViewById(R.id.linear_setup_layout);
         mSlideViewPager = (ViewPager) findViewById(R.id.view_pager);
+
         sliderAdapter = new SliderAdapter(this);
         mSlideViewPager.setAdapter(sliderAdapter);
 
-        addDotsIndicator();
+        addDotsIndicator(0);
 
 
+        mSlideViewPager.addOnPageChangeListener(viewListner);
     }
 
 
-    public void addDotsIndicator(){
+    public void addDotsIndicator(int position){
 
+        linear_setup_layout.removeAllViews();
 
         mDots = new TextView[3];
 
@@ -49,10 +52,37 @@ public class RegistrationComplete extends AppCompatActivity {
             mDots[i].setTextSize(35);
             mDots[i].setTextColor(getResources().getColor(R.color.black));
 
+
             linear_setup_layout.addView(mDots[i]);
         }
 
+        if(mDots.length > 0){
+
+            mDots[position].setTextColor(getResources().getColor(R.color.white));
+
+        }
+
     }
+
+
+    ViewPager.OnPageChangeListener viewListner = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int i, float v, int i1) {
+
+        }
+
+        @Override
+        public void onPageSelected(int i) {
+
+            addDotsIndicator(i);
+
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int i) {
+
+        }
+    };
 
     public void sendToSetup(){
 

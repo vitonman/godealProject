@@ -38,6 +38,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.livequery.ParseLiveQueryClient;
 import com.parse.livequery.SubscriptionHandling;
+import com.vita.godealsashi.Fragments.DealFragment.rethinkDeal.DealFragmentTest;
 import com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragment.ColleguesRecycleAdapter;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatFragment;
@@ -51,6 +52,7 @@ import com.vita.godealsashi.ParseClasses.FriendList;
 import com.vita.godealsashi.ParseClasses.Invite;
 import com.vita.godealsashi.User.UserProfileActivity;
 import com.vita.godealsashi.parse.Godeal;
+import com.vita.godealsashi.registration.RegistrationComplete;
 import com.vita.godealsashi.registration.UserSetupActivity;
 
 import java.io.File;
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DealFragment dealFragment;
     ProfileFragment profileFragment;
     SearchFragment searchFragment;
+    DealFragmentTest dealFragmentTest;
 
     //navigationdrawer fragments
     ColleguesFragment collegueFragment;
@@ -92,32 +95,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     Context context;
 
+    @SuppressLint("CommitPrefEdits")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         //activity_main or navigation_drawer
         setContentView(R.layout.navigation_drawer);
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        final String custom_user_current_id = preferences.getString("current_ownerId", "");
-
-        SharedPreferences.Editor editor = preferences.edit();
+        checkFirstRun();
 
         ParseUser currentUser = ParseUser.getCurrentUser();
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+
+        SharedPreferences.Editor editor = preferences.edit();
+        String custom_user_current_id = preferences.getString("current_ownerId", "");
 
         mainToolBar = (Toolbar) findViewById(R.id.mainToolbar);
         setSupportActionBar(mainToolBar);
         getSupportActionBar().setTitle("Main");
 
         mainBottomNavigation = findViewById(R.id.bottomNavBar);
-
-        invites = new ArrayList<String>();
-        //getInvites(currentUser.getObjectId());
-        Toast.makeText(MainActivity.this, invites.toString(), Toast.LENGTH_LONG).show();
-
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
@@ -130,6 +131,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         if (currentUser != null) {
+
+
+            invites = new ArrayList<String>();
+            //getInvites(currentUser.getObjectId());
+            Toast.makeText(MainActivity.this, invites.toString(), Toast.LENGTH_LONG).show();
+
+
             // do stuff with the user
             checkForSetup(currentUser, editor);
             checkForFriends(custom_user_current_id);
@@ -148,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             chatFragment = new ChatFragment();
             profileFragment = new ProfileFragment();
             searchFragment = new SearchFragment();
+            dealFragmentTest = new DealFragmentTest();
 
             //navigation fragments
             collegueFragment = new ColleguesFragment();
@@ -168,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             replaceFragment(chatFragment);
                             return true;
                         case R.id.bottom_action_deals:
-                            replaceFragment(dealFragment);
+                            replaceFragment(dealFragmentTest);
                             return true;
                         case R.id.bottom_action_account:
                             replaceFragment(profileFragment);
@@ -432,6 +441,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
             }
         });
+    }
+
+    private void checkFirstRun() {
+
+        final String PREFS_NAME = "MyPrefsFile";
+        final String PREF_VERSION_CODE_KEY = "version_code";
+        final int DOESNT_EXIST = -1;
+
+        // Get current version code
+        int currentVersionCode = BuildConfig.VERSION_CODE;
+
+        // Get saved version code
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+
+        int savedVersionCode = prefs.getInt(PREF_VERSION_CODE_KEY, DOESNT_EXIST);
+
+        // Check for first run or upgrade
+        if (currentVersionCode == savedVersionCode) {
+
+            // This is just a normal run
+            return;
+
+        } else if (savedVersionCode == DOESNT_EXIST) {
+
+            // TODO This is a new install (or the user cleared the shared preferences)
+            Intent intent = new Intent(MainActivity.this, RegistrationComplete.class);
+            startActivity(intent);
+            finish();
+
+        } else if (currentVersionCode > savedVersionCode) {
+
+            // TODO This is an upgrade
+            Toast.makeText(MainActivity.this, "The program has been updated", Toast.LENGTH_SHORT).show();
+
+        }
+
+        // Update the shared preferences with the current version code
+        prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).apply();
     }
 
 
