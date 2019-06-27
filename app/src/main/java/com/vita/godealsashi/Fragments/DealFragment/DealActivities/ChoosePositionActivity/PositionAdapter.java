@@ -1,9 +1,11 @@
 package com.vita.godealsashi.Fragments.DealFragment.DealActivities.ChoosePositionActivity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +15,7 @@ import android.widget.TextView;
 import java.util.List;
 import java.util.Random;
 
-import com.vita.godealsashi.Fragments.DealFragment.DealActivities.ChooseRegionActivity.RegionActivity;
+import com.vita.godealsashi.Fragments.DealFragment.DealActivities.ChooseRegionActivity.RegionFragment;
 import com.vita.godealsashi.R;
 
 
@@ -49,15 +51,25 @@ class PositionAdapter extends RecyclerView.Adapter<PositionAdapter.MyViewHolder>
         viewHolder.name.setText(data.name);
         viewHolder.age.setText(String.valueOf(data.id));
 
-        final int id = data.id;
+        final int positionId = data.id;
+
 
         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Intent to_Regions = new Intent(context, RegionActivity.class);
-                to_Regions.putExtra("positionId", id);
-                context.startActivity(to_Regions);
+
+
+                AppCompatActivity activity = (AppCompatActivity) context;
+
+                Fragment regionFragment = new RegionFragment();
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("positionId", positionId);
+                regionFragment.setArguments(bundle);
+
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.main_container, regionFragment).addToBackStack(null).commit();
+
 
             }
         });

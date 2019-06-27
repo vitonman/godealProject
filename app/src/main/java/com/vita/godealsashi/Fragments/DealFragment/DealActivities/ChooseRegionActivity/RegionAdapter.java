@@ -3,18 +3,25 @@ package com.vita.godealsashi.Fragments.DealFragment.DealActivities.ChooseRegionA
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.List;
 import java.util.Random;
 
 
 import com.vita.godealsashi.Fragments.DealFragment.DealActivities.ChoosePositionActivity.PositionDataObject;
+import com.vita.godealsashi.Fragments.DealFragment.DealFragment;
 import com.vita.godealsashi.R;
 
 
@@ -50,11 +57,30 @@ class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.MyViewHolder> {
         viewHolder.parent.setBackgroundColor(currentColor);
         viewHolder.name.setText(data.name);
         viewHolder.age.setText(String.valueOf(data.id));
+        final int regionId = data.id;
+
+        Intent intent = new Intent();
+        final int positionId = intent.getIntExtra("positionId", 0);
+
 
         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+
+                AppCompatActivity activity = (AppCompatActivity) context;
+
+                Fragment dealFragment = new DealFragment();
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("regionId", regionId);
+                bundle.putInt("positionId", positionId);
+                dealFragment.setArguments(bundle);
+
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.main_container, dealFragment).addToBackStack(null).commit();
+
+
+                Toast.makeText(context, Integer.toString(positionId) + Integer.toString(regionId), Toast.LENGTH_SHORT).show();
 
             }
         });

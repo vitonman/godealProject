@@ -1,9 +1,13 @@
 package com.vita.godealsashi.Fragments.DealFragment.DealActivities.ChoosePositionActivity;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.vita.godealsashi.R;
 
@@ -12,23 +16,35 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class PositionActivity extends AppCompatActivity {
+
+public class PositionFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private PositionAdapter positionAdapter;
     private List<PositionDataObject> positionDataList = new ArrayList<>();
+    Context context;
+
+    public PositionFragment() {
+        // Required empty public constructor
+    }
+
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_position);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
 
-        recyclerView = findViewById(R.id.recycle_view_position);
+        View v = inflater.inflate(R.layout.fragment_position, container, false);
+
+
+        recyclerView = v.findViewById(R.id.recycle_view_position);
         positionAdapter = new PositionAdapter(positionDataList);
-        RecyclerView.LayoutManager manager = new GridLayoutManager(this, 2);
+        RecyclerView.LayoutManager manager = new GridLayoutManager(context, 2);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(positionAdapter);
         StudentDataPrepare();
+        return v;
     }
 
     private void StudentDataPrepare() {
@@ -69,4 +85,7 @@ public class PositionActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
 }

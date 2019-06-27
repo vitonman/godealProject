@@ -1,10 +1,10 @@
 package com.vita.godealsashi.Fragments.DealFragment.rethinkDeal;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
 
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.parse.ParseUser;
-import com.vita.godealsashi.Fragments.DealFragment.DealActivities.ChoosePositionActivity.PositionActivity;
+import com.vita.godealsashi.Fragments.DealFragment.DealActivities.ChoosePositionActivity.PositionFragment;
 import com.vita.godealsashi.R;
 
 
@@ -23,6 +23,8 @@ public class DealFragmentTest extends Fragment {
 
 
     private Button searchWorkers;
+
+    PositionFragment positionFragment;
 
 
 
@@ -41,6 +43,7 @@ public class DealFragmentTest extends Fragment {
 
         searchWorkers = v.findViewById(R.id.search_deals);
 
+        positionFragment = new PositionFragment();
 
         final ParseUser currentUser = ParseUser.getCurrentUser();
 
@@ -51,9 +54,11 @@ public class DealFragmentTest extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    Intent intent = new Intent(getActivity(), PositionActivity.class);
-                    startActivity(intent);
 
+
+                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.main_container, positionFragment);
+                    fragmentTransaction.commit();
 
 
 

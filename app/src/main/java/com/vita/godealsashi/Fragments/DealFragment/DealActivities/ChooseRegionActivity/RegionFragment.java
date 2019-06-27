@@ -1,9 +1,14 @@
 package com.vita.godealsashi.Fragments.DealFragment.DealActivities.ChooseRegionActivity;
 
-import android.support.v7.app.AppCompatActivity;
+
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.vita.godealsashi.R;
 
@@ -12,23 +17,35 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class RegionActivity extends AppCompatActivity {
+
+public class RegionFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private RegionAdapter regionAdapter;
     private List<RegionDataObject> regionDataList = new ArrayList<>();
+    Context context;
+
+    public RegionFragment() {
+        // Required empty public constructor
+    }
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chooce_region);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-        recyclerView = findViewById(R.id.recycle_view_region);
+        View v = inflater.inflate(R.layout.fragment_region, container, false);
+
+        recyclerView = v.findViewById(R.id.recycle_view_region);
         regionAdapter = new RegionAdapter(regionDataList);
-        RecyclerView.LayoutManager manager = new GridLayoutManager(this, 2);
+        RecyclerView.LayoutManager manager = new GridLayoutManager(context, 2);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(regionAdapter);
+
+
         StudentDataPrepare();
+
+        return v;
     }
 
     private void StudentDataPrepare() {
