@@ -18,9 +18,9 @@ import org.json.JSONArray;
 
 public class AbilityActivity extends AppCompatActivity {
 
-    private ImageView activity_driver, activity_worker, activity_teacher;
+    private ImageView activity_driver;
 
-    private Button saveBtn;
+    private ImageView saveBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +28,13 @@ public class AbilityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ability);
 
         final ParseUser currentUser = ParseUser.getCurrentUser();
-/*
 
-        activity_driver = (ImageView) findViewById(R.id.user_driver_pick);
-        activity_teacher = (ImageView) findViewById(R.id.user_teacher_pick);
-        activity_worker = (ImageView) findViewById(R.id.user_worker_pick);
 
-        saveBtn = (Button) findViewById(R.id.saveBtn);
-*/
+        activity_driver = (ImageView) findViewById(R.id.textView_id);
+
+
+        saveBtn = (ImageView) findViewById(R.id.save_btn);
+
 
         final JSONArray ability = new JSONArray();
 
@@ -43,13 +42,13 @@ public class AbilityActivity extends AppCompatActivity {
         activity_driver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ability.put("driver");
+                ability.put("Transportation");
 
                 activity_driver.setVisibility(View.INVISIBLE);
             }
         });
 
-        activity_worker.setOnClickListener(new View.OnClickListener() {
+   /*     activity_worker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -68,7 +67,7 @@ public class AbilityActivity extends AppCompatActivity {
                 activity_teacher.setVisibility(View.INVISIBLE);
             }
         });
-
+*/
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -24,6 +24,12 @@ public class PositionFragment extends Fragment {
     private List<PositionDataObject> positionDataList = new ArrayList<>();
     Context context;
 
+    private String[] positions = {"Courier services", "Repair and construction", "Logistics", "Cleaning",
+            "Online-helper", "Computer-help", "Holidays & Activities", "Design", "Software & web-development",
+            "Photo/Video", "Installation or Repair of home appliances", "Health and beauty", "Repair of digital equipment", "Legal assistance",
+            "Tutoring and training", "Vehicle repair"};
+
+
     public PositionFragment() {
         // Required empty public constructor
     }
@@ -47,43 +53,19 @@ public class PositionFragment extends Fragment {
         return v;
     }
 
+
+
     private void StudentDataPrepare() {
-        PositionDataObject data = new PositionDataObject("Construction/Ehitus", 1);
-        positionDataList.add(data);
-        data = new PositionDataObject("Transportation", 2);
-        positionDataList.add(data);
-        data = new PositionDataObject("Education/Koolitus", 3);
-        positionDataList.add(data);
-        data = new PositionDataObject("Consultation", 4);
-        positionDataList.add(data);
-        data = new PositionDataObject("Media", 5);
-        positionDataList.add(data);
-        data = new PositionDataObject("Mechanics", 6);
-        positionDataList.add(data);
-        data = new PositionDataObject("Law", 7);
-        positionDataList.add(data);
-        data = new PositionDataObject("Finance", 8);
-        positionDataList.add(data);
-        data = new PositionDataObject("Banking", 9);
-        positionDataList.add(data);
-        data = new PositionDataObject("Photo/Video", 10);
-        positionDataList.add(data);
-        data = new PositionDataObject("Organizacija Prazdnikov", 11);
-        positionDataList.add(data);
-        data = new PositionDataObject("Banking", 12);
-        positionDataList.add(data);
-        data = new PositionDataObject("Car", 13);
-        positionDataList.add(data);
-        data = new PositionDataObject("IT and informatics", 14);
-        positionDataList.add(data);
 
 
-        Collections.sort(positionDataList, new Comparator<PositionDataObject>() {
-            @Override
-            public int compare(PositionDataObject o1, PositionDataObject o2) {
-                return o1.name.compareTo(o2.name);
-            }
-        });
+        int i = 0;
+        for(String position: positions){
+            PositionDataObject data = new PositionDataObject(position, i);
+            positionDataList.add(data);
+            i += 1;
+
+        }
+
     }
 
 

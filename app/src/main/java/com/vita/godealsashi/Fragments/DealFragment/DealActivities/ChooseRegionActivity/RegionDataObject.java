@@ -4,9 +4,11 @@ package com.vita.godealsashi.Fragments.DealFragment.DealActivities.ChooseRegionA
 public class RegionDataObject {
     int id;
     String name;
-    public RegionDataObject(String name, int id) {
+    int positionId;
+    public RegionDataObject(String name, int id, int positionId) {
         this.name = name;
         this.id = id;
+        this.positionId = positionId;
 
     }
 

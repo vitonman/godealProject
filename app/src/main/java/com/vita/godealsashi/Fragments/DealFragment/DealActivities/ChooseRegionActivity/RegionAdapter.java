@@ -40,7 +40,11 @@ class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.MyViewHolder> {
         View itemView = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.position_list_row, viewGroup, false);
 
+
+
         context = viewGroup.getContext();
+
+
 
         return new MyViewHolder(itemView);
 
@@ -58,9 +62,12 @@ class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.MyViewHolder> {
         viewHolder.name.setText(data.name);
         viewHolder.age.setText(String.valueOf(data.id));
         final int regionId = data.id;
+        final int positionId = data.positionId;
 
-        Intent intent = new Intent();
-        final int positionId = intent.getIntExtra("positionId", 0);
+
+
+
+
 
 
         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
@@ -79,8 +86,6 @@ class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.MyViewHolder> {
 
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.main_container, dealFragment).addToBackStack(null).commit();
 
-
-                Toast.makeText(context, Integer.toString(positionId) + Integer.toString(regionId), Toast.LENGTH_SHORT).show();
 
             }
         });

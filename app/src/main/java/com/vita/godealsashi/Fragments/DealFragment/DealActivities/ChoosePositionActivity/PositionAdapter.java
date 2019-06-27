@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.vita.godealsashi.Fragments.DealFragment.DealActivities.ChooseRegionActivity.RegionFragment;
+import com.vita.godealsashi.Fragments.DealFragment.DealFragment;
 import com.vita.godealsashi.R;
 
 
@@ -67,6 +68,8 @@ class PositionAdapter extends RecyclerView.Adapter<PositionAdapter.MyViewHolder>
                 Bundle bundle = new Bundle();
                 bundle.putInt("positionId", positionId);
                 regionFragment.setArguments(bundle);
+
+
 
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.main_container, regionFragment).addToBackStack(null).commit();
 

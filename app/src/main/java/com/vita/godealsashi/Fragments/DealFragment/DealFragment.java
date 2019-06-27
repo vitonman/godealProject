@@ -47,6 +47,17 @@ public class DealFragment extends Fragment {
 
     private ProgressBar progressBar;
 
+    private int anPosInt;
+    private int anCityInt;
+
+    private String[] cities = {"Tallinn", "Tartu", "Pärnu", "Rakvere", "Saaremaa", "Narva", "Haapsalu", "Kohtla-jarve", "Elva", "Kuresaare",
+            "Viljandi", "Rõngu", "Valga", "Roju"};
+
+    private String[] positions = {"Courier services", "Repair and construction", "Logistics", "Cleaning",
+            "Online-helper", "Computer-help", "Holidays & Activities", "Design", "Software & web-development",
+            "Photo/Video", "Installation or Repair of home appliances", "Health and beauty", "Repair of digital equipment", "Legal assistance",
+            "Tutoring and training", "Vehicle repair"};
+
 
     public DealFragment() {
         // Required empty public constructor
@@ -55,6 +66,23 @@ public class DealFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Bundle bundle = this.getArguments();
+
+
+        if (bundle != null) {
+
+            anPosInt = bundle.getInt("positionId", 0);
+            anCityInt = bundle.getInt("regionId", 0);
+
+        } else {
+
+            Toast.makeText(getContext(), "Bundle is null", Toast.LENGTH_SHORT).show();
+
+        }
+
+        Toast.makeText(getContext(), Integer.toString(anPosInt) + ", " + Integer.toString(anCityInt), Toast.LENGTH_SHORT).show();
+
 
         View v =  inflater.inflate(R.layout.fragment_deal, container, false);
 
@@ -72,125 +100,79 @@ public class DealFragment extends Fragment {
         user_list_view.setAdapter(userDealRecycleAdapter);
 
 
-        searchWorkers = (Button) v.findViewById(R.id.setup_activity_btn);
-
-        //***********************************************************************************
-
-        //Spinner CITY
-        //get the spinner from the xml.
-        final Spinner city_spinner = v.findViewById(R.id.spinner_city);
-        //create a list of items for the spinner.
-        String[] city_items = new String[]{"Tallinn", "Tartu", "Pärnu", "Rakvere"};
-        //create an adapter to describe how the items are displayed, adapters are used in several places in android.
-        //There are multiple variations of this, but this is the basic variant.
-        ArrayAdapter<String> city_adapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, city_items);
-        //set the spinners adapter to the previously created one.
-        city_adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-        city_spinner.setAdapter(city_adapter);
-        //SPINNER CITY
-
-        //***********************************************************************************
-
-        //SPINNER ABILITY
-
-        final Spinner ability_spinner = v.findViewById(R.id.spinner_work);
-        //create a list of items for the spinner.
-        String[] ability_items = new String[]{"driver", "worker", "teacher"};
-        //create an adapter to describe how the items are displayed, adapters are used in several places in android.
-        //There are multiple variations of this, but this is the basic variant.
-        ArrayAdapter<String> ability_adapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, ability_items);
-        //set the spinners adapter to the previously created one.
-        ability_adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-        ability_spinner.setAdapter(ability_adapter);
-
-        //SPINNER ABILITY
-
-        //***********************************************************************************
+        final String city = cities[anCityInt];
+        final String position = positions[anPosInt];
 
 
         final ParseUser currentUser = ParseUser.getCurrentUser();
 
         if (currentUser != null) {
-            //Toast.makeText(getActivity(), "Success fragment", Toast.LENGTH_SHORT).show();
 
-            searchWorkers.setOnClickListener(new View.OnClickListener() {
+
+            progressBar.setVisibility(View.VISIBLE);
+
+            user_list.clear();
+
+            user_list_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
-                public void onClick(View v) {
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
 
-                    progressBar.setVisibility(View.VISIBLE);
+                    Boolean reqchedBottom = !recyclerView.canScrollVertically(1);
 
-                    user_list.clear();
+                    if(reqchedBottom){
 
-                    user_list_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                        @Override
-                        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                            super.onScrolled(recyclerView, dx, dy);
+                        //loadMorePost();
 
-                            Boolean reqchedBottom = !recyclerView.canScrollVertically(1);
-
-                            if(reqchedBottom){
-
-                                //loadMorePost();
-
-                            }
-
-                        }
-                    });
-
-                    ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
-                    query.whereEqualTo("city", city_spinner.getSelectedItem().toString());
-                    query.whereContains("ability", ability_spinner.getSelectedItem().toString());
-                    query.findInBackground(new FindCallback<CustomUser>() {
-                        @Override
-                        public void done(List<CustomUser> results, ParseException e) {
-
-                            if(e == null){
-
-                                progressBar.setVisibility(View.INVISIBLE);
-
-                                for (CustomUser r: results){
-                                    // Do whatever you want with the data...
-                                    if(r != null){
-
-                                        user_list.add(r);
-
-                                    } else {
-
-                                        // something went wrong
-
-                                    }
-
-                                }
-
-                                userDealRecycleAdapter.notifyDataSetChanged();
-
-                            } else {
-
-                                progressBar.setVisibility(View.INVISIBLE);
-
-                                Toast.makeText(getActivity(), "Something wrong", Toast.LENGTH_LONG).show();
-
-                            }
-
-
-                        }
-                    });
+                    }
 
                 }
             });
 
+            ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
+            query.whereEqualTo("city", city);
+            query.whereContains("ability", position);
+            query.findInBackground(new FindCallback<CustomUser>() {
+                @Override
+                public void done(List<CustomUser> results, ParseException e) {
+
+                    if(e == null){
+
+                        progressBar.setVisibility(View.INVISIBLE);
+
+                        for (CustomUser r: results){
+                            // Do whatever you want with the data...
+                            if(r != null){
+
+                                user_list.add(r);
+
+                            } else {
+
+                                // something went wrong
+
+                            }
+
+                        }
+
+                        userDealRecycleAdapter.notifyDataSetChanged();
+
+                    } else {
+
+                        progressBar.setVisibility(View.INVISIBLE);
+
+                        Toast.makeText(getActivity(), "Something wrong", Toast.LENGTH_LONG).show();
+
+                    }
 
 
+                }
+            });
 
 
         } else {
             // show the signup or login screen
             Toast.makeText(this.getContext(), "Logging out", Toast.LENGTH_SHORT).show();
         }
-
-
-
-
 
 
         // Inflate the layout for this fragment

@@ -45,6 +45,7 @@ public class DealFragmentTest extends Fragment {
 
         positionFragment = new PositionFragment();
 
+
         final ParseUser currentUser = ParseUser.getCurrentUser();
 
         if (currentUser != null) {
