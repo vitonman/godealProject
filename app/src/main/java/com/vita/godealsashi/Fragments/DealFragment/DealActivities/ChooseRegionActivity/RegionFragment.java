@@ -26,6 +26,11 @@ public class RegionFragment extends Fragment {
     private List<RegionDataObject> regionDataList = new ArrayList<>();
     Context context;
 
+    private String[] cities = {"Tallinn", "Tartu", "Narva", "Pärnu", "Kohtla-Järve", "Viljandi","Rakvere","Maardu","Kuressaare","Sillamäe","Valga"
+            ,"Võru","Jõhvi","Haapsalu","Keila","Paide","Elva","Saue","Põlva","Tapa","Jõgeva","Rapla","Kiviõli","Türi","Põltsamaa","Sindi"
+            ,"Paldiski","Kärdla","Kunda","Tõrva","Narva-Jõesuu","Kehra","Loksa","Räpina","Otepää","Tamsalu","Kilingi-Nõmme","Karksi-Nuia","Antsla",
+            "Võhma","Mustvee","Lihula","Suure-Jaani","Abja-Paluoja","Püssi","Mõisaküla","Kallaste"};
+
     public RegionFragment() {
         // Required empty public constructor
     }
@@ -63,34 +68,18 @@ public class RegionFragment extends Fragment {
 
 
     private void StudentDataPrepare(int position) {
-        RegionDataObject data = new RegionDataObject("Tallinn", 0,position);
-        regionDataList.add(data);
-        data = new RegionDataObject("Tartu", 1,position);
-        regionDataList.add(data);
-        data = new RegionDataObject("Pärnu", 2,position);
-        regionDataList.add(data);
-        data = new RegionDataObject("Rakvere", 3,position);
-        regionDataList.add(data);
-        data = new RegionDataObject("Saaremaa", 4,position);
-        regionDataList.add(data);
-        data = new RegionDataObject("Narva", 5,position);
-        regionDataList.add(data);
-        data = new RegionDataObject("Haapsalu", 6,position);
-        regionDataList.add(data);
-        data = new RegionDataObject("Kohtla-jarve", 7,position);
-        regionDataList.add(data);
-        data = new RegionDataObject("Elva", 8,position);
-        regionDataList.add(data);
-        data = new RegionDataObject("Kuresaare", 9,position);
-        regionDataList.add(data);
-        data = new RegionDataObject("Viljandi", 10,position);
-        regionDataList.add(data);
-        data = new RegionDataObject("Rõngu", 11,position);
-        regionDataList.add(data);
-        data = new RegionDataObject("Valga", 12,position);
-        regionDataList.add(data);
-        data = new RegionDataObject("Roju", 13,position);
-        regionDataList.add(data);
+
+
+        int i = 0;
+
+        for(String city: cities){
+
+            RegionDataObject data = new RegionDataObject(city, i,position);
+            regionDataList.add(data);
+            i += 1;
+        }
+
+/*
 
         Collections.sort(regionDataList, new Comparator<RegionDataObject>() {
             @Override
@@ -98,6 +87,7 @@ public class RegionFragment extends Fragment {
                 return o1.name.compareTo(o2.name);
             }
         });
+*/
 
 
     }

@@ -50,8 +50,10 @@ public class DealFragment extends Fragment {
     private int anPosInt;
     private int anCityInt;
 
-    private String[] cities = {"Tallinn", "Tartu", "Pärnu", "Rakvere", "Saaremaa", "Narva", "Haapsalu", "Kohtla-jarve", "Elva", "Kuresaare",
-            "Viljandi", "Rõngu", "Valga", "Roju"};
+    private String[] cities = {"Tallinn", "Tartu", "Narva", "Pärnu", "Kohtla-Järve", "Viljandi","Rakvere","Maardu","Kuressaare","Sillamäe","Valga"
+            ,"Võru","Jõhvi","Haapsalu","Keila","Paide","Elva","Saue","Põlva","Tapa","Jõgeva","Rapla","Kiviõli","Türi","Põltsamaa","Sindi"
+            ,"Paldiski","Kärdla","Kunda","Tõrva","Narva-Jõesuu","Kehra","Loksa","Räpina","Otepää","Tamsalu","Kilingi-Nõmme","Karksi-Nuia","Antsla",
+            "Võhma","Mustvee","Lihula","Suure-Jaani","Abja-Paluoja","Püssi","Mõisaküla","Kallaste"};
 
     private String[] positions = {"Courier services", "Repair and construction", "Logistics", "Cleaning",
             "Online-helper", "Computer-help", "Holidays & Activities", "Design", "Software & web-development",
