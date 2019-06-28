@@ -1,32 +1,60 @@
 <?xml version = "1.0" encoding = "utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view = "http://schemas.android.com/apk/res-auto"
-    android:layout_width = "match_parent"
-    card_view:cardCornerRadius = "4dp"
-    android:id ="@+id/card_view"
-    android:layout_margin = "10dp"
-    android:layout_height = "200dp">
-    <LinearLayout
-        android:id = "@+id/parent"
-        android:layout_gravity = "center"
-        android:layout_width = "match_parent"
-        android:orientation = "vertical"
-        android:gravity = "center"
-        android:layout_height="match_parent">
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="80dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/parent"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="1dp"
+        android:baselineAligned="true"
+        android:gravity="center"
+        android:nestedScrollingEnabled="true"
+        android:orientation="vertical">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/circleImageView"
+            android:layout_width="67dp"
+            android:layout_height="61dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@mipmap/ic_person"
+            card_view:layout_constraintBottom_toBottomOf="parent"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent" />
+
         <TextView
-            android:id = "@+id/name"
-            android:layout_width = "wrap_content"
-            android:gravity = "center"
-            android:textSize = "25sp"
-            android:textColor = "#FFF"
-            android:layout_height = "wrap_content" />
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
+            android:gravity="center"
+            android:text="TEXT name"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            card_view:layout_constraintStart_toEndOf="@+id/circleImageView"
+            card_view:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/age"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="28dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:gravity="center"
-            android:textColor="#FFF"
-            android:textSize="25sp" />
-    </LinearLayout>
+            android:singleLine="true"
+            android:text="number"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

@@ -1,9 +1,11 @@
 package com.vita.godealsashi.Fragments.DealFragment.DealActivities.ChoosePositionActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -43,12 +45,13 @@ class PositionAdapter extends RecyclerView.Adapter<PositionAdapter.MyViewHolder>
 
 
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onBindViewHolder(final MyViewHolder viewHolder, int i) {
-        final PositionDataObject data=studentDataList.get(i);
-        Random rnd = new Random();
-        int currentColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-        viewHolder.parent.setBackgroundColor(currentColor);
+       final PositionDataObject data=studentDataList.get(i);
+       /*  Random rnd = new Random();
+        int currentColor = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));*/
+
         viewHolder.name.setText(data.name);
         viewHolder.age.setText(String.valueOf(data.id));
 
@@ -60,7 +63,6 @@ class PositionAdapter extends RecyclerView.Adapter<PositionAdapter.MyViewHolder>
             public void onClick(View v) {
 
 
-
                 AppCompatActivity activity = (AppCompatActivity) context;
 
                 Fragment regionFragment = new RegionFragment();
@@ -68,8 +70,6 @@ class PositionAdapter extends RecyclerView.Adapter<PositionAdapter.MyViewHolder>
                 Bundle bundle = new Bundle();
                 bundle.putInt("positionId", positionId);
                 regionFragment.setArguments(bundle);
-
-
 
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.main_container, regionFragment).addToBackStack(null).commit();
 
@@ -86,7 +86,7 @@ class PositionAdapter extends RecyclerView.Adapter<PositionAdapter.MyViewHolder>
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name,age;
-        LinearLayout parent;
+        ConstraintLayout parent;
         View mView;
         public MyViewHolder(View itemView) {
             super(itemView);

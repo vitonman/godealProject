@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +47,7 @@ public class PositionFragment extends Fragment {
 
         recyclerView = v.findViewById(R.id.recycle_view_position);
         positionAdapter = new PositionAdapter(positionDataList);
-        RecyclerView.LayoutManager manager = new GridLayoutManager(context, 2);
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(positionAdapter);
         StudentDataPrepare();
@@ -56,7 +57,6 @@ public class PositionFragment extends Fragment {
 
 
     private void StudentDataPrepare() {
-
 
         int i = 0;
         for(String position: positions){
