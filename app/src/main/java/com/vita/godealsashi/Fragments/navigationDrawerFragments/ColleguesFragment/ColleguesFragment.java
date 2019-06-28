@@ -49,6 +49,7 @@ public class ColleguesFragment extends Fragment {
 
     private List<CustomUser> user_list;
     private TextView user_name_textview;
+    Set<String> friend_list;
 
     public Context context;
 
@@ -72,7 +73,8 @@ public class ColleguesFragment extends Fragment {
         progressBar.setVisibility(View.INVISIBLE);*/
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         final String custom_user_current_id = preferences.getString("current_ownerId", "");
-        Set<String> friend_list = preferences.getStringSet("friendlist", null);
+
+        friend_list = preferences.getStringSet("friendlist", null);
 
 
 

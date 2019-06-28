@@ -26,9 +26,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -62,6 +64,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -106,23 +110,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         checkFirstRun();
 
+
         ParseUser currentUser = ParseUser.getCurrentUser();
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-
         SharedPreferences.Editor editor = preferences.edit();
         String custom_user_current_id = preferences.getString("current_ownerId", "");
 
         mainToolBar = (Toolbar) findViewById(R.id.mainToolbar);
         setSupportActionBar(mainToolBar);
         getSupportActionBar().setTitle("Main");
-
         mainBottomNavigation = findViewById(R.id.bottomNavBar);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        String name = preferences.getString("current_name", "");
+        String lastname = preferences.getString("current_lastname", "");
+        String image = preferences.getString("current_image", "");
+
+        View hView =  navigationView.getHeaderView(0);
+        TextView nav_user = (TextView)hView.findViewById(R.id.navigation_name_textview);
+        CircleImageView nav_image = (CircleImageView) hView.findViewById(R.id.navigation_circle_image);
+        nav_user.setText(name + " " + lastname);
+        Glide.with(MainActivity.this)
+                .load(image)
+                .into(nav_image);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout,mainToolBar,R.string.open_drawer,R.string.close_drawer);
         drawerLayout.setDrawerListener(toggle);
@@ -139,8 +153,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
             // do stuff with the user
-            checkForSetup(currentUser, editor);
+
             checkForFriends(custom_user_current_id);
+            checkForSetup(currentUser, editor);
 
             user = new CustomUser();
 
@@ -150,6 +165,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             //loginSucess_anim.setVisibility(View.VISIBLE);
             loginSucess_anim.playAnimation();
+
+
 
             //fragments
             dealFragment = new DealFragment();
@@ -162,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             collegueFragment = new ColleguesFragment();
             requestFragment = new RequestFragment();
 
+            replaceFragment(dealFragmentTest);
 
 
             mainBottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -222,7 +240,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         liveQueryCheckFriend(custom_user_current_id);
-        //TODO: Maybe i can do here a query for user for better bacgground and non call after self data?
     }
 
 
@@ -248,10 +265,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch(item.getItemId()){
 
             case R.id.log_out:
-
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.clear();
 
                 ParseUser.logOut();
                 ParseUser currentUser = ParseUser.getCurrentUser();
@@ -293,6 +306,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = menuItem.getItemId();
 
         switch (id){
+
 
             case R.id.collegues:
                 Toast.makeText(this, "Collegues", Toast.LENGTH_SHORT).show();

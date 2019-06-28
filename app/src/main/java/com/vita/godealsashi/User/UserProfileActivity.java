@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,14 +40,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserProfileActivity extends AppCompatActivity{
 
-
+    boolean offerButtonClicked;
 
 
     private ImageView request_friend_image;
     private ImageView messaageBtn;
-    private TextView textRequest;
-
-
+    private TextView textRequest, abilityText;
+    private Button offerButton;
     private TextView user_fullnameView;
     private CircleImageView user_CircleImage;
     private int mCurrent_state;
@@ -94,6 +94,9 @@ public class UserProfileActivity extends AppCompatActivity{
         user_CircleImage = findViewById(R.id.user_profile_image);
         messaageBtn = findViewById(R.id.to_messages_btn);
         textRequest = findViewById(R.id.text_request);
+        abilityText = findViewById(R.id.abillities_text);
+        offerButton = findViewById(R.id.offer_button);
+
 
         Glide.with(UserProfileActivity.this)
                 .load(R.mipmap.ic_person)
@@ -149,6 +152,28 @@ public class UserProfileActivity extends AppCompatActivity{
                 Intent toMessages = new Intent(UserProfileActivity.this, ChatActivityTest.class);
                 toMessages.putExtra("targetUserId", ownerUser);
                 startActivity(toMessages);
+            }
+        });
+
+        offerButtonClicked = false;
+        offerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(!offerButtonClicked){
+
+                    offerButtonClicked = true;
+                    offerButton.setText("sended");
+
+                } else {
+
+                    offerButtonClicked = false;
+                    offerButton.setText("Offer to work");
+
+                }
+
+
+
             }
         });
 
