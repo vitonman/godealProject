@@ -19,7 +19,7 @@
         <activity android:name=".registration.RegistrationComplete" />
         <activity android:name=".Fragments.ChatFragment.ChatTestClass.ChatActivityTest" />
         <activity android:name=".Fragments.ChatFragment.ChatActivity.ChatActivity" />
-        <activity android:name=".User.UserProfileActivity" />
+        <activity android:name=".UserProfileClasses.UserProfileActivity" />
         <activity android:name=".registration.AbilityActivity" />
         <activity android:name=".registration.UserSetupActivity" />
         <activity android:name=".Login.LoginActivity" />

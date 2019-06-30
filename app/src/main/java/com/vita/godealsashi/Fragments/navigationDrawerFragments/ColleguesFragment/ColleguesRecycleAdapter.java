@@ -16,7 +16,7 @@ import com.parse.ParseUser;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.ParseClasses.FriendList;
 import com.vita.godealsashi.R;
-import com.vita.godealsashi.User.UserProfileActivity;
+import com.vita.godealsashi.UserProfileClasses.UserProfileActivity;
 
 import java.util.List;
 

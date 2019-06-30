@@ -1,4 +1,4 @@
-package com.vita.godealsashi.User;
+package com.vita.godealsashi.UserProfileClasses;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,24 +16,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.TransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.gson.Gson;
-import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
-import com.parse.livequery.ParseLiveQueryClient;
-import com.parse.livequery.SubscriptionHandling;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatTestClass.ChatActivityTest;
-import com.vita.godealsashi.MainActivity;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.ParseClasses.Invite;
+import com.vita.godealsashi.ParseClasses.OfferInvite;
 import com.vita.godealsashi.R;
 
-import java.util.List;
 import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -68,6 +61,8 @@ public class UserProfileActivity extends AppCompatActivity{
         final String custom_user_current_id = preferences.getString("current_ownerId", "");
         final String ownerUser = intent.getStringExtra("objectId");
         Set<String> friend_list = preferences.getStringSet("friendlist", null);
+
+
 
 
         if(friend_list != null) {
@@ -160,17 +155,27 @@ public class UserProfileActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
 
-                if(!offerButtonClicked){
+              /*  if(!offerButtonClicked){
 
                     offerButtonClicked = true;
+
+                    createOffer(custom_user_current_id, ownerUser);
+
                     offerButton.setText("sended");
 
                 } else {
 
                     offerButtonClicked = false;
                     offerButton.setText("Offer to work");
+                    deleteOffer(custom_user_current_id,ownerUser);
 
-                }
+                }*/
+
+/*              Intent toOfferIntent = new Intent(UserProfileActivity.this, OfferActivity.class);
+
+
+
+              startActivity(toOfferIntent);*/
 
 
 
@@ -201,9 +206,6 @@ public class UserProfileActivity extends AppCompatActivity{
     private void createInvite(final String current_user, final String targetId){
 
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final String objectId = preferences.getString("current_ownerId", "");
-
         ParseQuery<Invite> queryExist = ParseQuery.getQuery(Invite.class);
 
         queryExist.whereEqualTo("owner", current_user);
@@ -221,7 +223,7 @@ public class UserProfileActivity extends AppCompatActivity{
 
 
                    Invite newInvite = new Invite();
-                   newInvite.setOwner(objectId);
+                   newInvite.setOwner(current_user);
                    newInvite.setTargetId(targetId);
                    newInvite.setAccept(false);
 
@@ -281,6 +283,85 @@ public class UserProfileActivity extends AppCompatActivity{
 
     }
 
+    private void createOffer(final String current_user, final String targetId){
+
+
+        ParseQuery<OfferInvite> queryExist = ParseQuery.getQuery(OfferInvite.class);
+
+        queryExist.whereEqualTo("owner", current_user);
+        queryExist.whereEqualTo("targetId", targetId);
+
+        queryExist.getFirstInBackground(new GetCallback<OfferInvite>() {
+            @Override
+            public void done(OfferInvite object, ParseException e) {
+
+                if(e == null){
+
+                    Toast.makeText(UserProfileActivity.this, "Already", Toast.LENGTH_SHORT).show();
+
+                } else {
+
+
+                    OfferInvite newInvite = new OfferInvite();
+                    newInvite.setOwner(current_user);
+                    newInvite.setTargetId(targetId);
+
+                    newInvite.saveInBackground();
+
+                    Toast.makeText(UserProfileActivity.this, "Added", Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        });
+
+
+
+    }
+
+    private void deleteOffer(String current_user, String targetId){
+
+        ParseQuery<OfferInvite> queryExist = ParseQuery.getQuery(OfferInvite.class);
+
+        queryExist.whereEqualTo("owner", current_user);
+        queryExist.whereEqualTo("targetId", targetId);
+
+        queryExist.getFirstInBackground(new GetCallback<OfferInvite>() {
+            @Override
+            public void done(OfferInvite object, ParseException e) {
+
+                object.deleteInBackground();
+
+            }
+        });
+    }
+
+    private void getCheckOffer(String current_user, String targetId){
+
+        ParseQuery<OfferInvite> queryExist = ParseQuery.getQuery(OfferInvite.class);
+        queryExist.whereEqualTo("owner", current_user);
+        queryExist.whereEqualTo("target", targetId);
+
+        queryExist.getFirstInBackground(new GetCallback<OfferInvite>() {
+            @Override
+            public void done(OfferInvite object, ParseException e) {
+
+                if(e == null){
+
+                    mCurrent_state = 1;
+                    request_friend_image.setImageResource(R.drawable.ic_request_red_24dp);
+
+                } else {
+
+                    //Toast.makeText(UserProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                }
+
+            }
+        });
+
+    }
+
 
 
     private void getUserData(final String ownerUser){
@@ -321,11 +402,9 @@ public class UserProfileActivity extends AppCompatActivity{
 
                 }
 
-
             }
         });
 
     }
-
 
 }

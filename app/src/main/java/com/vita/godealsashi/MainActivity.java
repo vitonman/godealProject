@@ -2,13 +2,11 @@ package com.vita.godealsashi;
 
 import android.animation.Animator;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -21,8 +19,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.telephony.gsm.GsmCellLocation;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,17 +27,14 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.livequery.ParseLiveQueryClient;
 import com.parse.livequery.SubscriptionHandling;
 import com.vita.godealsashi.Fragments.DealFragment.rethinkDeal.DealFragmentTest;
-import com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragment.ColleguesRecycleAdapter;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatFragment;
 import com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragment.ColleguesFragment;
@@ -51,16 +44,11 @@ import com.vita.godealsashi.Fragments.SearchFragment.SearchFragment;
 import com.vita.godealsashi.Fragments.navigationDrawerFragments.RequestsFragment.RequestFragment;
 import com.vita.godealsashi.Login.LoginActivity;
 import com.vita.godealsashi.ParseClasses.FriendList;
-import com.vita.godealsashi.ParseClasses.Invite;
-import com.vita.godealsashi.User.UserProfileActivity;
-import com.vita.godealsashi.parse.Godeal;
+import com.vita.godealsashi.ParseClasses.OfferInvite;
 import com.vita.godealsashi.registration.RegistrationComplete;
 import com.vita.godealsashi.registration.UserSetupActivity;
 
-import java.io.File;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -87,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //navigationdrawer fragments
     ColleguesFragment collegueFragment;
     RequestFragment requestFragment;
+    OffersFragment offersFragment;
 
     ArrayList<String> invites;
     private List<CustomUser> user_list;
@@ -178,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //navigation fragments
             collegueFragment = new ColleguesFragment();
             requestFragment = new RequestFragment();
+            offersFragment = new OffersFragment();
 
             replaceFragment(dealFragmentTest);
 
@@ -239,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             sendToLogIn();
         }
 
+        liveQueryCheckOfferInvite(custom_user_current_id);
         liveQueryCheckFriend(custom_user_current_id);
     }
 
@@ -319,6 +310,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.settings:
                 Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
+                replaceFragment(offersFragment);
                 break;
             case R.id.history:
                 Toast.makeText(this, "history", Toast.LENGTH_SHORT).show();
@@ -449,6 +441,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         //DO SOME UPDATE HERE
 
                         Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                });
+            }
+        });
+    }
+
+    private void liveQueryCheckOfferInvite(final String custom_user_current_id){
+
+        ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
+        ParseQuery<OfferInvite> perseLiveQueryOfferInvite = ParseQuery.getQuery(OfferInvite.class);
+        perseLiveQueryOfferInvite.whereEqualTo("targetId", custom_user_current_id);
+        SubscriptionHandling<OfferInvite> friendListSubscriptionHandling = parseLiveQueryClient.subscribe(perseLiveQueryOfferInvite);
+
+        friendListSubscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<OfferInvite>() {
+            @Override
+            public void onEvent(ParseQuery<OfferInvite> query, OfferInvite object) {
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    public void run() {
+
+                        Toast.makeText(getApplicationContext(), "You have been invited to work!", Toast.LENGTH_SHORT).show();
 
                     }
 

@@ -11,13 +11,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.parse.Parse;
 import com.parse.ParseUser;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatTestClass.ChatActivityTest;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 
 import com.vita.godealsashi.R;
-import com.vita.godealsashi.User.UserProfileActivity;
+import com.vita.godealsashi.UserProfileClasses.UserProfileActivity;
 
 import java.util.List;
 

@@ -83,7 +83,7 @@ public class DealFragment extends Fragment {
 
         }
 
-        Toast.makeText(getContext(), Integer.toString(anPosInt) + ", " + Integer.toString(anCityInt), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), Integer.toString(anPosInt) + ", " + Integer.toString(anCityInt), Toast.LENGTH_SHORT).show();
 
 
         View v =  inflater.inflate(R.layout.fragment_deal, container, false);
@@ -138,7 +138,7 @@ public class DealFragment extends Fragment {
                 @Override
                 public void done(List<CustomUser> results, ParseException e) {
 
-                    if(e == null){
+                    if(e == null ){
 
                         progressBar.setVisibility(View.INVISIBLE);
 
@@ -148,11 +148,16 @@ public class DealFragment extends Fragment {
 
                                 user_list.add(r);
 
-                            } else {
-
-                                // something went wrong
 
                             }
+
+
+                        }
+
+                        if(user_list == null || user_list.size() < 1 || results.size() < 1) {
+
+                            Toast.makeText(getContext(), "No persons to this filter!", Toast.LENGTH_SHORT).show();
+                            //TODO: make image if no data there.
 
                         }
 
@@ -162,10 +167,9 @@ public class DealFragment extends Fragment {
 
                         progressBar.setVisibility(View.INVISIBLE);
 
-                        Toast.makeText(getActivity(), "Something wrong", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Something wrong", Toast.LENGTH_LONG).show();
 
                     }
-
 
                 }
             });

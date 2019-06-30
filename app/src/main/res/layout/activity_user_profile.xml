@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
     android:orientation="vertical"
-    tools:context="com.vita.godealsashi.User.UserProfileActivity">
+    tools:context="com.vita.godealsashi.UserProfileClasses.UserProfileActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"

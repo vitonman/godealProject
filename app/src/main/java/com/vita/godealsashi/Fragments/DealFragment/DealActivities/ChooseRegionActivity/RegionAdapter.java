@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -99,7 +100,7 @@ class RegionAdapter extends RecyclerView.Adapter<RegionAdapter.MyViewHolder> {
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name,age;
-        LinearLayout parent;
+        ConstraintLayout parent;
         View mView;
         public MyViewHolder(View itemView) {
             super(itemView);

@@ -11,13 +11,13 @@
         </item>
 
         <item
-            android:title="Requests "
+            android:title="Collegue Requests"
             android:id="@+id/collegue_request"
             android:icon="@drawable/ic_group_add_black_48dp">
         </item>
 
         <item
-            android:title="Settings"
+            android:title="Offer requests"
             android:id="@+id/settings"
             android:icon="@drawable/ic_settings_black_48dp">
         </item>
