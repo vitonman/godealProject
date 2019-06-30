@@ -19,6 +19,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,10 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -35,6 +40,7 @@ import com.parse.ParseUser;
 import com.parse.livequery.ParseLiveQueryClient;
 import com.parse.livequery.SubscriptionHandling;
 import com.vita.godealsashi.Fragments.DealFragment.rethinkDeal.DealFragmentTest;
+import com.vita.godealsashi.Fragments.navigationDrawerFragments.OffersFragment.OffersFragment;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatFragment;
 import com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragment.ColleguesFragment;
@@ -44,6 +50,7 @@ import com.vita.godealsashi.Fragments.SearchFragment.SearchFragment;
 import com.vita.godealsashi.Fragments.navigationDrawerFragments.RequestsFragment.RequestFragment;
 import com.vita.godealsashi.Login.LoginActivity;
 import com.vita.godealsashi.ParseClasses.FriendList;
+import com.vita.godealsashi.ParseClasses.Invite;
 import com.vita.godealsashi.ParseClasses.OfferInvite;
 import com.vita.godealsashi.registration.RegistrationComplete;
 import com.vita.godealsashi.registration.UserSetupActivity;
@@ -118,7 +125,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String name = preferences.getString("current_name", "");
         String lastname = preferences.getString("current_lastname", "");
         String image = preferences.getString("current_image", "");
+        String current_user_id = preferences.getString("current_ownerId", "");
 
+
+        // THERE STUFF FOR NAVIGATION ACCOUNT
         View hView =  navigationView.getHeaderView(0);
         TextView nav_user = (TextView)hView.findViewById(R.id.navigation_name_textview);
         CircleImageView nav_image = (CircleImageView) hView.findViewById(R.id.navigation_circle_image);
@@ -126,6 +136,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Glide.with(MainActivity.this)
                 .load(image)
                 .into(nav_image);
+        //-----------------------------------
+
+
+
+        //++++ TESTING CLOUD MESSAGING ++++
+
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("TAG", "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        // Log and toast
+                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d(TAG, msg);
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        // ++++++++
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout,mainToolBar,R.string.open_drawer,R.string.close_drawer);
         drawerLayout.setDrawerListener(toggle);
@@ -229,8 +266,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             sendToLogIn();
         }
 
-        liveQueryCheckOfferInvite(custom_user_current_id);
-        liveQueryCheckFriend(custom_user_current_id);
+
+        liveQueryCheckData(custom_user_current_id);
     }
 
 
@@ -424,12 +461,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void liveQueryCheckFriend(final String custom_user_current_id){
+    //the big boss query class __________________________
 
-        ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
+    private void liveQueryCheckData(final String custom_user_current_id){
+
+        //FRIENDLIST QUERY
+        ParseLiveQueryClient parseLiveQueryFriendClient = ParseLiveQueryClient.Factory.getClient();
         ParseQuery<FriendList> parseLiveQueryFriendlist = ParseQuery.getQuery(FriendList.class);
         parseLiveQueryFriendlist.whereEqualTo("targetId", custom_user_current_id);
-        SubscriptionHandling<FriendList> friendListSubscriptionHandling = parseLiveQueryClient.subscribe(parseLiveQueryFriendlist);
+        SubscriptionHandling<FriendList> friendListSubscriptionHandling = parseLiveQueryFriendClient.subscribe(parseLiveQueryFriendlist);
 
         friendListSubscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<FriendList>() {
             @Override
@@ -447,18 +487,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
             }
         });
-    }
 
-    private void liveQueryCheckOfferInvite(final String custom_user_current_id){
+        //INVITE TO FRIEND QUERY
+        ParseLiveQueryClient parseLiveQueryInviteFriendClient = ParseLiveQueryClient.Factory.getClient();
+        ParseQuery<Invite> parseQueryInviteFriend = ParseQuery.getQuery(Invite.class);
+        parseQueryInviteFriend.whereEqualTo("targetId", custom_user_current_id);
+        SubscriptionHandling<Invite> inviteFriendListSubscriptionHandling = parseLiveQueryInviteFriendClient.subscribe(parseQueryInviteFriend);
 
-        ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
-        ParseQuery<OfferInvite> perseLiveQueryOfferInvite = ParseQuery.getQuery(OfferInvite.class);
-        perseLiveQueryOfferInvite.whereEqualTo("targetId", custom_user_current_id);
-        SubscriptionHandling<OfferInvite> friendListSubscriptionHandling = parseLiveQueryClient.subscribe(perseLiveQueryOfferInvite);
-
-        friendListSubscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<OfferInvite>() {
+        inviteFriendListSubscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<Invite>() {
             @Override
-            public void onEvent(ParseQuery<OfferInvite> query, OfferInvite object) {
+            public void onEvent(ParseQuery<Invite> query, Invite object) {
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
                     public void run() {
@@ -470,7 +508,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
             }
         });
+
+
+        //OFFER INVITE QUERY
+        ParseLiveQueryClient parseLiveQueryOfferInviteClient = ParseLiveQueryClient.Factory.getClient();
+        ParseQuery<OfferInvite> parseQueryOfferInvite = ParseQuery.getQuery(OfferInvite.class);
+        parseQueryOfferInvite.whereEqualTo("targetId", custom_user_current_id);
+        SubscriptionHandling<OfferInvite> subscriptionHandling = parseLiveQueryOfferInviteClient.subscribe(parseQueryOfferInvite);
+
+        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<OfferInvite>() {
+            @Override
+            public void onEvent(ParseQuery<OfferInvite> query, OfferInvite object) {
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    public void run() {
+
+                        //DO SOME UPDATE HERE
+
+                           /* user_list.clear();
+
+                            checkForRecivedInvites(currentUser);*/
+
+                        Toast.makeText(MainActivity.this, "OFFER INVITE", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                });
+            }
+        });
     }
+
+    //-----------------------------------------------------------------
+
+
 
     private void checkFirstRun() {
 
@@ -509,6 +579,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Update the shared preferences with the current version code
         prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).apply();
     }
+
 
 
 }
