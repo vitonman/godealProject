@@ -41,6 +41,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import static com.parse.Parse.getApplicationContext;
+
 
 public class ColleguesFragment extends Fragment {
 
@@ -114,7 +116,17 @@ public class ColleguesFragment extends Fragment {
                     }
                 });
 
-            getFriendList(friend_list);
+
+            if(friend_list != null){
+
+                getFriendList(friend_list);
+
+            } else {
+
+                Toast.makeText(getApplicationContext(), "friend_list have no data", Toast.LENGTH_SHORT).show();
+            }
+
+
 
 
 
@@ -130,29 +142,34 @@ public class ColleguesFragment extends Fragment {
 
     private void getFriendList(Set<String> objectsIds){
 
-        ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
-        query.whereContainedIn("objectId", objectsIds);
 
-        query.findInBackground(new FindCallback<CustomUser>() {
-            @Override
-            public void done(List<CustomUser> objects, ParseException e) {
+            ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
+            query.whereContainedIn("objectId", objectsIds);
 
-
-                if(e == null){
-
-                    user_list.addAll(objects);
+            query.findInBackground(new FindCallback<CustomUser>() {
+                @Override
+                public void done(List<CustomUser> objects, ParseException e) {
 
 
-                } else {
+                    if(e == null){
 
-                    e.getMessage();
+                        user_list.addAll(objects);
+
+
+                    } else {
+
+                        e.getMessage();
+
+                    }
+
+                    colleguesRecycleAdapter.notifyDataSetChanged();
 
                 }
+            });
 
-                colleguesRecycleAdapter.notifyDataSetChanged();
 
-            }
-        });
+
+
 
     }
 

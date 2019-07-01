@@ -28,10 +28,6 @@ import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -71,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private LottieAnimationView loginSucess_anim;
 
+    SharedPreferences preferences;
+    ParseUser currentUser = ParseUser.getCurrentUser();
+
     private CustomUser userData;
 
     ChatFragment chatFragment;
@@ -90,10 +89,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     DrawerLayout drawerLayout;
 
+    String custom_user_current_id;
+    String name;
+    String lastname;
+    String image;
+
 
     CustomUser user;
-
-    Context context;
 
     @SuppressLint("CommitPrefEdits")
     @Override
@@ -106,12 +108,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         checkFirstRun();
 
-
-        ParseUser currentUser = ParseUser.getCurrentUser();
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
-        String custom_user_current_id = preferences.getString("current_ownerId", "");
+
+        custom_user_current_id = preferences.getString("current_ownerId", "");
+        name = preferences.getString("current_name", "");
+        lastname = preferences.getString("current_lastname", "");
+        image = preferences.getString("current_image", "");
 
         mainToolBar = (Toolbar) findViewById(R.id.mainToolbar);
         setSupportActionBar(mainToolBar);
@@ -122,10 +125,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        String name = preferences.getString("current_name", "");
-        String lastname = preferences.getString("current_lastname", "");
-        String image = preferences.getString("current_image", "");
-        String current_user_id = preferences.getString("current_ownerId", "");
+
+
 
 
         // THERE STUFF FOR NAVIGATION ACCOUNT
@@ -137,32 +138,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .load(image)
                 .into(nav_image);
         //-----------------------------------
-
-
-
-        //++++ TESTING CLOUD MESSAGING ++++
-
-
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w("TAG", "getInstanceId failed", task.getException());
-                            return;
-                        }
-
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-
-                        // Log and toast
-                        String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d(TAG, msg);
-                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-        // ++++++++
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout,mainToolBar,R.string.open_drawer,R.string.close_drawer);
         drawerLayout.setDrawerListener(toggle);
@@ -180,8 +155,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             // do stuff with the user
 
-            checkForFriends(custom_user_current_id);
+
             checkForSetup(currentUser, editor);
+            liveQueryCheckData(custom_user_current_id);
 
             user = new CustomUser();
 
@@ -267,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-        liveQueryCheckData(custom_user_current_id);
+
     }
 
 
@@ -303,6 +279,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else {
                     // show the signup or login screen
                     Toast.makeText(MainActivity.this, "Logging out", Toast.LENGTH_SHORT).show();
+                    preferences.edit().clear().apply();
+
                     sendToLogIn();
                 }
 
@@ -337,6 +315,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
             case R.id.collegues:
+                checkForFriends(custom_user_current_id);
                 Toast.makeText(this, "Collegues", Toast.LENGTH_SHORT).show();
                 replaceFragment(collegueFragment);
 
@@ -388,37 +367,55 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void checkForSetup(ParseUser current_user, final SharedPreferences.Editor editor){
 
-        final ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
 
-        queryExist.whereEqualTo("owner", current_user.getObjectId());
+        if(custom_user_current_id.equals("")){
 
-        queryExist.getFirstInBackground(new GetCallback<CustomUser>() {
-            @Override
-            public void done(CustomUser object, ParseException e) {
+            final ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
 
-                if(e == null){
+            queryExist.whereEqualTo("owner", current_user.getObjectId());
 
-                    editor.putString("current_name", object.getName());
-                    editor.putString("current_lastname", object.getLastname());
-                    editor.putString("current_city", object.getCity());
-                    editor.putString("current_age", Integer.toString(object.getAge()));
-                    editor.putString("current_ownerId", object.getObjectId());
-                    editor.putString("current_image", object.getImage().getUrl());
+            queryExist.getFirstInBackground(new GetCallback<CustomUser>() {
+                @Override
+                public void done(CustomUser object, ParseException e) {
 
-                    editor.commit();
+                    if(e == null){
 
-                    Toast.makeText(MainActivity.this, "Your user is fine.", Toast.LENGTH_SHORT).show();
+                        editor.putString("current_name", object.getName());
+                        editor.putString("current_lastname", object.getLastname());
+                        editor.putString("current_city", object.getCity());
+                        editor.putString("current_age", Integer.toString(object.getAge()));
+                        editor.putString("current_ownerId", object.getObjectId());
+                        editor.putString("current_image", object.getImage().getUrl());
 
-                } else {
+                        editor.commit();
 
-                    Toast.makeText(MainActivity.this, "You must finish registration.", Toast.LENGTH_SHORT).show();
-                    Intent toSetupPage = new Intent(MainActivity.this, UserSetupActivity.class);
-                    startActivity(toSetupPage);
+                        Toast.makeText(MainActivity.this, "Added to shared preferences", Toast.LENGTH_SHORT).show();
+
+                        custom_user_current_id = preferences.getString("current_ownerId", "");
+                        name = preferences.getString("current_name", "");
+                        lastname = preferences.getString("current_lastname", "");
+                        image = preferences.getString("current_image", "");
+
+
+                    } else {
+
+                        Toast.makeText(MainActivity.this, "You must finish registration.", Toast.LENGTH_SHORT).show();
+                        Intent toSetupPage = new Intent(MainActivity.this, UserSetupActivity.class);
+                        startActivity(toSetupPage);
+
+                    }
 
                 }
+            });
 
-            }
-        });
+        } else {
+
+            Toast.makeText(MainActivity.this, "Your user is fine.", Toast.LENGTH_SHORT).show();
+
+        }
+
+
+
 
     }
 
@@ -466,10 +463,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void liveQueryCheckData(final String custom_user_current_id){
 
         //FRIENDLIST QUERY
-        ParseLiveQueryClient parseLiveQueryFriendClient = ParseLiveQueryClient.Factory.getClient();
+        ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
         ParseQuery<FriendList> parseLiveQueryFriendlist = ParseQuery.getQuery(FriendList.class);
         parseLiveQueryFriendlist.whereEqualTo("targetId", custom_user_current_id);
-        SubscriptionHandling<FriendList> friendListSubscriptionHandling = parseLiveQueryFriendClient.subscribe(parseLiveQueryFriendlist);
+        SubscriptionHandling<FriendList> friendListSubscriptionHandling = parseLiveQueryClient.subscribe(parseLiveQueryFriendlist);
 
         friendListSubscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<FriendList>() {
             @Override
@@ -489,10 +486,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         //INVITE TO FRIEND QUERY
-        ParseLiveQueryClient parseLiveQueryInviteFriendClient = ParseLiveQueryClient.Factory.getClient();
+
         ParseQuery<Invite> parseQueryInviteFriend = ParseQuery.getQuery(Invite.class);
         parseQueryInviteFriend.whereEqualTo("targetId", custom_user_current_id);
-        SubscriptionHandling<Invite> inviteFriendListSubscriptionHandling = parseLiveQueryInviteFriendClient.subscribe(parseQueryInviteFriend);
+        SubscriptionHandling<Invite> inviteFriendListSubscriptionHandling = parseLiveQueryClient.subscribe(parseQueryInviteFriend);
 
         inviteFriendListSubscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<Invite>() {
             @Override
@@ -511,10 +508,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         //OFFER INVITE QUERY
-        ParseLiveQueryClient parseLiveQueryOfferInviteClient = ParseLiveQueryClient.Factory.getClient();
         ParseQuery<OfferInvite> parseQueryOfferInvite = ParseQuery.getQuery(OfferInvite.class);
         parseQueryOfferInvite.whereEqualTo("targetId", custom_user_current_id);
-        SubscriptionHandling<OfferInvite> subscriptionHandling = parseLiveQueryOfferInviteClient.subscribe(parseQueryOfferInvite);
+        SubscriptionHandling<OfferInvite> subscriptionHandling = parseLiveQueryClient.subscribe(parseQueryOfferInvite);
 
         subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<OfferInvite>() {
             @Override
