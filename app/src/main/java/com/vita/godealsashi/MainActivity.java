@@ -2,7 +2,6 @@ package com.vita.godealsashi;
 
 import android.animation.Animator;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
@@ -19,7 +18,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +35,7 @@ import com.parse.livequery.ParseLiveQueryClient;
 import com.parse.livequery.SubscriptionHandling;
 import com.vita.godealsashi.Fragments.DealFragment.rethinkDeal.DealFragmentTest;
 import com.vita.godealsashi.Fragments.navigationDrawerFragments.OffersFragment.OffersFragment;
+import com.vita.godealsashi.OfferActivities.ReciveOffer;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.Fragments.ChatFragment.ChatFragment;
 import com.vita.godealsashi.Fragments.navigationDrawerFragments.ColleguesFragment.ColleguesFragment;
@@ -94,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String lastname;
     String image;
 
+    Set<String> friend_list;
 
     CustomUser user;
 
@@ -101,6 +101,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+/*
+        friend_list = preferences.getStringSet("friendlist", null);
+
+        if(friend_list == null){
+
+            Toast.makeText(MainActivity.this, "friendlist == null", Toast.LENGTH_LONG).show();
+        }*/
 
 
         //activity_main or navigation_drawer
@@ -111,10 +119,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = preferences.edit();
 
-        custom_user_current_id = preferences.getString("current_ownerId", "");
-        name = preferences.getString("current_name", "");
-        lastname = preferences.getString("current_lastname", "");
-        image = preferences.getString("current_image", "");
 
         mainToolBar = (Toolbar) findViewById(R.id.mainToolbar);
         setSupportActionBar(mainToolBar);
@@ -125,19 +129,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //TODO check if preferences have a data
+        custom_user_current_id = preferences.getString("current_ownerId", "");
 
-
-
-
-        // THERE STUFF FOR NAVIGATION ACCOUNT
-        View hView =  navigationView.getHeaderView(0);
-        TextView nav_user = (TextView)hView.findViewById(R.id.navigation_name_textview);
-        CircleImageView nav_image = (CircleImageView) hView.findViewById(R.id.navigation_circle_image);
-        nav_user.setText(name + " " + lastname);
-        Glide.with(MainActivity.this)
-                .load(image)
-                .into(nav_image);
-        //-----------------------------------
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout,mainToolBar,R.string.open_drawer,R.string.close_drawer);
         drawerLayout.setDrawerListener(toggle);
@@ -155,8 +149,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             // do stuff with the user
 
+            if(custom_user_current_id.equals("")){
 
-            checkForSetup(currentUser, editor);
+                checkForSetup(currentUser, editor);
+
+
+            } else {
+
+
+                custom_user_current_id = preferences.getString("current_ownerId", "");
+                name = preferences.getString("current_name", "");
+                lastname = preferences.getString("current_lastname", "");
+                image = preferences.getString("current_image", "");
+
+                // THERE STUFF FOR NAVIGATION ACCOUNT
+                View hView =  navigationView.getHeaderView(0);
+                TextView nav_user = (TextView)hView.findViewById(R.id.navigation_name_textview);
+                CircleImageView nav_image = (CircleImageView) hView.findViewById(R.id.navigation_circle_image);
+                nav_user.setText(name + " " + lastname);
+                Glide.with(MainActivity.this)
+                        .load(image)
+                        .into(nav_image);
+                //-----------------------------------
+            }
+
+
             liveQueryCheckData(custom_user_current_id);
 
             user = new CustomUser();
@@ -389,12 +406,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         editor.commit();
 
+
+                        // THERE STUFF FOR NAVIGATION ACCOUNT
+                        View hView =  navigationView.getHeaderView(0);
+                        TextView nav_user = (TextView)hView.findViewById(R.id.navigation_name_textview);
+                        CircleImageView nav_image = (CircleImageView) hView.findViewById(R.id.navigation_circle_image);
+                        nav_user.setText(object.getName() + " " + object.getLastname());
+                        Glide.with(MainActivity.this)
+                                .load(object.getImage().getUrl())
+                                .into(nav_image);
+                        //-----------------------------------
+
                         Toast.makeText(MainActivity.this, "Added to shared preferences", Toast.LENGTH_SHORT).show();
 
-                        custom_user_current_id = preferences.getString("current_ownerId", "");
-                        name = preferences.getString("current_name", "");
-                        lastname = preferences.getString("current_lastname", "");
-                        image = preferences.getString("current_image", "");
 
 
                     } else {
@@ -422,48 +446,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void checkForFriends(String custom_user_current_id){
 
-        Set<String> friend_list = preferences.getStringSet("friendlist", null);
 
-        if(friend_list == null){
+        ParseQuery<FriendList> query = ParseQuery.getQuery(FriendList.class);
 
-            ParseQuery<FriendList> query = ParseQuery.getQuery(FriendList.class);
+        query.whereEqualTo("owner", custom_user_current_id);
 
-            query.whereEqualTo("targetId", custom_user_current_id);
+        query.findInBackground(new FindCallback<FriendList>() {
+            @Override
+            public void done(List<FriendList> objects, ParseException e) {
 
-            query.findInBackground(new FindCallback<FriendList>() {
-                @Override
-                public void done(List<FriendList> objects, ParseException e) {
+                if (e == null){
 
-                    if (e == null){
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences.Editor editor = preferences.edit();
 
-                        SharedPreferences.Editor editor = preferences.edit();
+                    friend_list = new HashSet<>();
 
-                        Set<String> objectsIds = new HashSet<>();
+                    for (FriendList object: objects){
 
-                        for (FriendList object: objects){
-
-                            objectsIds.add(object.getOwner());
-
-                        }
-
-                        editor.putStringSet("friendlist", objectsIds);
-                        editor.apply();
+                        friend_list.add(object.getTargetId());
 
                     }
 
-
+                    editor.putStringSet("friendlist", friend_list);
+                    editor.apply();
 
                 }
-            });
 
-        }
+
+
+            }
+        });
+
+
 
 
 
 
     }
+
 
     //the big boss query class __________________________
 
@@ -526,11 +548,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 handler.post(new Runnable() {
                     public void run() {
 
-                        //DO SOME UPDATE HERE
+                        //showEditDialog();
+                        Intent toReciveOffer = new Intent(MainActivity.this, ReciveOffer.class);
+                        toReciveOffer.putExtra("currentId", custom_user_current_id);
+                        startActivity(toReciveOffer);
 
-                           /* user_list.clear();
-
-                            checkForRecivedInvites(currentUser);*/
 
                         Toast.makeText(MainActivity.this, "OFFER INVITE", Toast.LENGTH_SHORT).show();
 
@@ -582,6 +604,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Update the shared preferences with the current version code
         prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).apply();
     }
+
 
 
 

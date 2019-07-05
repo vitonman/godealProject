@@ -73,7 +73,9 @@ public class ColleguesFragment extends Fragment {
 
      /*   progressBar = v.findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.INVISIBLE);*/
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
         final String custom_user_current_id = preferences.getString("current_ownerId", "");
 
         friend_list = preferences.getStringSet("friendlist", null);

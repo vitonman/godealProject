@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,13 +21,16 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.vita.godealsashi.OfferActivities.WorkOffer;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 import com.vita.godealsashi.ParseClasses.Message;
+import com.vita.godealsashi.ParseClasses.OfferInvite;
 import com.vita.godealsashi.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 
 public class ChatActivityTest extends AppCompatActivity {
 
@@ -38,6 +42,7 @@ public class ChatActivityTest extends AppCompatActivity {
 
     EditText etMessage;
     Button btSend;
+    FloatingActionButton sendOfferBtn;
 
     RecyclerView rvChat;
     ArrayList<Message> mMessages;
@@ -96,6 +101,7 @@ public class ChatActivityTest extends AppCompatActivity {
         etMessage = (EditText) findViewById(R.id.etMessage);
         btSend = (Button) findViewById(R.id.btSend);
         rvChat = (RecyclerView) findViewById(R.id.rvChat);
+        sendOfferBtn = (FloatingActionButton) findViewById(R.id.floatingBtnSendOffer);
 
         mMessages = new ArrayList<>();
 
@@ -105,7 +111,7 @@ public class ChatActivityTest extends AppCompatActivity {
         Intent intent = getIntent();
         final String ownerUserId = intent.getStringExtra("targetUserId");
 
-        CustomUser targetUserObject = getObject(ownerUserId);
+        CustomUser targetUserObject = getObjectUser(ownerUserId);
 
 
         //Toast.makeText(ChatActivityTest.this, testUser.getName(), Toast.LENGTH_LONG).show();
@@ -142,10 +148,61 @@ public class ChatActivityTest extends AppCompatActivity {
             }
         });
 
+        sendOfferBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                OfferInvite offerInvite = getObjectInvite(custom_user_current_id, ownerUserId);
+
+                if(offerInvite != null){
+
+                    Toast.makeText(ChatActivityTest.this, "Already sended",
+                            Toast.LENGTH_SHORT).show();
+
+                }else{
+
+                    Intent workOffer = new Intent(ChatActivityTest.this, WorkOffer.class);
+
+                    workOffer.putExtra("ownerUserId", custom_user_current_id);
+                    workOffer.putExtra("targetUserId", ownerUserId);
+
+                    OfferInvite offer = new OfferInvite();
+                    offer.setOwner(custom_user_current_id);
+                    offer.setTargetId(ownerUserId);
+                    offer.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+
+                            Toast.makeText(ChatActivityTest.this, "Sended",
+                                    Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                    startActivity(workOffer);
+                }
+
+
+            }
+        });
+
     }
 
 
-    public CustomUser getObject(String id){
+    public OfferInvite getObjectInvite(String ownerId, String targetId){
+
+        ParseQuery<OfferInvite> query = ParseQuery.getQuery(OfferInvite.class);
+        query.whereEqualTo("owner", ownerId);
+        query.whereEqualTo("targetId", targetId);
+        try {
+            return query.getFirst();
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public CustomUser getObjectUser(String id){
         ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
         query.whereEqualTo("objectId", id);
         try {
