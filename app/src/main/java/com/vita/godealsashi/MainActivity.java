@@ -422,38 +422,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void checkForFriends(String custom_user_current_id){
 
+        Set<String> friend_list = preferences.getStringSet("friendlist", null);
 
-        ParseQuery<FriendList> query = ParseQuery.getQuery(FriendList.class);
+        if(friend_list == null){
 
-        query.whereEqualTo("targetId", custom_user_current_id);
+            ParseQuery<FriendList> query = ParseQuery.getQuery(FriendList.class);
 
-        query.findInBackground(new FindCallback<FriendList>() {
-            @Override
-            public void done(List<FriendList> objects, ParseException e) {
+            query.whereEqualTo("targetId", custom_user_current_id);
 
-                if (e == null){
+            query.findInBackground(new FindCallback<FriendList>() {
+                @Override
+                public void done(List<FriendList> objects, ParseException e) {
 
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    if (e == null){
 
-                    SharedPreferences.Editor editor = preferences.edit();
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-                    Set<String> objectsIds = new HashSet<>();
+                        SharedPreferences.Editor editor = preferences.edit();
 
-                    for (FriendList object: objects){
+                        Set<String> objectsIds = new HashSet<>();
 
-                        objectsIds.add(object.getOwner());
+                        for (FriendList object: objects){
+
+                            objectsIds.add(object.getOwner());
+
+                        }
+
+                        editor.putStringSet("friendlist", objectsIds);
+                        editor.apply();
 
                     }
 
-                    editor.putStringSet("friendlist", objectsIds);
-                    editor.apply();
+
 
                 }
+            });
+
+        }
 
 
-
-            }
-        });
 
 
     }
@@ -474,10 +481,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
                     public void run() {
-                        checkForFriends(custom_user_current_id);
+
                         //DO SOME UPDATE HERE
 
-                        Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Added friend", Toast.LENGTH_SHORT).show();
 
                     }
 
@@ -498,7 +505,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 handler.post(new Runnable() {
                     public void run() {
 
-                        Toast.makeText(getApplicationContext(), "You have been invited to work!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "You have been invited to friend", Toast.LENGTH_SHORT).show();
 
                     }
 

@@ -46,8 +46,8 @@ public class ChatActivityTest extends AppCompatActivity {
     // Keep track of initial load to scroll to the bottom of the ListView
     boolean mFirstLoad;
 
-    // Create a handler which can run code periodically
-    static final int POLL_INTERVAL = 1000; // milliseconds
+  /*  // Create a handler which can run code periodically
+    static final int POLL_INTERVAL = 999999999; // milliseconds
     Handler myHandler = new Handler();  // android.os.Handler
     Runnable mRefreshMessagesRunnable = new Runnable() {
         @Override
@@ -55,19 +55,14 @@ public class ChatActivityTest extends AppCompatActivity {
             refreshMessages();
             myHandler.postDelayed(this, POLL_INTERVAL);
         }
-    };
 
+    };
+*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_test);
-
-
-        //readUserInfo();
-
-
-
 
 
         if(ParseUser.getCurrentUser() != null){
@@ -78,8 +73,8 @@ public class ChatActivityTest extends AppCompatActivity {
             startWithCurrentUser();
 
         }
-        myHandler.postDelayed(mRefreshMessagesRunnable, POLL_INTERVAL);
 
+        refreshMessages();
 
     }
 
@@ -130,8 +125,6 @@ public class ChatActivityTest extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String data = etMessage.getText().toString();
-
-
 
                 Message message = new Message();
                 message.setBody(data);
