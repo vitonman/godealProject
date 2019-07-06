@@ -481,9 +481,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-
-
-
     }
 
 
@@ -604,8 +601,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Update the shared preferences with the current version code
         prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).apply();
     }
-
-
 
 
 }

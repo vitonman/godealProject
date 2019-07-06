@@ -19,9 +19,15 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 
+import com.parse.SaveCallback;
+import com.vita.godealsashi.Fragments.ChatFragment.ChatTestClass.ChatActivityTest;
+import com.vita.godealsashi.OfferActivities.ReciveOffer;
+import com.vita.godealsashi.OfferActivities.WorkOffer;
 import com.vita.godealsashi.ParseClasses.CustomUser;
+import com.vita.godealsashi.ParseClasses.DealList;
 import com.vita.godealsashi.ParseClasses.FriendList;
 import com.vita.godealsashi.ParseClasses.Invite;
+import com.vita.godealsashi.ParseClasses.OfferInvite;
 import com.vita.godealsashi.R;
 import com.vita.godealsashi.UserProfileClasses.UserProfileActivity;
 
@@ -88,13 +94,29 @@ public class OfferRecycleAdapter extends RecyclerView.Adapter<OfferRecycleAdapte
             }
         });
 
-        //add to friends
-
-        //---------------------------------------------------
-        final String user_reciver = userList.get(i).getObjectId();
+        final String targetId = userList.get(i).getObjectId();
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        final String user_accepter = preferences.getString("current_ownerId", "");
+        final String ownerId = preferences.getString("current_ownerId", "");
+
+        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent toReciveOffer = new Intent(context, ReciveOffer.class);
+
+                toReciveOffer.putExtra("targetUserId", ownerId);
+                toReciveOffer.putExtra("ownerUserId", targetId);
+
+                context.startActivity(toReciveOffer);
+
+
+            }
+        });
+
+        //add to friends
+
+
 
 
         //----------------------------------------------------
@@ -104,51 +126,23 @@ public class OfferRecycleAdapter extends RecyclerView.Adapter<OfferRecycleAdapte
             @Override
             public void onClick(View v) {
 
-                userList.remove(viewHolder.getLayoutPosition());
 
-                final ParseQuery<FriendList> queryFriend = ParseQuery.getQuery(FriendList.class);
-                queryFriend.whereEqualTo("owner", user_accepter);
-                queryFriend.whereEqualTo("target", user_reciver);
 
-                queryFriend.getFirstInBackground(new GetCallback<FriendList>() {
-                    @Override
-                    public void done(FriendList object, ParseException e) {
+                DealList checkDealList = getDealObject(ownerId, targetId);
 
-                        if(e == null){
 
-                            Toast.makeText(context, "Already", Toast.LENGTH_SHORT).show();
+                if(checkDealList != null){
 
-                        } else {
+                    Toast.makeText(context, "In list", Toast.LENGTH_SHORT).show();
 
-                            Toast.makeText(context, "Added to friendlist", Toast.LENGTH_SHORT).show();
-                            FriendList accepter_friend = new FriendList();
-                            accepter_friend.setOwner(user_accepter);
-                            accepter_friend.setTargetId(user_reciver);
-                            accepter_friend.saveInBackground();
-
-                            FriendList reciver_friend = new FriendList();
-                            reciver_friend.setOwner(user_reciver);
-                            reciver_friend.setTargetId(user_accepter);
-                            reciver_friend.saveInBackground();
-
-                            final ParseQuery<Invite> queryInvite = ParseQuery.getQuery(Invite.class);
-                            queryInvite.whereEqualTo("owner", user_reciver);
-                            queryInvite.whereEqualTo("targetId", user_accepter);
-                            queryInvite.getFirstInBackground(new GetCallback<Invite>() {
-                                @Override
-                                public void done(Invite object, ParseException e) {
-
-                                    object.deleteInBackground();
+                } else {
 
 
 
-                                }
-                            });
+                }
 
-                        }
 
-                    }
-                });
+
 
 
                 OfferRecycleAdapter.this.notifyDataSetChanged();
@@ -158,6 +152,20 @@ public class OfferRecycleAdapter extends RecyclerView.Adapter<OfferRecycleAdapte
         });
 
 
+    }
+
+    public DealList getDealObject(String ownerId, String targetId){
+
+        ParseQuery<DealList> query = ParseQuery.getQuery(DealList.class);
+        query.whereEqualTo("owner", ownerId);
+        query.whereEqualTo("targetId", targetId);
+        try {
+            return query.getFirst();
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

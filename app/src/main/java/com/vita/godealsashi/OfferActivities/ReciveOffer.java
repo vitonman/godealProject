@@ -9,11 +9,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.vita.godealsashi.ParseClasses.CustomUser;
+import com.vita.godealsashi.ParseClasses.DealList;
 import com.vita.godealsashi.ParseClasses.OfferInvite;
 import com.vita.godealsashi.R;
 
@@ -41,14 +43,32 @@ public class ReciveOffer extends AppCompatActivity {
 
 
 
-        Intent intent = new Intent();
-        String ownerId = intent.getStringExtra("currentId");
+        //TODO: i need to get id of sender
+        final Intent intent = new Intent();
+        final String ownerId = intent.getStringExtra("currentId");
 
-        //OfferInvite invite = getOffer(ownerId);
+
 
         buttonAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                OfferInvite invite = getOffer(ownerId, targetId);
+
+                if(invite != null){
+
+                    DealList dealList = new DealList();
+                    dealList.setOwner(invite.getOwner());
+                    dealList.setTargetId(invite.getTargetId());
+                    dealList.saveInBackground();
+
+                } else {
+
+                    Toast.makeText(ReciveOffer.this, "There's some problem with recive data", Toast.LENGTH_SHORT).show();
+
+                }
+
+
 
                 finish();
 
@@ -58,10 +78,11 @@ public class ReciveOffer extends AppCompatActivity {
 
     }
 
- /*   private OfferInvite getOffer(String ownerId){
+    private OfferInvite getOffer(String ownerId, String targetId){
         ParseQuery<OfferInvite> query = ParseQuery.getQuery(OfferInvite.class);
 
-        query.whereEqualTo("targetId", ownerId);
+        query.whereEqualTo("targetId", targetId);
+        query.whereEqualTo("owner", ownerId);
         try {
             return query.getFirst();
         } catch (ParseException e) {
@@ -70,7 +91,7 @@ public class ReciveOffer extends AppCompatActivity {
         }
         return null;
     }
-*/
+
 
 
 }
