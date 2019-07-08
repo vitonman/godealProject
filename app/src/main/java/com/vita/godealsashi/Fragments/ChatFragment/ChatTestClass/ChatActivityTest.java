@@ -82,7 +82,7 @@ public class ChatActivityTest extends AppCompatActivity {
         //refreshMessages();
 
     }
-
+//
     private void startWithCurrentUser(){
 
 
