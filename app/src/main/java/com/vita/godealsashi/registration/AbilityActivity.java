@@ -74,7 +74,7 @@ public class AbilityActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 final ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
-                queryExist.whereEqualTo("owner", currentUser.getObjectId());
+                queryExist.whereEqualTo("ownerUserId", currentUser.getObjectId());
                 queryExist.getFirstInBackground(new GetCallback<CustomUser>() {
                     @Override
                     public void done(CustomUser object, ParseException e) {

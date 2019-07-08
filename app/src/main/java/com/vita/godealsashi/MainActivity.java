@@ -46,6 +46,7 @@ import com.vita.godealsashi.Fragments.navigationDrawerFragments.RequestsFragment
 import com.vita.godealsashi.Login.LoginActivity;
 import com.vita.godealsashi.ParseClasses.FriendList;
 import com.vita.godealsashi.ParseClasses.Invite;
+import com.vita.godealsashi.ParseClasses.Message;
 import com.vita.godealsashi.ParseClasses.OfferInvite;
 import com.vita.godealsashi.registration.RegistrationComplete;
 import com.vita.godealsashi.registration.UserSetupActivity;
@@ -88,10 +89,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     DrawerLayout drawerLayout;
 
-    String custom_user_current_id;
-    String name;
-    String lastname;
-    String image;
+    String currentUserId;
+    String currentUserName;
+    String currentUserLastname;
+    String currentUserImage;
 
     Set<String> friend_list;
 
@@ -102,16 +103,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-/*
-        friend_list = preferences.getStringSet("friendlist", null);
-
-        if(friend_list == null){
-
-            Toast.makeText(MainActivity.this, "friendlist == null", Toast.LENGTH_LONG).show();
-        }*/
-
 
         //activity_main or navigation_drawer
+
         setContentView(R.layout.navigation_drawer);
 
         checkFirstRun();
@@ -129,52 +123,56 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //TODO check if preferences have a data
-        custom_user_current_id = preferences.getString("current_ownerId", "");
+        //check if preferences have a data
 
+        currentUserId = preferences.getString("currentUserId", "");
 
+        //Action drawer [close - open]
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout,mainToolBar,R.string.open_drawer,R.string.close_drawer);
         drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
 
+        //ParseUser -> currentUser
 
         if (currentUser != null) {
 
-
             invites = new ArrayList<String>();
+
             //getInvites(currentUser.getObjectId());
+
             Toast.makeText(MainActivity.this, invites.toString(), Toast.LENGTH_LONG).show();
 
+            //If there is data in SharedPreferences
+            if(currentUserId.equals("")){
 
-            // do stuff with the user
-
-            if(custom_user_current_id.equals("")){
+                //If not, save it, please
 
                 checkForSetup(currentUser, editor);
 
 
             } else {
 
+                // If exist, get it and stick to navigationDrawer.
 
-                custom_user_current_id = preferences.getString("current_ownerId", "");
-                name = preferences.getString("current_name", "");
-                lastname = preferences.getString("current_lastname", "");
-                image = preferences.getString("current_image", "");
+                currentUserId = preferences.getString("currentUserId", "");
+                currentUserName = preferences.getString("currentUserName", "");
+                currentUserLastname = preferences.getString("currentUserLastname", "");
+                currentUserImage = preferences.getString("currentUserImage", "");
 
-                // THERE STUFF FOR NAVIGATION ACCOUNT
+                // HERE STUFF FOR NAVIGATION ACCOUNT -> here you can change some parametres
+
                 View hView =  navigationView.getHeaderView(0);
                 TextView nav_user = (TextView)hView.findViewById(R.id.navigation_name_textview);
                 CircleImageView nav_image = (CircleImageView) hView.findViewById(R.id.navigation_circle_image);
-                nav_user.setText(name + " " + lastname);
+                nav_user.setText(currentUserName + " " + currentUserLastname);
                 Glide.with(MainActivity.this)
-                        .load(image)
+                        .load(currentUserImage)
                         .into(nav_image);
-                //-----------------------------------
+
             }
 
 
-            liveQueryCheckData(custom_user_current_id);
 
             user = new CustomUser();
 
@@ -182,12 +180,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             loginSucess_anim = (LottieAnimationView) findViewById(R.id.loginsucess_anim);
 
 
-            //loginSucess_anim.setVisibility(View.VISIBLE);
+            // loginSucess_anim.setVisibility(View.VISIBLE);
             loginSucess_anim.playAnimation();
 
 
 
-            //fragments
+            // Fragments
             dealFragment = new DealFragment();
             chatFragment = new ChatFragment();
             profileFragment = new ProfileFragment();
@@ -254,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
         } else {
-            // show the signup or login screen
+            // Show the signup or login screen
             Toast.makeText(MainActivity.this, "Logging out", Toast.LENGTH_SHORT).show();
             sendToLogIn();
         }
@@ -263,7 +261,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    @Override
+    protected void onResume() {
+        // There function catch new data from Parse.
+        liveQueryCheckData(currentUserId);
+        super.onResume();
 
+    }
 
     private void sendToLogIn(){
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -332,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
             case R.id.collegues:
-                checkForFriends(custom_user_current_id);
+                checkForFriends(currentUserId);
                 Toast.makeText(this, "Collegues", Toast.LENGTH_SHORT).show();
                 replaceFragment(collegueFragment);
 
@@ -385,11 +389,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void checkForSetup(ParseUser current_user, final SharedPreferences.Editor editor){
 
 
-        if(custom_user_current_id.equals("")){
+        if(currentUserId.equals("")){
 
             final ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
 
-            queryExist.whereEqualTo("owner", current_user.getObjectId());
+            queryExist.whereEqualTo("ownerUserId", current_user.getObjectId());
 
             queryExist.getFirstInBackground(new GetCallback<CustomUser>() {
                 @Override
@@ -397,17 +401,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     if(e == null){
 
-                        editor.putString("current_name", object.getName());
-                        editor.putString("current_lastname", object.getLastname());
-                        editor.putString("current_city", object.getCity());
-                        editor.putString("current_age", Integer.toString(object.getAge()));
-                        editor.putString("current_ownerId", object.getObjectId());
-                        editor.putString("current_image", object.getImage().getUrl());
+                        editor.putString("currentUserName", object.getName());
+                        editor.putString("currentUserLastname", object.getLastname());
+                        editor.putString("currentUserCity", object.getCity());
+                        editor.putString("currentUserAge", Integer.toString(object.getAge()));
+                        editor.putString("currentUserId", object.getObjectId());
+                        editor.putString("currentUserImage", object.getImage().getUrl());
 
                         editor.commit();
 
 
                         // THERE STUFF FOR NAVIGATION ACCOUNT
+
                         View hView =  navigationView.getHeaderView(0);
                         TextView nav_user = (TextView)hView.findViewById(R.id.navigation_name_textview);
                         CircleImageView nav_image = (CircleImageView) hView.findViewById(R.id.navigation_circle_image);
@@ -444,12 +449,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    // Query for check friendlist and adding Strings of TargerId to hashSet
+
     private void checkForFriends(String custom_user_current_id){
 
 
         ParseQuery<FriendList> query = ParseQuery.getQuery(FriendList.class);
 
-        query.whereEqualTo("owner", custom_user_current_id);
+        query.whereEqualTo("ownerUserId", custom_user_current_id);
 
         query.findInBackground(new FindCallback<FriendList>() {
             @Override
@@ -465,7 +472,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     for (FriendList object: objects){
 
-                        friend_list.add(object.getTargetId());
+                        friend_list.add(object.getTargetUserId());
 
                     }
 
@@ -484,14 +491,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    //the big boss query class __________________________
+    // The big boss Query Function_
 
-    private void liveQueryCheckData(final String custom_user_current_id){
+    private void liveQueryCheckData(final String ownerUserId){
 
-        //FRIENDLIST QUERY
+        // [FRIENDLIST QUERY]
+
         ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
+        //TODO: targetId -> is [CURRENT_USER]
         ParseQuery<FriendList> parseLiveQueryFriendlist = ParseQuery.getQuery(FriendList.class);
-        parseLiveQueryFriendlist.whereEqualTo("targetId", custom_user_current_id);
+        parseLiveQueryFriendlist.whereEqualTo("targetUserId", ownerUserId);
         SubscriptionHandling<FriendList> friendListSubscriptionHandling = parseLiveQueryClient.subscribe(parseLiveQueryFriendlist);
 
         friendListSubscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<FriendList>() {
@@ -502,6 +511,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void run() {
 
                         //DO SOME UPDATE HERE
+                        checkForFriends(currentUserId);
 
                         Toast.makeText(getApplicationContext(), "Added friend", Toast.LENGTH_SHORT).show();
 
@@ -511,12 +521,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        //INVITE TO FRIEND QUERY
+        // [INVITE TO FRIEND QUERY]
 
         ParseQuery<Invite> parseQueryInviteFriend = ParseQuery.getQuery(Invite.class);
-        parseQueryInviteFriend.whereEqualTo("targetId", custom_user_current_id);
+        //TODO: targetId -> is [CURRENT_USER]
+        parseQueryInviteFriend.whereEqualTo("targetUserId", ownerUserId);
         SubscriptionHandling<Invite> inviteFriendListSubscriptionHandling = parseLiveQueryClient.subscribe(parseQueryInviteFriend);
-
         inviteFriendListSubscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<Invite>() {
             @Override
             public void onEvent(ParseQuery<Invite> query, Invite object) {
@@ -533,26 +543,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
 
-        //OFFER INVITE QUERY
-        ParseQuery<OfferInvite> parseQueryOfferInvite = ParseQuery.getQuery(OfferInvite.class);
-        parseQueryOfferInvite.whereEqualTo("targetId", custom_user_current_id);
-        SubscriptionHandling<OfferInvite> subscriptionHandling = parseLiveQueryClient.subscribe(parseQueryOfferInvite);
+        // [OFFER INVITE QUERY]
 
+        ParseQuery<OfferInvite> parseQueryOfferInvite = ParseQuery.getQuery(OfferInvite.class);
+        //TODO: targetId -> is [CURRENT_USER]
+        parseQueryOfferInvite.whereEqualTo("targetUserId", ownerUserId);
+        SubscriptionHandling<OfferInvite> subscriptionHandling = parseLiveQueryClient.subscribe(parseQueryOfferInvite);
         subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<OfferInvite>() {
             @Override
-            public void onEvent(ParseQuery<OfferInvite> query, OfferInvite object) {
+            public void onEvent(ParseQuery<OfferInvite> query, final OfferInvite object) {
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
                     public void run() {
 
-                        //showEditDialog();
                         Intent toReciveOffer = new Intent(MainActivity.this, ReciveOffer.class);
-                        toReciveOffer.putExtra("currentId", custom_user_current_id);
+                        toReciveOffer.putExtra("targetUserId", object.getOwnerUserId());
                         startActivity(toReciveOffer);
 
 
                         Toast.makeText(MainActivity.this, "OFFER INVITE", Toast.LENGTH_SHORT).show();
 
+                    }
+
+                });
+            }
+        });
+
+
+        ParseQuery<Message> parseLiveQueryMessage = ParseQuery.getQuery(Message.class);
+        parseLiveQueryFriendlist.whereEqualTo("targetUserId", ownerUserId);
+        SubscriptionHandling<Message> subscriptionHandlingMessage = parseLiveQueryClient.subscribe(parseLiveQueryMessage);
+        subscriptionHandlingMessage.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<Message>() {
+            @Override
+            public void onEvent(ParseQuery<Message> query, final Message object) {
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    public void run() {
+                        Toast.makeText(MainActivity.this, object.getUserId() + " was sended you message.", Toast.LENGTH_SHORT).show();
                     }
 
                 });

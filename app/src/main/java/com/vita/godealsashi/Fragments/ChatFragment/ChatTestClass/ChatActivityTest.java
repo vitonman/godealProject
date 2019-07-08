@@ -3,6 +3,7 @@ package com.vita.godealsashi.Fragments.ChatFragment.ChatTestClass;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -21,8 +22,12 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.parse.livequery.ParseLiveQueryClient;
+import com.parse.livequery.SubscriptionHandling;
+import com.vita.godealsashi.MainActivity;
 import com.vita.godealsashi.OfferActivities.WorkOffer;
 import com.vita.godealsashi.ParseClasses.CustomUser;
+import com.vita.godealsashi.ParseClasses.FriendList;
 import com.vita.godealsashi.ParseClasses.Message;
 import com.vita.godealsashi.ParseClasses.OfferInvite;
 import com.vita.godealsashi.R;
@@ -51,28 +56,21 @@ public class ChatActivityTest extends AppCompatActivity {
     // Keep track of initial load to scroll to the bottom of the ListView
     boolean mFirstLoad;
 
-  /*  // Create a handler which can run code periodically
-    static final int POLL_INTERVAL = 999999999; // milliseconds
-    Handler myHandler = new Handler();  // android.os.Handler
-    Runnable mRefreshMessagesRunnable = new Runnable() {
-        @Override
-        public void run() {
-            refreshMessages();
-            myHandler.postDelayed(this, POLL_INTERVAL);
-        }
 
-    };
-*/
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_test);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        final String custom_user_current_id = preferences.getString("current_ownerId", "");
+
 
         if(ParseUser.getCurrentUser() != null){
             /*SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
             final String custom_user_current_id = preferences.getString("current_ownerId", "");*/
 
             startWithCurrentUser();
@@ -80,6 +78,8 @@ public class ChatActivityTest extends AppCompatActivity {
         }
 
         refreshMessages();
+        liveQueryRefresh(custom_user_current_id);
+        //refreshMessages();
 
     }
 
@@ -90,12 +90,35 @@ public class ChatActivityTest extends AppCompatActivity {
 
     }
 
+    private void liveQueryRefresh(String ownerUserId){
+
+        ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
+        //TODO: targetId -> is [CURRENT_USER]
+        ParseQuery<Message> parseLiveQueryFriendlist = ParseQuery.getQuery(Message.class);
+        parseLiveQueryFriendlist.whereEqualTo("targetUserId", ownerUserId);
+        SubscriptionHandling<Message> friendListSubscriptionHandling = parseLiveQueryClient.subscribe(parseLiveQueryFriendlist);
+
+        friendListSubscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<Message>() {
+            @Override
+            public void onEvent(ParseQuery< Message > query, final Message object) {
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    public void run() {
+                        refreshMessages();
+                        Toast.makeText(ChatActivityTest.this, object.getUserId() + " was sended you message.", Toast.LENGTH_SHORT).show();
+                    }
+
+                });
+            }
+        });
+    }
+
 
 
     void setupMessagePosting() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        final String custom_user_current_id = preferences.getString("current_ownerId", "");
+        final String custom_user_current_id = preferences.getString("currentUserId", "");
 
         // Find the text field and button
         etMessage = (EditText) findViewById(R.id.etMessage);
@@ -139,7 +162,7 @@ public class ChatActivityTest extends AppCompatActivity {
                 message.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
-                        Toast.makeText(ChatActivityTest.this, "Successfully created message on Parse",
+                        Toast.makeText(ChatActivityTest.this, "Sent",
                                 Toast.LENGTH_SHORT).show();
                         refreshMessages();
                     }
@@ -167,8 +190,8 @@ public class ChatActivityTest extends AppCompatActivity {
                     workOffer.putExtra("targetUserId", ownerUserId);
 
                     OfferInvite offer = new OfferInvite();
-                    offer.setOwner(custom_user_current_id);
-                    offer.setTargetId(ownerUserId);
+                    offer.setOwnerUserId(custom_user_current_id);
+                    offer.setTargetUserId(ownerUserId);
                     offer.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
@@ -185,14 +208,15 @@ public class ChatActivityTest extends AppCompatActivity {
             }
         });
 
+
     }
 
 
     public OfferInvite getObjectInvite(String ownerId, String targetId){
 
         ParseQuery<OfferInvite> query = ParseQuery.getQuery(OfferInvite.class);
-        query.whereEqualTo("owner", ownerId);
-        query.whereEqualTo("targetId", targetId);
+        query.whereEqualTo("ownerUserId", ownerId);
+        query.whereEqualTo("targetUserId", targetId);
         try {
             return query.getFirst();
         } catch (ParseException e) {
@@ -220,7 +244,6 @@ public class ChatActivityTest extends AppCompatActivity {
         Intent intent = getIntent();
         final String ownerUserId = intent.getStringExtra("targetUserId");
 
-
         // Construct query to execute
         ParseQuery<Message> query = ParseQuery.getQuery(Message.class);
         // Configure limit and sort order
@@ -232,7 +255,7 @@ public class ChatActivityTest extends AppCompatActivity {
         // This is equivalent to a SELECT query with SQL
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        final String custom_user_current_id = preferences.getString("current_ownerId", "");
+        final String custom_user_current_id = preferences.getString("currentUserId", "");
 
         //query.whereEqualTo("targetUserId", ParseUser.getCurrentUser().getObjectId());
 

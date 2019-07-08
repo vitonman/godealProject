@@ -52,8 +52,8 @@ public class WorkOffer extends AppCompatActivity {
 
     private OfferInvite getOffer(String ownerId, String targetId){
         ParseQuery<OfferInvite> query = ParseQuery.getQuery(OfferInvite.class);
-        query.whereEqualTo("owner", ownerId);
-        query.whereEqualTo("targetId", targetId);
+        query.whereEqualTo("ownerUserId", ownerId);
+        query.whereEqualTo("targetUserId", targetId);
         try {
             return query.getFirst();
         } catch (ParseException e) {

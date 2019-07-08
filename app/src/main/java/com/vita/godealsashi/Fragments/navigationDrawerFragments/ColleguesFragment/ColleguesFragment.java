@@ -46,6 +46,8 @@ import static com.parse.Parse.getApplicationContext;
 
 public class ColleguesFragment extends Fragment {
 
+    private String TARGER_USER_ID = "targetUserId";
+
     private RecyclerView user_list_view;
     private ColleguesRecycleAdapter colleguesRecycleAdapter;
 
@@ -76,7 +78,7 @@ public class ColleguesFragment extends Fragment {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        final String custom_user_current_id = preferences.getString("current_ownerId", "");
+        final String currentUserId = preferences.getString("currentUserId", "");
 
         friend_list = preferences.getStringSet("friendlist", null);
 

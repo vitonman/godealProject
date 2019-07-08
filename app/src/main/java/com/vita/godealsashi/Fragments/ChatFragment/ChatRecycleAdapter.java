@@ -62,7 +62,7 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
         String image = userList.get(i).getImage().getUrl();
         viewHolder.setUserImage(image);
 
-        final String owner = userList.get(i).getOwner();
+        final String owner = userList.get(i).getOwnerUserId();
 
         final ParseUser current_user = ParseUser.getCurrentUser();
 

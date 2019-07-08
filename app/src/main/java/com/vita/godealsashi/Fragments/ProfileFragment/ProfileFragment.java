@@ -81,11 +81,11 @@ public class ProfileFragment extends Fragment {
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-            String name = preferences.getString("current_name", "");
-            String lastname = preferences.getString("current_lastname", "");
-            String city = preferences.getString("current_city", "");
-            String age = preferences.getString("current_age", "");
-            String image = preferences.getString("current_image", "");
+            String name = preferences.getString("currentUserName", "");
+            String lastname = preferences.getString("currentUserLastname", "");
+            String city = preferences.getString("currentUserCity", "");
+            String age = preferences.getString("currentUserAge", "");
+            String image = preferences.getString("currentUserImage", "");
 
 
             if(!name.equalsIgnoreCase(""))

@@ -69,7 +69,7 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
 
         viewHolder.setUserImage(image);
 
-        final String owner = userList.get(i).getOwner();
+        final String owner = userList.get(i).getOwnerUserId();
 
         final String objectId = userList.get(i).getObjectId();
 
@@ -93,7 +93,7 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
         final String user_reciver = userList.get(i).getObjectId();
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        final String user_accepter = preferences.getString("current_ownerId", "");
+        final String user_accepter = preferences.getString("currentUserId", "");
 
 
         //----------------------------------------------------
@@ -106,8 +106,8 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
                 userList.remove(viewHolder.getLayoutPosition());
 
                 final ParseQuery<FriendList> queryFriend = ParseQuery.getQuery(FriendList.class);
-                queryFriend.whereEqualTo("owner", user_accepter);
-                queryFriend.whereEqualTo("target", user_reciver);
+                queryFriend.whereEqualTo("ownerUserId", user_accepter);
+                queryFriend.whereEqualTo("targetUserId", user_reciver);
 
                 queryFriend.getFirstInBackground(new GetCallback<FriendList>() {
                     @Override
@@ -122,17 +122,17 @@ public class RequestRecycleAdapter extends RecyclerView.Adapter<RequestRecycleAd
                             Toast.makeText(context, "Added to friendlist", Toast.LENGTH_SHORT).show();
                             FriendList accepter_friend = new FriendList();
                             accepter_friend.setOwner(user_accepter);
-                            accepter_friend.setTargetId(user_reciver);
+                            accepter_friend.setTargetUserId(user_reciver);
                             accepter_friend.saveInBackground();
 
                             FriendList reciver_friend = new FriendList();
                             reciver_friend.setOwner(user_reciver);
-                            reciver_friend.setTargetId(user_accepter);
+                            reciver_friend.setTargetUserId(user_accepter);
                             reciver_friend.saveInBackground();
 
                             final ParseQuery<Invite> queryInvite = ParseQuery.getQuery(Invite.class);
-                            queryInvite.whereEqualTo("owner", user_reciver);
-                            queryInvite.whereEqualTo("targetId", user_accepter);
+                            queryInvite.whereEqualTo("ownerUserId", user_reciver);
+                            queryInvite.whereEqualTo("targetUserId", user_accepter);
                             queryInvite.getFirstInBackground(new GetCallback<Invite>() {
                                 @Override
                                 public void done(Invite object, ParseException e) {

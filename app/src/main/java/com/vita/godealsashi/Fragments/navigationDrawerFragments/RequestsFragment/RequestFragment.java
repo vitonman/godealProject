@@ -41,6 +41,9 @@ import static com.parse.Parse.getApplicationContext;
 
 public class RequestFragment extends Fragment {
 
+    private String TARGER_USER_ID = "targetUserId";
+    private String CURRENT_USER_ID = "ownerUserId";
+
 
     private RecyclerView user_list_view;
     private RequestRecycleAdapter requestRecycleAdapter;
@@ -68,7 +71,7 @@ public class RequestFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_request, container, false);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        final String custom_user_current_id = preferences.getString("current_ownerId", "");
+        final String currentUserId = preferences.getString("currentUserId", "");
 
         user_list = new ArrayList<>();
         user_list_view = v.findViewById(R.id.request_user_list);
@@ -88,7 +91,9 @@ public class RequestFragment extends Fragment {
 
             ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
             ParseQuery<Invite> parseQuery = ParseQuery.getQuery(Invite.class);
-            parseQuery.whereEqualTo("targetId", custom_user_current_id);
+
+            // check if targetUser have a [currentUserId]
+            parseQuery.whereEqualTo(TARGER_USER_ID, currentUserId);
             SubscriptionHandling<Invite> subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
 
             subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<Invite>() {
@@ -138,18 +143,18 @@ public class RequestFragment extends Fragment {
 
         }
 
-        getInviteUsersList(custom_user_current_id);
+        getInviteUsersList(currentUserId);
 
         return v;
     }
 
 
-    private void getInviteUsersList(String custom_user_current_id) {
+    private void getInviteUsersList(String ownerUserId) {
 
 
         ParseQuery<Invite> query = ParseQuery.getQuery(Invite.class);
 
-        query.whereEqualTo("targetId", custom_user_current_id);
+        query.whereEqualTo(TARGER_USER_ID, ownerUserId);
 
         query.findInBackground(new FindCallback<Invite>() {
             @Override
@@ -159,7 +164,7 @@ public class RequestFragment extends Fragment {
 
                 for (Invite object : objects) {
 
-                    objectsIds.add(object.getOwner());
+                    objectsIds.add(object.getOwnerUserId());
 
                 }
 

@@ -106,24 +106,24 @@ public class UserSetupActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    String name = name_text_edit.getText().toString();
-                    String age = age_text_edit.getText().toString();
-                    String lastname = lastname_text_edit.getText().toString();
-                    String city = city_spinner.getSelectedItem().toString();
+                    String userName = name_text_edit.getText().toString();
+                    String userAge = age_text_edit.getText().toString();
+                    String userLastname = lastname_text_edit.getText().toString();
+                    String userCity = city_spinner.getSelectedItem().toString();
 
                     // age = Integer.parseInt(age_text.getText().toString());
                     //Number age2 = NumberFormat.getInstance().parse("int NUmber");
-                    if(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(age) && mainImageURI!= null && !TextUtils.isEmpty(lastname)
-                    && !TextUtils.isEmpty(city)){
+                    if(!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(userAge) && mainImageURI!= null && !TextUtils.isEmpty(userLastname)
+                    && !TextUtils.isEmpty(userCity)){
 
                         File image = new File(mainImageURI.getPath());
                         ParseFile parseFile = new ParseFile(image);
 
-                        setUserData(currentUser.getObjectId(), name, lastname, city, age, parseFile);
+                        setUserData(currentUser.getObjectId(), userName, userLastname, userCity, userAge, parseFile);
 
 
-                    } else if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(age) && mainImageURI!= null && !TextUtils.isEmpty(lastname)
-                            && !TextUtils.isEmpty(city)){
+                    } else if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(userAge) && mainImageURI!= null && !TextUtils.isEmpty(userLastname)
+                            && !TextUtils.isEmpty(userCity)){
 
                         Toast.makeText(UserSetupActivity.this, "Please select all field", Toast.LENGTH_SHORT).show();
 
@@ -225,12 +225,12 @@ public class UserSetupActivity extends AppCompatActivity {
     }
 
 
-    private void setUserData(final String currentuser, final String name, final String lastname,
+    private void setUserData(final String ownerUserId, final String name, final String lastname,
                              final String city, final String age,  final ParseFile image){
 
 
         final ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
-        queryExist.whereEqualTo("owner", currentuser);
+        queryExist.whereEqualTo("ownerUserId", ownerUserId);
         queryExist.getFirstInBackground(new GetCallback<CustomUser>() {
             @Override
             public void done(final CustomUser object, ParseException e) {
@@ -253,7 +253,7 @@ public class UserSetupActivity extends AppCompatActivity {
                     user.setLastname(lastname);
                     user.setAge(Integer.parseInt(age));
                     user.setImage(image);
-                    user.setOwner(currentuser);
+                    user.setOwnerUserId(ownerUserId);
                     user.setCity(city);
                     user.saveInBackground(new SaveCallback() {
                         @Override

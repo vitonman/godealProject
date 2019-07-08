@@ -6,23 +6,23 @@ import com.parse.ParseObject;
 @ParseClassName("OfferInvite")
 public class OfferInvite extends ParseObject {
 
-    public static final String USER_ID_KEY = "owner";
-    public static final String TARGET_USER_ID = "targetId";
+    public static final String USER_ID_KEY = "ownerUserId";
+    public static final String TARGET_USER_ID = "targetUserId";
 
-    public String getTargetId() {
+    public String getTargetUserId() {
         return getString(TARGET_USER_ID);
     }
 
-    public void setTargetId(String value) {
+    public void setTargetUserId(String value) {
         put(TARGET_USER_ID, value);
     }
 
 
-    public String getOwner() {
+    public String getOwnerUserId() {
         return getString(USER_ID_KEY);
     }
 
-    public void setOwner(String  value) {
+    public void setOwnerUserId(String  value) {
         put(USER_ID_KEY, value);
     }
 

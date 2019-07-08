@@ -10,6 +10,10 @@ import org.json.JSONArray;
 @ParseClassName("Invite")
 public class Invite extends ParseObject {
 
+
+    public static final String USER_ID_KEY = "ownerUserId";
+    public static final String TARGET_USER_ID = "targetUserId";
+
     public Invite(){
         super();
     }
@@ -24,21 +28,21 @@ public class Invite extends ParseObject {
     //RAITING SYSTEM INNED
 
 
-    public String getTargetId() {
-        return getString("targetId");
+    public String getTargetUserId() {
+        return getString(TARGET_USER_ID);
     }
 
-    public void setTargetId(String value) {
-        put("targetId", value);
+    public void setTargetUserId(String value) {
+        put(TARGET_USER_ID, value);
     }
 
 
-    public String getOwner() {
-        return getString("owner");
+    public String getOwnerUserId() {
+        return getString(USER_ID_KEY);
     }
 
-    public void setOwner(String  value) {
-        put("owner", value);
+    public void setOwnerUserId(String  value) {
+        put(USER_ID_KEY, value);
     }
 
     public boolean getAccept(){

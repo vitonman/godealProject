@@ -34,7 +34,7 @@ import java.util.List;
 
 
 public class OffersFragment extends Fragment {
-
+    private String TARGER_USER_ID = "targetUserId";
 
     private RecyclerView user_list_view;
     private RequestRecycleAdapter requestRecycleAdapter;
@@ -61,7 +61,7 @@ public class OffersFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_offers, container, false);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        final String custom_user_current_id = preferences.getString("current_ownerId", "");
+        final String currentUserId = preferences.getString("currentUserId", "");
 
         user_list = new ArrayList<>();
         user_list_view = v.findViewById(R.id.offer_list_view);
@@ -80,7 +80,7 @@ public class OffersFragment extends Fragment {
 
             ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
             ParseQuery<OfferInvite> parseQuery = ParseQuery.getQuery(OfferInvite.class);
-            parseQuery.whereEqualTo("targetId", custom_user_current_id);
+            parseQuery.whereEqualTo(TARGER_USER_ID, currentUserId);
             SubscriptionHandling<OfferInvite> subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
 
             subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<OfferInvite>() {
@@ -130,7 +130,7 @@ public class OffersFragment extends Fragment {
 
         }
 
-        getInviteUsersList(custom_user_current_id);
+        getInviteUsersList(currentUserId);
 
         return v;
     }
@@ -148,12 +148,12 @@ public class OffersFragment extends Fragment {
 
     }
 
-    private void getInviteUsersList(String custom_user_current_id) {
+    private void getInviteUsersList(String currentUserId) {
 
 
         ParseQuery<OfferInvite> query = ParseQuery.getQuery(OfferInvite.class);
 
-        query.whereEqualTo("targetId", custom_user_current_id);
+        query.whereEqualTo(TARGER_USER_ID, currentUserId);
 
         query.findInBackground(new FindCallback<OfferInvite>() {
             @Override
@@ -163,7 +163,7 @@ public class OffersFragment extends Fragment {
 
                 for (OfferInvite object : objects) {
 
-                    objectsIds.add(object.getOwner());
+                    objectsIds.add(object.getOwnerUserId());
 
                 }
 

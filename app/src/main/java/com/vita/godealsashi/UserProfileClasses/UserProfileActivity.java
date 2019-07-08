@@ -57,19 +57,19 @@ public class UserProfileActivity extends AppCompatActivity{
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
+
+        // [currentuserId -> you] <-> [targetUserId -> him]
+        final String currentUserId = preferences.getString("currentUserId", "");
         Intent intent = getIntent();
-        final String custom_user_current_id = preferences.getString("current_ownerId", "");
-        final String ownerUser = intent.getStringExtra("objectId");
+        final String targetUserId = intent.getStringExtra("objectId");
         Set<String> friend_list = preferences.getStringSet("friendlist", null);
-
-
 
 
         if(friend_list != null) {
 
             for (String friend: friend_list){
 
-                if(friend.equals(ownerUser)){
+                if(friend.equals(targetUserId)){
 
                     isFriend = true;
 
@@ -81,8 +81,6 @@ public class UserProfileActivity extends AppCompatActivity{
 
 
         final ParseUser current_user = ParseUser.getCurrentUser();
-
-
 
         request_friend_image = findViewById(R.id.request_friend_image);
         user_fullnameView = findViewById(R.id.user_full_name);
@@ -119,7 +117,7 @@ public class UserProfileActivity extends AppCompatActivity{
 
                     if(mCurrent_state == 0){
 
-                        createInvite(custom_user_current_id, ownerUser);
+                        createInvite(currentUserId, targetUserId);
 
                         request_friend_image.setImageResource(R.drawable.ic_request_red_24dp);
                         mCurrent_state = 1;
@@ -127,7 +125,7 @@ public class UserProfileActivity extends AppCompatActivity{
 
                     } else if (mCurrent_state == 1){
 
-                        deleteInvite(custom_user_current_id, ownerUser);
+                        deleteInvite(currentUserId, targetUserId);
 
                         mCurrent_state = 0;
                         request_friend_image.setImageResource(R.drawable.ic_action_deal);
@@ -145,7 +143,7 @@ public class UserProfileActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 Intent toMessages = new Intent(UserProfileActivity.this, ChatActivityTest.class);
-                toMessages.putExtra("targetUserId", ownerUser);
+                toMessages.putExtra("targetUserId", targetUserId);
                 startActivity(toMessages);
             }
         });
@@ -183,8 +181,8 @@ public class UserProfileActivity extends AppCompatActivity{
         });
 
 
-        getUserData(ownerUser);
-        getCheckInvite(current_user.getObjectId(), ownerUser);
+        getUserData(targetUserId);
+        getCheckInvite(current_user.getObjectId(), targetUserId);
 
     }
 
@@ -203,13 +201,13 @@ public class UserProfileActivity extends AppCompatActivity{
 
     }
 
-    private void createInvite(final String current_user, final String targetId){
+    private void createInvite(final String ownerUserId, final String targetUserId){
 
 
         ParseQuery<Invite> queryExist = ParseQuery.getQuery(Invite.class);
 
-        queryExist.whereEqualTo("owner", current_user);
-        queryExist.whereEqualTo("targetId", targetId);
+        queryExist.whereEqualTo("ownerUserId", ownerUserId);
+        queryExist.whereEqualTo("targetUserId", targetUserId);
 
         queryExist.getFirstInBackground(new GetCallback<Invite>() {
            @Override
@@ -223,8 +221,8 @@ public class UserProfileActivity extends AppCompatActivity{
 
 
                    Invite newInvite = new Invite();
-                   newInvite.setOwner(current_user);
-                   newInvite.setTargetId(targetId);
+                   newInvite.setOwnerUserId(ownerUserId);
+                   newInvite.setTargetUserId(targetUserId);
                    newInvite.setAccept(false);
 
                    newInvite.saveInBackground();
@@ -240,12 +238,12 @@ public class UserProfileActivity extends AppCompatActivity{
 
     }
 
-    private void deleteInvite(String current_user, String targetId){
+    private void deleteInvite(String ownerUserId, String targetUserId){
 
         ParseQuery<Invite> queryExist = ParseQuery.getQuery(Invite.class);
 
-        queryExist.whereEqualTo("owner", current_user);
-        queryExist.whereEqualTo("targetId", targetId);
+        queryExist.whereEqualTo("ownerUserId", ownerUserId);
+        queryExist.whereEqualTo("targetUserId", targetUserId);
 
         queryExist.getFirstInBackground(new GetCallback<Invite>() {
             @Override
@@ -257,11 +255,11 @@ public class UserProfileActivity extends AppCompatActivity{
         });
     }
 
-    private void getCheckInvite(String current_user, String targetId){
+    private void getCheckInvite(String ownerUserId, String targetUserId){
 
         ParseQuery<Invite> queryExist = ParseQuery.getQuery(Invite.class);
-        queryExist.whereEqualTo("owner", current_user);
-        queryExist.whereEqualTo("target", targetId);
+        queryExist.whereEqualTo("ownerUserId", ownerUserId);
+        queryExist.whereEqualTo("targetUserId", targetUserId);
 
         queryExist.getFirstInBackground(new GetCallback<Invite>() {
             @Override
@@ -283,13 +281,13 @@ public class UserProfileActivity extends AppCompatActivity{
 
     }
 
-    private void createOffer(final String current_user, final String targetId){
+    private void createOffer(final String ownerUserId, final String targetUserId){
 
 
         ParseQuery<OfferInvite> queryExist = ParseQuery.getQuery(OfferInvite.class);
 
-        queryExist.whereEqualTo("owner", current_user);
-        queryExist.whereEqualTo("targetId", targetId);
+        queryExist.whereEqualTo("ownerUserId", ownerUserId);
+        queryExist.whereEqualTo("targetUserId", targetUserId);
 
         queryExist.getFirstInBackground(new GetCallback<OfferInvite>() {
             @Override
@@ -303,8 +301,8 @@ public class UserProfileActivity extends AppCompatActivity{
 
 
                     OfferInvite newInvite = new OfferInvite();
-                    newInvite.setOwner(current_user);
-                    newInvite.setTargetId(targetId);
+                    newInvite.setOwnerUserId(ownerUserId);
+                    newInvite.setTargetUserId(targetUserId);
 
                     newInvite.saveInBackground();
 
@@ -319,12 +317,12 @@ public class UserProfileActivity extends AppCompatActivity{
 
     }
 
-    private void deleteOffer(String current_user, String targetId){
+    private void deleteOffer(String ownerUserId, String targetUserId){
 
         ParseQuery<OfferInvite> queryExist = ParseQuery.getQuery(OfferInvite.class);
 
-        queryExist.whereEqualTo("owner", current_user);
-        queryExist.whereEqualTo("targetId", targetId);
+        queryExist.whereEqualTo("ownerUserId", ownerUserId);
+        queryExist.whereEqualTo("targetUserId", targetUserId);
 
         queryExist.getFirstInBackground(new GetCallback<OfferInvite>() {
             @Override
@@ -336,11 +334,11 @@ public class UserProfileActivity extends AppCompatActivity{
         });
     }
 
-    private void getCheckOffer(String current_user, String targetId){
+    private void getCheckOffer(String ownerUserId, String targetUserId){
 
         ParseQuery<OfferInvite> queryExist = ParseQuery.getQuery(OfferInvite.class);
-        queryExist.whereEqualTo("owner", current_user);
-        queryExist.whereEqualTo("target", targetId);
+        queryExist.whereEqualTo("ownerUserId", ownerUserId);
+        queryExist.whereEqualTo("targetUserId", targetUserId);
 
         queryExist.getFirstInBackground(new GetCallback<OfferInvite>() {
             @Override

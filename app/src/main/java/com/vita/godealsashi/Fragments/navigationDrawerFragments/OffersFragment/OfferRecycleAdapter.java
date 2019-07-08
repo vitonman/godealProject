@@ -76,7 +76,7 @@ public class OfferRecycleAdapter extends RecyclerView.Adapter<OfferRecycleAdapte
 
         viewHolder.setUserImage(image);
 
-        final String owner = userList.get(i).getOwner();
+        final String ownerUserId = userList.get(i).getOwnerUserId();
 
         final String objectId = userList.get(i).getObjectId();
 
@@ -86,7 +86,7 @@ public class OfferRecycleAdapter extends RecyclerView.Adapter<OfferRecycleAdapte
 
                 Intent commentIntent = new Intent(context, UserProfileActivity.class);
 
-                commentIntent.putExtra("ParseObjectOwner", owner);
+                commentIntent.putExtra("ParseObjectOwner", ownerUserId);
                 commentIntent.putExtra("objectId", objectId); // NEEED
                 commentIntent.putExtra("IsFriend",false);
                 context.startActivity(commentIntent);
@@ -97,7 +97,7 @@ public class OfferRecycleAdapter extends RecyclerView.Adapter<OfferRecycleAdapte
         final String targetId = userList.get(i).getObjectId();
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        final String ownerId = preferences.getString("current_ownerId", "");
+        final String ownerId = preferences.getString("currentUserId", "");
 
         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

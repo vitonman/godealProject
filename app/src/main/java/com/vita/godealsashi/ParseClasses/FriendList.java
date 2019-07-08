@@ -10,6 +10,10 @@ import org.json.JSONArray;
 @ParseClassName("FriendList")
 public class FriendList extends ParseObject {
 
+
+    public static final String USER_ID_KEY = "ownerUserId";
+    public static final String TARGET_USER_ID = "targetUserId";
+
     public FriendList(){
         super();
     }
@@ -21,32 +25,24 @@ public class FriendList extends ParseObject {
 
 
 
-    //RAITING SYSTEM INNED
+    //TODO: Rating SYSTEM INNED
 
-    public ParseUser getTarget() {
-        return getParseUser("objectid");
+    public String getTargetUserId() {
+        return getString(TARGET_USER_ID);
     }
 
-    public void setTarget(ParseUser value) {
-        put("target", value);
-    }
-
-    public String getTargetId() {
-        return getString("targetId");
-    }
-
-    public void setTargetId(String value) {
-        put("targetId", value);
+    public void setTargetUserId(String value) {
+        put(TARGET_USER_ID, value);
     }
 
 
 
-    public String getOwner() {
-        return getString("owner");
+    public String getOwnerUserId() {
+        return getString(USER_ID_KEY);
     }
 
     public void setOwner(String value) {
-        put("owner", value);
+        put(USER_ID_KEY, value);
     }
 
     public void setFriend(String value){
