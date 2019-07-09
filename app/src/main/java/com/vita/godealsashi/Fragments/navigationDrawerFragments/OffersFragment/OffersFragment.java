@@ -37,7 +37,7 @@ public class OffersFragment extends Fragment {
     private String TARGER_USER_ID = "targetUserId";
 
     private RecyclerView user_list_view;
-    private RequestRecycleAdapter requestRecycleAdapter;
+    private OfferRecycleAdapter offerRecycleAdapter;
 
     private List<CustomUser> user_list;
 
@@ -67,11 +67,11 @@ public class OffersFragment extends Fragment {
         user_list_view = v.findViewById(R.id.offer_list_view);
 
 
-        requestRecycleAdapter = new RequestRecycleAdapter(user_list);
+        offerRecycleAdapter = new OfferRecycleAdapter(user_list);
 
         user_list_view.setLayoutManager(new LinearLayoutManager(container.getContext()));
         user_list_view.setHasFixedSize(true);
-        user_list_view.setAdapter(requestRecycleAdapter);
+        user_list_view.setAdapter(offerRecycleAdapter);
 
 
         final ParseUser currentUser = ParseUser.getCurrentUser();
@@ -190,7 +190,7 @@ public class OffersFragment extends Fragment {
 
                 }
 
-                requestRecycleAdapter.notifyDataSetChanged();
+                offerRecycleAdapter.notifyDataSetChanged();
 
             }
         });

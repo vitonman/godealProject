@@ -1,6 +1,8 @@
 package com.vita.godealsashi.Fragments.ChatFragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,6 +27,8 @@ import com.stfalcon.chatkit.dialogs.DialogsListAdapter;
 import com.vita.godealsashi.ParseClasses.CustomUser;
 
 
+import com.vita.godealsashi.ParseClasses.Message;
+import com.vita.godealsashi.ParseClasses.OfferInvite;
 import com.vita.godealsashi.R;
 
 import java.util.ArrayList;
@@ -93,23 +97,6 @@ public class ChatFragment extends Fragment {
 
 
 
-            getData();
-
-
-            ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
-
-            ParseQuery<CustomUser> parseQuery = ParseQuery.getQuery(CustomUser.class);
-            SubscriptionHandling<CustomUser> subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
-
-            subscriptionHandling.handleEvents(new SubscriptionHandling.HandleEventsCallback<CustomUser>() {
-                @Override
-                public void onEvents(ParseQuery<CustomUser> query, SubscriptionHandling.Event event, CustomUser object) {
-                    // HANDLING all events
-                    getData();
-                }
-            });
-
-
 
 
 
@@ -124,27 +111,59 @@ public class ChatFragment extends Fragment {
 
 
 
-
+        getData();
 
         // Inflate the layout for this fragment
         return v;
     }
 
+
+    private OfferInvite getOffer(String ownerId){
+        ParseQuery<OfferInvite> query = ParseQuery.getQuery(OfferInvite.class);
+
+        query.whereEqualTo("targetId", ownerId);
+        try {
+            return query.getFirst();
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private void getData(){
 
-        ParseQuery<CustomUser> query = ParseQuery.getQuery(CustomUser.class);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final String currentUserId = preferences.getString("currentUserId", "");
+
+        ParseQuery<Message> query = ParseQuery.getQuery(Message.class);
         //query.whereNotEqualTo("owner", currentUser);
-        query.findInBackground(new FindCallback<CustomUser>() {
+
+        query.whereContains("userId", currentUserId);
+        query.whereContains("targetUserId", currentUserId);
+
+        query.findInBackground(new FindCallback<Message>() {
             @Override
-            public void done(List<CustomUser> results, ParseException e) {
+            public void done(List<Message> results, ParseException e) {
                 if(e == null){
-                    user_list.clear();
+
+
+                    String[] users_who_talks_with_me;
+
+                    for (int i = 0; i < results.size(); i++) {
+
+
+
+                    }
+
+
+                  /*  user_list.clear();
 
                     progressBar.setVisibility(View.INVISIBLE);
 
                     user_list.addAll(results);
                     userChatRecycleAdapter.notifyDataSetChanged();
-
+*/
 
 
                 } else {

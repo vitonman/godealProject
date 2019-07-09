@@ -53,12 +53,11 @@ public class OfferRecycleAdapter extends RecyclerView.Adapter<OfferRecycleAdapte
     @NonNull
     @Override
     public OfferRecycleAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.userlist_accept_friend_item, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.offerlist_list_item, viewGroup, false);
         context = viewGroup.getContext();
 
-        button_set = 0;
 
-        add_friend_btn = view.findViewById(R.id.add_friend_btn);
+
 
 
         return new OfferRecycleAdapter.ViewHolder(view);
@@ -91,6 +90,8 @@ public class OfferRecycleAdapter extends RecyclerView.Adapter<OfferRecycleAdapte
                 commentIntent.putExtra("IsFriend",false);
                 context.startActivity(commentIntent);
 
+
+
             }
         });
 
@@ -102,6 +103,8 @@ public class OfferRecycleAdapter extends RecyclerView.Adapter<OfferRecycleAdapte
         viewHolder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //TODO: move to OfferActivitySetup
 
                 Intent toReciveOffer = new Intent(context, ReciveOffer.class);
 
@@ -122,34 +125,6 @@ public class OfferRecycleAdapter extends RecyclerView.Adapter<OfferRecycleAdapte
         //----------------------------------------------------
 
 
-        add_friend_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-
-                DealList checkDealList = getDealObject(ownerId, targetId);
-
-
-                if(checkDealList != null){
-
-                    Toast.makeText(context, "In list", Toast.LENGTH_SHORT).show();
-
-                } else {
-
-
-
-                }
-
-
-
-
-
-                OfferRecycleAdapter.this.notifyDataSetChanged();
-
-
-            }
-        });
 
 
     }
@@ -197,7 +172,7 @@ public class OfferRecycleAdapter extends RecyclerView.Adapter<OfferRecycleAdapte
 
         public void setUserName(String name){
 
-            user_name_text = mView.findViewById(R.id.user_message);
+            user_name_text = mView.findViewById(R.id.user_offer_name);
             user_name_text.setText(name);
 
 
@@ -205,7 +180,7 @@ public class OfferRecycleAdapter extends RecyclerView.Adapter<OfferRecycleAdapte
 
         public void setUserImage(String img_url){
 
-            user_image = mView.findViewById(R.id.user_image_request);
+            user_image = mView.findViewById(R.id.offer_user_image);
 
             RequestOptions placeholderOption = new RequestOptions();
             placeholderOption.placeholder(R.mipmap.ic_person);

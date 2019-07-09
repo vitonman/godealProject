@@ -264,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         // There function catch new data from Parse.
+        liveQueryCheckForOffer(currentUserId);
         liveQueryCheckData(currentUserId);
         super.onResume();
 
@@ -346,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 replaceFragment(requestFragment);
                 break;
             case R.id.settings:
-                Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Your job list.", Toast.LENGTH_SHORT).show();
                 replaceFragment(offersFragment);
                 break;
             case R.id.history:
@@ -545,6 +546,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // [OFFER INVITE QUERY]
 
+
+        ParseQuery<Message> parseLiveQueryMessage = ParseQuery.getQuery(Message.class);
+        parseLiveQueryMessage.whereContains("targetUserId", ownerUserId);
+        SubscriptionHandling<Message> subscriptionHandlingMessage = parseLiveQueryClient.subscribe(parseLiveQueryMessage);
+        subscriptionHandlingMessage.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<Message>() {
+            @Override
+            public void onEvent(ParseQuery<Message> query, final Message object) {
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    public void run() {
+                        Toast.makeText(MainActivity.this, object.getUserId() + " was sended you message.", Toast.LENGTH_SHORT).show();
+
+                        //TODO: make a *red* icon anotation that message was sended to you.
+                    }
+
+                });
+            }
+        });
+
+
+
+    }
+
+    public void liveQueryCheckForOffer(String ownerUserId){
+
+        ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
+
         ParseQuery<OfferInvite> parseQueryOfferInvite = ParseQuery.getQuery(OfferInvite.class);
         //TODO: targetId -> is [CURRENT_USER]
         parseQueryOfferInvite.whereEqualTo("targetUserId", ownerUserId);
@@ -557,7 +585,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void run() {
 
                         Intent toReciveOffer = new Intent(MainActivity.this, ReciveOffer.class);
-                        toReciveOffer.putExtra("targetUserId", object.getOwnerUserId());
+                        toReciveOffer.putExtra("offerId", object.getObjectId());
                         startActivity(toReciveOffer);
 
 
@@ -570,21 +598,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
 
-        ParseQuery<Message> parseLiveQueryMessage = ParseQuery.getQuery(Message.class);
-        parseLiveQueryFriendlist.whereEqualTo("targetUserId", ownerUserId);
-        SubscriptionHandling<Message> subscriptionHandlingMessage = parseLiveQueryClient.subscribe(parseLiveQueryMessage);
-        subscriptionHandlingMessage.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<Message>() {
-            @Override
-            public void onEvent(ParseQuery<Message> query, final Message object) {
-                Handler handler = new Handler(Looper.getMainLooper());
-                handler.post(new Runnable() {
-                    public void run() {
-                        Toast.makeText(MainActivity.this, object.getUserId() + " was sended you message.", Toast.LENGTH_SHORT).show();
-                    }
 
-                });
-            }
-        });
+
     }
 
     //-----------------------------------------------------------------

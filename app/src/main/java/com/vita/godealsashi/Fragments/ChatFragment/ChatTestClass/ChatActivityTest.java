@@ -44,6 +44,7 @@ public class ChatActivityTest extends AppCompatActivity {
     static final String TAG = "Error";
     static final int MAX_CHAT_MESSAGES_TO_SHOW = 200;
 
+    private String ownerUserId;
 
     EditText etMessage;
     Button btSend;
@@ -57,8 +58,6 @@ public class ChatActivityTest extends AppCompatActivity {
     boolean mFirstLoad;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +65,7 @@ public class ChatActivityTest extends AppCompatActivity {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        final String custom_user_current_id = preferences.getString("current_ownerId", "");
+        final String custom_user_current_id = preferences.getString("currentUserId", "");
 
 
         if(ParseUser.getCurrentUser() != null){
@@ -77,12 +76,14 @@ public class ChatActivityTest extends AppCompatActivity {
 
         }
 
-        refreshMessages();
+
+
         liveQueryRefresh(custom_user_current_id);
-        //refreshMessages();
+        refreshMessages();
+
 
     }
-//
+
     private void startWithCurrentUser(){
 
 
@@ -91,26 +92,37 @@ public class ChatActivityTest extends AppCompatActivity {
     }
 
     private void liveQueryRefresh(String ownerUserId){
+        Intent intent = getIntent();
+        final String senderUserId = intent.getStringExtra("targetUserId");
+        String[] users = {ownerUserId, senderUserId};
 
         ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
-        //TODO: targetId -> is [CURRENT_USER]
-        ParseQuery<Message> parseLiveQueryFriendlist = ParseQuery.getQuery(Message.class);
-        parseLiveQueryFriendlist.whereEqualTo("targetUserId", ownerUserId);
-        SubscriptionHandling<Message> friendListSubscriptionHandling = parseLiveQueryClient.subscribe(parseLiveQueryFriendlist);
 
-        friendListSubscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new SubscriptionHandling.HandleEventCallback<Message>() {
-            @Override
-            public void onEvent(ParseQuery< Message > query, final Message object) {
-                Handler handler = new Handler(Looper.getMainLooper());
-                handler.post(new Runnable() {
-                    public void run() {
-                        refreshMessages();
-                        Toast.makeText(ChatActivityTest.this, object.getUserId() + " was sended you message.", Toast.LENGTH_SHORT).show();
+        ParseQuery<Message> parseQuery = ParseQuery.getQuery(Message.class);
+        // This query can even be more granular (i.e. only refresh if the entry was added by some other user)
+        parseQuery.whereContainedIn("targetUserId", Arrays.asList(users));
+        parseQuery.whereContainedIn("userId", Arrays.asList(users));
+
+        // Connect to Parse server
+        SubscriptionHandling<Message> subscriptionHandling = parseLiveQueryClient.subscribe(parseQuery);
+
+        // Listen for CREATE events
+        subscriptionHandling.handleEvent(SubscriptionHandling.Event.CREATE, new
+                SubscriptionHandling.HandleEventCallback<Message>() {
+                    @Override
+                    public void onEvent(ParseQuery<Message> query, Message object) {
+                        mMessages.add(0, object);
+
+                        // RecyclerView updates need to be run on the UI thread
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAdapter.notifyDataSetChanged();
+                                rvChat.scrollToPosition(0);
+                            }
+                        });
                     }
-
                 });
-            }
-        });
     }
 
 
@@ -132,7 +144,7 @@ public class ChatActivityTest extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        final String ownerUserId = intent.getStringExtra("targetUserId");
+        ownerUserId = intent.getStringExtra("targetUserId");
 
         CustomUser targetUserObject = getObjectUser(ownerUserId);
 
@@ -183,15 +195,14 @@ public class ChatActivityTest extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
 
                 }else{
-
                     Intent workOffer = new Intent(ChatActivityTest.this, WorkOffer.class);
-
-                    workOffer.putExtra("ownerUserId", custom_user_current_id);
                     workOffer.putExtra("targetUserId", ownerUserId);
+
 
                     OfferInvite offer = new OfferInvite();
                     offer.setOwnerUserId(custom_user_current_id);
                     offer.setTargetUserId(ownerUserId);
+                    offer.setAcceptStatus(false);
                     offer.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
@@ -201,6 +212,9 @@ public class ChatActivityTest extends AppCompatActivity {
 
                         }
                     });
+
+
+
                     startActivity(workOffer);
                 }
 
@@ -270,7 +284,7 @@ public class ChatActivityTest extends AppCompatActivity {
                     mAdapter.notifyDataSetChanged(); // update adapter
                     // Scroll to the bottom of the list on initial load
                     if (mFirstLoad) {
-                        rvChat.scrollToPosition(0);
+                            rvChat.scrollToPosition(0);
                         mFirstLoad = false;
                     }
                 } else {

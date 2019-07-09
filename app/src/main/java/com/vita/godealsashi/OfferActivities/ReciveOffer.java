@@ -43,22 +43,43 @@ public class ReciveOffer extends AppCompatActivity {
 
         Intent intent = new Intent();
         String ownerId = intent.getStringExtra("currentId");
+        final String objectId = intent.getStringExtra("offerId");
 
-        //OfferInvite invite = getOffer(ownerId);
 
-        buttonAnswer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        final OfferInvite offerInviteObject = getOffer(objectId);
 
-                finish();
+        if(offerInviteObject != null){
 
-            }
-        });
 
+
+            //OfferInvite invite = getOffer(ownerId);
+
+            buttonAnswer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    offerInviteObject.setAcceptStatus(true);
+                    offerInviteObject.saveInBackground();
+
+                    finish();
+
+                }
+            });
+
+
+        } else {
+
+
+
+
+        }
+        
 
     }
 
- /*   private OfferInvite getOffer(String ownerId){
+
+
+      private OfferInvite getOffer(String ownerId){
         ParseQuery<OfferInvite> query = ParseQuery.getQuery(OfferInvite.class);
 
         query.whereEqualTo("targetId", ownerId);
@@ -70,7 +91,7 @@ public class ReciveOffer extends AppCompatActivity {
         }
         return null;
     }
-*/
+
 
 
 }

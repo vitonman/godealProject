@@ -26,6 +26,18 @@ public class OfferInvite extends ParseObject {
         put(USER_ID_KEY, value);
     }
 
+    public void setAcceptStatus(Boolean value) {
+
+        put("acceptStatus", value);
+
+    }
+
+    public Boolean getAcceptStatus(){
+
+        return getBoolean("acceptStatus");
+
+    }
+
 
 
 }

@@ -2,17 +2,25 @@ package com.vita.godealsashi.OfferActivities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.livequery.ParseLiveQueryClient;
+import com.parse.livequery.SubscriptionHandling;
+import com.vita.godealsashi.MainActivity;
 import com.vita.godealsashi.ParseClasses.CustomUser;
+import com.vita.godealsashi.ParseClasses.Message;
 import com.vita.godealsashi.ParseClasses.OfferInvite;
 import com.vita.godealsashi.R;
 
@@ -38,30 +46,59 @@ public class WorkOffer extends AppCompatActivity {
         statusTextView = findViewById(R.id.offer_text_view);
         progressBarStatus = findViewById(R.id.offer_progressBar);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final String currentUserId = preferences.getString("currentUserId", "");
 
-        Intent intent = new Intent();
-        String ownerId = intent.getStringExtra("ownerUserId");
-        String targetId = intent.getStringExtra("targetUserId");
+        Intent intent = getIntent();
+        String targetUserId = intent.getStringExtra("targetUserId");
 
-        OfferInvite invite = getOffer(ownerId, targetId);
+        Toast.makeText(WorkOffer.this, targetUserId, Toast.LENGTH_SHORT).show();
 
+        //OfferInvite invite = getOffer(currentUserId, targetId);
 
+        liveQueryCheckForOffer(targetUserId, currentUserId);
     }
 
-    //TODO: WE CAN ADD LITTLE MESSAGE THERE OR SOMETHING LIKE THAT
+    public void liveQueryCheckForOffer(String targetUserId, String currentUserId){
 
-    private OfferInvite getOffer(String ownerId, String targetId){
-        ParseQuery<OfferInvite> query = ParseQuery.getQuery(OfferInvite.class);
-        query.whereEqualTo("ownerUserId", ownerId);
-        query.whereEqualTo("targetUserId", targetId);
-        try {
-            return query.getFirst();
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
+
+        ParseLiveQueryClient parseLiveQueryClient = ParseLiveQueryClient.Factory.getClient();
+
+        ParseQuery<OfferInvite> parseQueryOfferInvite = ParseQuery.getQuery(OfferInvite.class);
+
+        parseQueryOfferInvite.whereContains("ownerUserId", currentUserId);
+        parseQueryOfferInvite.whereContains("targetUserId", targetUserId);
+
+
+        SubscriptionHandling<OfferInvite> subscriptionHandling = parseLiveQueryClient.subscribe(parseQueryOfferInvite);
+        subscriptionHandling.handleEvent(SubscriptionHandling.Event.UPDATE, new SubscriptionHandling.HandleEventCallback<OfferInvite>() {
+            @Override
+            public void onEvent(ParseQuery<OfferInvite> query, final OfferInvite object) {
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    public void run() {
+
+                        if(object.getAcceptStatus().equals(true)){
+
+                            progressBarStatus.setVisibility(View.INVISIBLE);
+                            statusTextView.setText("User ACCEPTED OFFER!");
+
+
+                        } else {
+
+
+
+                        }
+
+
+                    }
+
+                });
+            }
+        });
     }
+
+
 
 
 
