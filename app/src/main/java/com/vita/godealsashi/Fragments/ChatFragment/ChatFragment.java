@@ -121,7 +121,7 @@ public class ChatFragment extends Fragment {
     private OfferInvite getOffer(String ownerId){
         ParseQuery<OfferInvite> query = ParseQuery.getQuery(OfferInvite.class);
 
-        query.whereEqualTo("targetId", ownerId);
+        query.whereEqualTo("targetUserId", ownerId);
         try {
             return query.getFirst();
         } catch (ParseException e) {

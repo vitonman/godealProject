@@ -100,8 +100,6 @@ public class ChatRecycleAdapter extends RecyclerView.Adapter<ChatRecycleAdapter.
    /*     String city = userList.get(i).getCity();
         viewHolder.setUserCity(city);*/
 
-
-
     }
 
     @Override

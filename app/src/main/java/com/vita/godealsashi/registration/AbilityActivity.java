@@ -30,7 +30,7 @@ public class AbilityActivity extends AppCompatActivity {
         final ParseUser currentUser = ParseUser.getCurrentUser();
 
 
-        activity_driver = (ImageView) findViewById(R.id.textView_id);
+        activity_driver = (ImageView) findViewById(R.id.transportImage);
 
 
         saveBtn = (ImageView) findViewById(R.id.save_btn);

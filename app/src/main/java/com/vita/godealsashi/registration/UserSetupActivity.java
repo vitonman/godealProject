@@ -182,7 +182,7 @@ public class UserSetupActivity extends AppCompatActivity {
     private void getUserData(String currentUser){
 
         final ParseQuery<CustomUser> queryExist = ParseQuery.getQuery(CustomUser.class);
-        queryExist.whereEqualTo("owner", currentUser);
+        queryExist.whereEqualTo("ownerUserId", currentUser);
         queryExist.getFirstInBackground(new GetCallback<CustomUser>() {
             @Override
             public void done(CustomUser object, ParseException e) {

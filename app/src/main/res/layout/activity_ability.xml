@@ -60,20 +60,20 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:id="@+id/textView_id"
+                    android:id="@+id/transportImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:src="@drawable/ic_messages_action" />
 
                 <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Transport"
                     android:textAlignment="center"
-                    android:text="Text"
                     android:textColor="#000"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:textStyle="bold" />
 
             </LinearLayout>
 

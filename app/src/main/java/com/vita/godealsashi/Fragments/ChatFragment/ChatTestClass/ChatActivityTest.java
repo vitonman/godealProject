@@ -32,6 +32,9 @@ import com.vita.godealsashi.ParseClasses.Message;
 import com.vita.godealsashi.ParseClasses.OfferInvite;
 import com.vita.godealsashi.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -147,7 +150,7 @@ public class ChatActivityTest extends AppCompatActivity {
         ownerUserId = intent.getStringExtra("targetUserId");
 
         CustomUser targetUserObject = getObjectUser(ownerUserId);
-
+        final CustomUser ownerUserObject = getObjectUser(custom_user_current_id);
 
         //Toast.makeText(ChatActivityTest.this, testUser.getName(), Toast.LENGTH_LONG).show();
 
@@ -176,6 +179,47 @@ public class ChatActivityTest extends AppCompatActivity {
                     public void done(ParseException e) {
                         Toast.makeText(ChatActivityTest.this, "Sent",
                                 Toast.LENGTH_SHORT).show();
+                        if(ownerUserObject.getUserIntouch() == null){
+                            final JSONArray array = new JSONArray();
+                            array.put(ownerUserId);
+
+                            ownerUserObject.setUserInTouch(array);
+                            ownerUserObject.saveInBackground();
+
+
+                        }else{
+                            ArrayList<String> listdata = new ArrayList<String>();
+                            final JSONArray jArray = ownerUserObject.getUserIntouch();
+                            if (jArray != null) {
+                                for (int i=0;i<jArray.length();i++){
+                                    try {
+                                        listdata.add(jArray.getString(i));
+                                    } catch (JSONException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            if(!listdata.contains(ownerUserId)){
+
+                                //nothing
+                                if(jArray != null){
+                                    jArray.put(ownerUserId);
+                                    ownerUserObject.saveInBackground(new SaveCallback() {
+                                        @Override
+                                        public void done(ParseException e) {
+                                            ownerUserObject.setUserInTouch(jArray);
+                                            Toast.makeText(getApplicationContext(), "Added to created array", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+
+                                }
+                            }
+
+                        }
+
+
+
                         refreshMessages();
                     }
                 });
@@ -251,6 +295,7 @@ public class ChatActivityTest extends AppCompatActivity {
         }
         return null;
     }
+
 
 
     private void refreshMessages(){

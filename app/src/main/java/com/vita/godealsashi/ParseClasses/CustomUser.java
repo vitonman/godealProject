@@ -93,6 +93,18 @@ public class CustomUser extends ParseObject implements Serializable {
         return getJSONArray("ability");
     }
 
+    public void setUserInTouch(JSONArray value){
+
+        put("usersintouch", value);
+
+    }
+
+    public JSONArray getUserIntouch(){
+
+        return getJSONArray("usersintouch");
+    }
+
+
 
 
     //RAITING SYSTEM INNED
